@@ -17,10 +17,11 @@ export default function MapView() {
     // If engine is available, you can configure it here
     if (engine) {
       // Set location to New York
-      swh.setObserverLocation(engine, -74.006, 40.7128);
+      swh.setObserverLocation(engine, -29.9581, 146.855627);
 
       // Toggle atmosphere
       swh.toggleAtmosphere(engine, true);
+      swh.setFOV(engine, 2.09);
     }
   }, [engine, initEngine]);
 
@@ -35,7 +36,6 @@ export default function MapView() {
         style={{
           width: "100vw",
           height: "100vh",
-          maxWidth: "800px",
           background: "#000",
           display: "block",
           margin: "0 auto",
