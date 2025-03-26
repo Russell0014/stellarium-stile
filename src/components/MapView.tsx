@@ -1,59 +1,59 @@
-import { useEffect, useState, useRef } from "react";
-
-// wtf
-// how to infer the types
-// is this even the "right" way to setup
-// best way to set up wasm
-// how tf do we even call the other c/c++ functions etc.
-// what is the params for StelWebEngine
-// onReady
-//    - how to set locations
-//    - how to set landscape
-//    - how tf to edit and change data
-
-// findings
-// seems that the "default" place is a sky WITHOUT a landscape
-
-// declare global {
-//   interface Window {
-//     StelWebEngine: any;
-//   }
-// }
+// src/components/MapView.tsx
+import { useEffect, useRef } from "react";
+import { useSEngine } from "@/context/SEngineContext";
 
 export default function MapView() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  // not sure if we even need this
-  // const [engine, setEngine] = useState<unknown>();
-  // const engineWasm = "/stellarium-web-engine.wasm" as const;
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { engine, initEngine } = useSEngine();
+    const canvasId = "stellarium-canvas";
 
-  // useEffect(() => {
-  //   const loadView = async () => {
-  //     try {
-  //       if (!window.StelWebEngine) {
-  //         return;
-  //       }
-  //       const engine_ = await window.StelWebEngine({
-  //         wasmFile: engineWasm,
-  //         canvas: canvasRef.current,
-  //         // translateFn: (domain: string, str: string) => str,
-  //         // onReady: (u: unknown) => u,
-  //       });
-  //       // console.log(`engine_ ${engine_}`);
-  //       // console.log(engine_);
-  //       setEngine(() => engine_);
-  //     } catch (e) {
-  //       console.error(e);
-  //       console.error(`engine_ failed?`);
-  //     }
-  //   };
-  //   loadView();
-  // }, []);
+    useEffect(() => {
+        // Initialize the engine if not already done
+        if (!engine && canvasRef.current) {
+            initEngine(canvasRef.current);
+        }
 
-  return (
-    <div>
-      <h2>canvas below</h2>
-      <canvas ref={canvasRef} />
-      <h2>canvas top</h2>
-    </div>
-  );
+        // If engine is available, you can configure it here
+        if (engine) {
+            // Example configurations:
+            // Set observer location (longitude, latitude in degrees, altitude in meters, accurate timestamp)
+            // engine.core.observer.longitude = -122.4194; // San Francisco
+            // engine.core.observer.latitude = 37.7749;
+            // engine.core.observer.elevation = 0;
+
+            // Set time (example: current time)
+            // engine.core.observer.utc = Date.now() / 1000;
+
+            // Enable/disable atmosphere
+            // engine.core.atmosphere.visible = true;
+
+            // Set landscape
+            // engine.core.landscapes.current = 'guereins'; // or another available landscape
+            // engine.core.landscapes.visible = true;
+
+            console.log("Available landscapes:", engine.listLandscapes?.());
+            console.log("Current FOV:", engine.core.fov);
+        }
+    }, [engine, initEngine]);
+
+    return (
+        <div className="map-view">
+            <h2>Stellarium Sky Map</h2>
+            <canvas
+                id={canvasId}
+                ref={canvasRef}
+                width={1000}
+                height={1000}
+                style={{
+                    width: "100vw",
+                    height: "100vh",
+                    maxWidth: "800px",
+                    background: "#000",
+                    display: "block",
+                    margin: "0 auto",
+                    border: "1px solid #333",
+                }}
+            />
+        </div>
+    );
 }
