@@ -1,14 +1,11 @@
 export async function initWasm() {
-  try {
-    const importObj = {};
-    const result = await WebAssembly.instantiateStreaming(
-      fetch("/stellarium-web-engine.wasm")
-    );
-    console.log(result);
-    return true;
-  } catch (e) {
-    console.warn(e);
-    console.error(`An error occurred when fetching wasm source. Error: ${e}`);
-    return false;
-  }
+
+  return StelWebEngine({
+    wasmFile: "./stellarium-web-engine.wasm",
+    canvas: document.getElementById('stel-canvas'),
+    onReady: function(stel) {
+      console.log("yay", {stel});
+    }
+  })
+      
 }
