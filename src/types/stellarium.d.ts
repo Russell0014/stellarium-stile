@@ -1,3 +1,6 @@
+
+
+
 // Import StellariumEngine type from the global scope
 declare global {
   // Core observer interface for location and time settings
@@ -7,6 +10,10 @@ declare global {
     elevation: number;
     utc: number;
   }
+
+  interface Window {
+    StelWebEngine: typeof StelWebEngine;
+}
 
   // Atmosphere rendering settings
   interface StellariumAtmosphere {
@@ -175,3 +182,37 @@ export interface SEngineHelpers {
   setData: (engine: StellariumEngine | null, key: string, value: any) => void;
   getData: (engine: StellariumEngine | null, key: string) => any;
 }
+
+function StelWebEngine(options: {
+    wasmFile: string;
+    canvas: HTMLElement | null;
+    onReady?: (stel: StellariumEngine) => void;
+    translateFn?: (domain: string, str: string) => string;
+}): Promise<StellariumEngine>;
+
+export interface StellariumEngine {
+    core: {
+        observer: {
+            longitude: number;
+            latitude: number;
+            elevation: number;
+            utc: number;
+        };
+        fov: number;
+        selection: any;
+        atmosphere: {
+            visible: boolean;
+        };
+        landscapes: {
+            current: string;
+            visible: boolean;
+        };
+    };
+    calendar: any;
+    listLandscapes: () => string[];
+    getViewportSize: () => [number, number];
+    setViewportSize: (width: number, height: number) => void;
+    // Add other methods as you discover them
+}
+
+export {};
