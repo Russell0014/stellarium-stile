@@ -182,8 +182,6 @@ const swh: SEngineHelpers = {
       //Real API for Production
       : import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result + '&limit=' + limit; 
   
-    console.log('Using API:', apiUrl);
-  
     try {
       const response = await fetch(apiUrl);
       if (!response.ok) {

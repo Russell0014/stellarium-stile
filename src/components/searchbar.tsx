@@ -22,19 +22,21 @@ export default function SearchBar() {
         }
 
         if (isTyping) {
-            console.log(search);
+            setIsTyping(false);
 
             const fetchAllData = async() => {
             try {
-            setAutoCompChoices(await swh.searchObjects("A", 10));
+            setAutoCompChoices(await swh.searchObjects(search, 10));
+            console.log(autoCompChoices);
             } catch (error) {
                 console.log(error);
             }
+
         }
 
         fetchAllData();
         };
-    });
+    }, [isTyping]);
 
 
 
