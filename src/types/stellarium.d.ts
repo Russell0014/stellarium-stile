@@ -80,14 +80,32 @@ declare global {
     distance: number;
   }
 
-  // Search result item
-   export interface SearchResult {
-    id: string;
-    model: string;
+
+  //This defines the Search Result
+  export interface SearchResult {
+    interest: number;
     match: string;
-    distance: number;
-    vmag?: number;
+    model: string;
+    model_data: {
+      Bmag: number;
+      Umag: number;
+      Vmag: number;
+      angle: number;
+      de: number;
+      dimx: number;
+      dimy: number;
+      morpho: string;
+      ra: number; 
+      rv: number;
+    };
+    names: string[];
+    short_name: string;
+    types: string[];
   }
+  
+  export type SearchResults = SearchResult[];
+
+
 
   // Options for the goToObject method
   interface GoToOptions {
@@ -101,6 +119,9 @@ declare global {
     name: string;
     points: number[][]; // Array of [ra, dec] coordinates
   }
+
+
+  
 
   // Main Stellarium Engine interface
   interface StellariumEngine {
