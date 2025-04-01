@@ -171,14 +171,35 @@ const swh: SEngineHelpers = {
     engine.goTo(longitude, latitude, duration);
   },
 
+
   // Search and object info helpers
-  searchObjects: (
-    engine: StellariumEngine | null,
-    query: string
-  ): SearchResult[] => {
-    if (!engine) return [];
-    return engine.search(query);
+  searchObjects: async (result: string, limit: number): Promise<SearchResult[]> => {
+    //Use Proxy Durign Dev otherwise CORS
+    const apiUrl = import.meta.env.MODE === 'development'
+      //Local Proxy Path
+      ? '/api/v1/skysources/?q=' + result + '&limit=' + limit
+
+      //Real API for Production
+      : import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result + '&limit=' + limit; 
+  
+    console.log('Using API:', apiUrl);
+  
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   },
+  
+
+
+
+
 
   getObjectInfo: (
     engine: StellariumEngine | null,

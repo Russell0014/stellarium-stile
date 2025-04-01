@@ -10,6 +10,7 @@ export default function Footer() {
     )
 }
 
+//Include Logo + Search
 
 
 export const FooterStyle = styled.div`

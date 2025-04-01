@@ -1,10 +1,14 @@
 import styled from "styled-components"
+import SearchBar from "./searchbar"
 
 export default function Header() {
     
+
     return (
             <HeaderStyle>
-            <p> Header!</p>
+            <div> Logo goes here </div>
+            <SearchBar />
+            <div> Padding </div>
             </ HeaderStyle>
     )
 }
@@ -14,6 +18,7 @@ const HeaderStyle = styled.div`
     background: rgb(255,255,255,0.1);
     position: absolute;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 100vw;
     height: 40px;
@@ -21,4 +26,5 @@ const HeaderStyle = styled.div`
     border-height: 5px;
     border-radius: 5;
     z-index: 1;
+
 `
