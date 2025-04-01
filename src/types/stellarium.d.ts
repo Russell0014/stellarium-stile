@@ -81,7 +81,7 @@ declare global {
   }
 
   // Search result item
-  interface SearchResult {
+   export interface SearchResult {
     id: string;
     model: string;
     match: string;
@@ -197,15 +197,25 @@ export interface SEngineHelpers {
     duration?: number
   ) => void;
 
+
+
+
   // Search and object info helpers
   searchObjects: (
-    engine: StellariumEngine | null,
-    query: string
-  ) => SearchResult[];
+    query: string,
+    limit: number
+  ) => Promise<SearchResult[]>;
+
+
+
   getObjectInfo: (
     engine: StellariumEngine | null,
     objId: string
   ) => ObjectInfo | null;
+
+
+  
+
 
   // Coordinate conversion
   screenToSky: (

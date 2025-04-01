@@ -7,7 +7,10 @@
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "icons:generate": "npx @svgr/cli src/svgs --out-dir src/components/icons --typescript"
+
+        
     },
     "dependencies": {
         "@extism/extism": "^2.0.0-rc11",
