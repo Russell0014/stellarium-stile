@@ -2,6 +2,10 @@
 import { useEffect, useRef } from "react";
 import { useSEngine } from "@/context/SEngineContext";
 import swh from "@/assets/sw_helper";
+import Header from "./header";
+import styled from "styled-components";
+import Footer from "./footer";
+
 
 export default function MapView() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,13 +30,11 @@ export default function MapView() {
   }, [engine, initEngine]);
 
   return (
-    <div className="map-view">
-      <h2>Stellarium Sky Map</h2>
+    <>
+    <Header />
       <canvas
         id={canvasId}
         ref={canvasRef}
-        width={1000}
-        height={1000}
         style={{
           width: "100vw",
           height: "100vh",
@@ -40,8 +42,11 @@ export default function MapView() {
           display: "block",
           margin: "0 auto",
           border: "1px solid #333",
+          zIndex: "0",
         }}
       />
-    </div>
+    <Footer />
+    </>
   );
 }
+
