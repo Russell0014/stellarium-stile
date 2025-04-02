@@ -26,11 +26,9 @@ it('renders some items in a list', () => {
 });
 
 it('calls onSearch when typed into', async () => {
-	//Set up a User Event
-	const user = userEvent.setup();
+	const user = userEvent.setup(); //Set up a User Event
 
-	//Jest Mock Function
-	const mockOnSearch = jest.fn();
+	const mockOnSearch = jest.fn(); //Jest Mock Function
 
 	render(<SearchBar results={[]} onSearch={mockOnSearch} search='' onClose={() => {}} />);
 
