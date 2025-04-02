@@ -1,5 +1,6 @@
-.custom-icon path, .custom-icon rect {
-  stroke: currentColor
+.custom-icon path,
+.custom-icon rect {
+  stroke: currentColor;
 }
 
 :root {
@@ -15,14 +16,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 body {
   margin: 0;
   overflow-x: hidden;
   overflow-y: hidden;
-
 }
-
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -30,5 +28,3 @@ body {
     background-color: #ffffff;
   }
 }
-
-

@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders an empty list 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-VHjGu iXaerF"
+  >
+    <div>
+      <input
+        class="sc-gnOvAp XBkSl"
+        placeholder="Search..."
+        value=""
+      />
+    </div>
+    <div
+      class="sc-dQkurY gOgmdC"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`renders some items in a list 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-VHjGu iXaerF"
+  >
+    <div>
+      <input
+        class="sc-gnOvAp XBkSl"
+        placeholder="Search..."
+        value="blah"
+      />
+    </div>
+    <div
+      class="sc-dQkurY gOgmdC"
+    >
+      <div>
+        test
+      </div>
+      <div>
+        blah
+      </div>
+      <div>
+        blah2x
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

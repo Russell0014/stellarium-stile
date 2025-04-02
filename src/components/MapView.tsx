@@ -3,9 +3,7 @@ import { useEffect, useRef } from "react";
 import { useSEngine } from "@/context/SEngineContext";
 import swh from "@/assets/sw_helper";
 import Header from "./header";
-import styled from "styled-components";
 import Footer from "./footer";
-
 
 export default function MapView() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,7 +29,7 @@ export default function MapView() {
 
   return (
     <>
-    <Header />
+      <Header />
       <canvas
         id={canvasId}
         ref={canvasRef}
@@ -45,8 +43,7 @@ export default function MapView() {
           zIndex: "0",
         }}
       />
-    <Footer />
+      <Footer />
     </>
   );
 }
-

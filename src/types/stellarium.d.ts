@@ -80,7 +80,6 @@ declare global {
     distance: number;
   }
 
-
   //This defines the Search Result
   export interface SearchResult {
     interest: number;
@@ -95,17 +94,15 @@ declare global {
       dimx: number;
       dimy: number;
       morpho: string;
-      ra: number; 
+      ra: number;
       rv: number;
     };
     names: string[];
     short_name: string;
     types: string[];
-  } 
-  
+  }
+
   export type SearchResults = SearchResult[];
-
-
 
   // Options for the goToObject method
   interface GoToOptions {
@@ -119,9 +116,6 @@ declare global {
     name: string;
     points: number[][]; // Array of [ra, dec] coordinates
   }
-
-
-  
 
   // Main Stellarium Engine interface
   interface StellariumEngine {
@@ -218,29 +212,15 @@ export interface SEngineHelpers {
     duration?: number
   ) => void;
 
-
-
-
   // Search and object info helpers
-  searchObjects: (
-    query: string,
-    limit: number
-  ) => Promise<SearchResult[]>;
+  searchObjects: (query: string, limit: number) => Promise<SearchResult[]>;
 
-  searchObject: (
-    query: string
-  ) => Promise<SearchResult | null>
-
-
+  searchObject: (query: string) => Promise<SearchResult | null>;
 
   getObjectInfo: (
     engine: StellariumEngine | null,
     objId: string
   ) => ObjectInfo | null;
-
-
-  
-
 
   // Coordinate conversion
   screenToSky: (
