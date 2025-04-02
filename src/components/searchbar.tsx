@@ -4,19 +4,13 @@ import { useState, useEffect } from "react";
 import swh from "@/assets/sw_helper";
 
 
-
-
 export default function SearchBar() {
     const [search, setSearch] = useState("");
     const [autoCompChoices, setAutoCompChoices] = useState<SearchResult[]>([])
     const [isTyping, setIsTyping] = useState(false);
 
-    let data = autoCompChoices.map((object) => {
-        const names = object;
-    })
+    //Implement Timeout to wait for user to stop typing 
 
-
-    //Implement Timeout
     useEffect(() => {
         if (search == "" || search.length > 10) {
             return;
@@ -38,6 +32,7 @@ export default function SearchBar() {
 
         fetchAllData();
         };
+
     }, [isTyping]);
 
 
@@ -55,13 +50,10 @@ export default function SearchBar() {
     //Need to figure out the correct one to return
     function iconforSkySources (autoCompChoices: SearchResult[]){
         const icons = [];
-        console.log(data);
 
         for (const source of autoCompChoices) {
             for (const type of source.types) {
-                //console.log(source);
-                //console.log(type)
-                //console.log(iconForType[type as keyof typeof iconForType])
+                console.log(icons);
                 icons.push('svgs/' + type + '.svg');
             }
         }
@@ -78,8 +70,8 @@ export default function SearchBar() {
 
     return (
     <SearchDiv>
+        <div>
         <Icon icon="MagnifyingGlass" width="20px" height="20px" />
-
         <SearchText
             placeholder="Search..."
             value={search}
@@ -93,6 +85,16 @@ export default function SearchBar() {
                 setIsTyping(false);
             }}
         />
+        </div>
+        <SearchDropDown>
+            {autoCompChoices.map((object) => {
+                console.log(autoCompChoices)
+                const names = object.names[0]
+                return (
+                    <div>{names}</div>
+                )
+            })}
+        </SearchDropDown>
 
     </SearchDiv>
     );
@@ -101,10 +103,12 @@ export default function SearchBar() {
 
 
 
+
 const SearchDiv = styled.div`
     display: flex;
     align_items: center;
-    gap: 10px;
+    flex-direction: column;
+    align-self: start;
 `
 
 const SearchText = styled.input`
@@ -119,68 +123,6 @@ const SearchText = styled.input`
 `
 
 const SearchDropDown = styled.div`
-    
+   
 `
-
-
-  //Move later?
-  const iconForType = {
-    // Stars
-    'Pec?': 'star',
-    '**?': 'double_star',
-    '**': 'double_star',
-    'V*': 'variable_star',
-    'V*?': 'variable_star',
-    '*': 'star',
-
-    // Candidates
-    'As?': 'group_of_stars',
-    'SC?': 'group_of_galaxies',
-    'Gr?': 'group_of_galaxies',
-    'C?G': 'group_of_galaxies',
-    'G?': 'galaxy',
-
-    // Multiple objects
-    reg: 'region_defined_in_the_sky',
-    SCG: 'group_of_galaxies',
-    ClG: 'group_of_galaxies',
-    GrG: 'group_of_galaxies',
-    IG: 'interacting_galaxy',
-    PaG: 'pair_of_galaxies',
-    'C?*': 'open_galactic_cluster',
-    'Gl?': 'globular_cluster',
-    GlC: 'globular_cluster',
-    OpC: 'open_galactic_cluster',
-    'Cl*': 'open_galactic_cluster',
-    'As*': 'group_of_stars',
-    mul: 'multiple_objects',
-
-    // Interstellar matter
-    'PN?': 'planetary_nebula',
-    PN: 'planetary_nebula',
-    SNR: 'planetary_nebula',
-    'SR?': 'planetary_nebula',
-    ISM: 'interstellar_matter',
-
-    // Galaxies
-    PoG: 'part_of_galaxy',
-    QSO: 'quasar',
-    G: 'galaxy',
-
-    dso: 'deep_sky',
-
-    // Solar System
-    Asa: 'artificial_satellite',
-    Moo: 'moon',
-    Sun: 'sun',
-    Pla: 'planet',
-    DPl: 'planet',
-    Com: 'comet',
-    MPl: 'minor_planet',
-    SSO: 'minor_planet',
-
-    Con: 'constellation'
-  }
-
-
 

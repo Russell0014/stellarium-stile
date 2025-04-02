@@ -101,7 +101,7 @@ declare global {
     names: string[];
     short_name: string;
     types: string[];
-  }
+  } 
   
   export type SearchResults = SearchResult[];
 
@@ -226,6 +226,10 @@ export interface SEngineHelpers {
     query: string,
     limit: number
   ) => Promise<SearchResult[]>;
+
+  searchObject: (
+    query: string
+  ) => Promise<SearchResult | null>
 
 
 

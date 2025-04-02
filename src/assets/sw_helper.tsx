@@ -193,10 +193,28 @@ const swh: SEngineHelpers = {
       return [];
     }
   },
+
+  // Search and object info helpers
+  searchObject: async (result: string): Promise<SearchResult | null> => {
+    //Use Proxy Durign Dev otherwise CORS
+    const apiUrl = import.meta.env.MODE === 'development'
+      //Local Proxy Path
+      ? '/api/v1/skysources/?q=' + result
+
+      //Real API for Production
+      : import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result;
   
-
-
-
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
 
 
   getObjectInfo: (
