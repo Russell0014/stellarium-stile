@@ -3,17 +3,17 @@
 exports[`renders an empty list 1`] = `
 <DocumentFragment>
   <div
-    class="sc-VHjGu iXaerF"
+    class="sc-VHjGu exzJCt"
   >
     <div>
       <input
-        class="sc-gnOvAp XBkSl"
+        class="sc-gnOvAp boFJRV"
         placeholder="Search..."
         value=""
       />
     </div>
     <div
-      class="sc-dQkurY gOgmdC"
+      class="sc-dQkurY ZFUqT"
     />
   </div>
 </DocumentFragment>
@@ -22,26 +22,23 @@ exports[`renders an empty list 1`] = `
 exports[`renders some items in a list 1`] = `
 <DocumentFragment>
   <div
-    class="sc-VHjGu iXaerF"
+    class="sc-VHjGu exzJCt"
   >
     <div>
       <input
-        class="sc-gnOvAp XBkSl"
+        class="sc-gnOvAp boFJRV"
         placeholder="Search..."
         value="blah"
       />
     </div>
     <div
-      class="sc-dQkurY gOgmdC"
+      class="sc-dQkurY ZFUqT"
     >
       <div>
-        test
+        NAME Andromeda Nebula
       </div>
       <div>
-        blah
-      </div>
-      <div>
-        blah2x
+        M 71
       </div>
     </div>
   </div>

@@ -80,30 +80,6 @@ declare global {
 		distance: number;
 	}
 
-	//This defines the Search Result
-	export interface SearchResult {
-		interest: number;
-		match: string;
-		model: string;
-		model_data: {
-			Bmag: number;
-			Umag: number;
-			Vmag: number;
-			angle: number;
-			de: number;
-			dimx: number;
-			dimy: number;
-			morpho: string;
-			ra: number;
-			rv: number;
-		};
-		names: string[];
-		short_name: string;
-		types: string[];
-	}
-
-	export type SearchResults = SearchResult[];
-
 	// Options for the goToObject method
 	interface GoToOptions {
 		duration?: number;

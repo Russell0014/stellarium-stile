@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import SearchBar from './searchbar';
+import SearchBarController from './searchBarController';
 
 export default function Header() {
 	return (
 		<HeaderStyle>
-			<div> Logo goes here </div>
-			<SearchBar />
-			<div> Padding </div>
+			<div> </div>
+			<SearchBarController />
+			<div> </div>
 		</HeaderStyle>
 	);
 }

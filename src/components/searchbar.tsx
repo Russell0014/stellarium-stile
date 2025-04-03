@@ -1,11 +1,9 @@
-//import { Icon } from "./Icon";
 import styled from 'styled-components';
-
-type SearchResult = string;
+import type { SearchResults } from './searchBarController';
 
 type Props = {
 	search: string;
-	results: SearchResult[];
+	results: SearchResults;
 	onSearch: (searchTerm: string) => void;
 	onClose: () => void;
 };
@@ -14,7 +12,6 @@ export default function SearchBar({ search, results, onSearch, onClose }: Props)
 	return (
 		<SearchDiv>
 			<div>
-				{/* <Icon icon="MagnifyingGlass" width="20px" height="20px" /> */}
 				<SearchText
 					placeholder='Search...'
 					value={search}
@@ -25,9 +22,7 @@ export default function SearchBar({ search, results, onSearch, onClose }: Props)
 				/>
 			</div>
 			<SearchDropDown>
-				{results.map((name) => (
-					<div key={name}>{name}</div>
-				))}
+				{results?.map((searchresult) => <div key={searchresult.match}>{searchresult.match}</div>)}
 			</SearchDropDown>
 		</SearchDiv>
 	);
@@ -51,4 +46,8 @@ const SearchText = styled.input`
 	}
 `;
 
-const SearchDropDown = styled.div``;
+const SearchDropDown = styled.div`
+	display: flex-col;
+	background: rgb(255, 255, 255, 0.1);
+	margin-top: 15px;
+`;
