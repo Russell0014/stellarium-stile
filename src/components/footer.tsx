@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 
 export default function Footer() {
-	return <FooterStyle>I need the foot</FooterStyle>;
+	return <FooterStyle></FooterStyle>;
 }
-
-//Include Logo + Search
 
 export const FooterStyle = styled.div`
 	background: rgb(255, 255, 255, 0.1);
