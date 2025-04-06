@@ -52,30 +52,3 @@ export default tseslint.config({
 	},
 });
 ```
-
-## Auto-create SVG
-
-https://dev.to/seanyasno/handling-icons-in-react-best-practices-22c5#:~:text=Generating%20Icon%20Components%20Automatically&text=This%20command%20converts%20all%20SVG,in%20the%20icons%2Fcomponents%20folder.
-
-How to:
-
-1. Add an SVG to the svgs folder
-2. To generate typings run: npm run icons:generate
-3. The SVG will be available in the <Icons /> component!
-
-How does it work?
-
-Full Command:
-npx @svgr/cli src/svgs --out-dir src/components/icons --typescript
-
-@svgr/cli - A React library that transforms SVGs into React Components
-
-src/svgs - Will search for all available svgs in src/svgs
-
---out-dir src/components/icons: Specify Output Directory
-
---typescript: Language
-
-This will allow us to pass in custom props into our SVG Images
-
-<Icon icon ="MagnifyingGlass" width = "20px" height = "20px" />
