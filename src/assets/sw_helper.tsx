@@ -1,6 +1,7 @@
-import React from 'react';
 import moment from 'moment';
 import { SEngineHelpers } from '@/types/stellarium';
+import { SearchResults } from '@/types/stellarium';
+import { SearchResult } from '@/types/stellarium';
 /**
  * The engine parameter refers to the stellarium engine instance
  * that you get from the SEngineContext using the useSEngine hook.
@@ -155,7 +156,7 @@ const swh: SEngineHelpers = {
 	},
 
 	// Search and object info helpers
-	searchObjects: async (result: string, limit: number): Promise<SearchResult[]> => {
+	searchObjects: async (result: string, limit: number): Promise<SearchResults> => {
 		//Use Proxy Durign Dev otherwise CORS
 		const apiUrl =
 			import.meta.env.MODE === 'development'

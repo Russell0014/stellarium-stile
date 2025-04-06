@@ -193,4 +193,29 @@ export interface SEngineHelpers {
 	getData: (engine: StellariumEngine | null, key: string) => any;
 }
 
+export type SearchResult = {
+	interest: number;
+	match: string;
+	model: string;
+	model_data: {
+		Bmag?: number;
+		Umag?: number;
+		Vmag?: number;
+		angle?: number;
+		de?: number;
+		dimx?: number;
+		dimy?: number;
+		pm_de?: number;
+		pm_ra?: number;
+		morpho?: string;
+		ra?: number;
+		rv?: number;
+	};
+	names: string[];
+	short_name: string;
+	types: string[];
+};
+
+export type SearchResults = SearchResult[];
+
 export {};

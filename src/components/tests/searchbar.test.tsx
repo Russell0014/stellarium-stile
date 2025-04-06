@@ -1,56 +1,57 @@
 import SearchBar from '../searchbar';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { SearchResults } from '../searchBarController';
+import type { SearchResults } from '../../types/stellarium';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 
-test('it works', () => {
-	expect(true);
+import { render } from '../tests/init/index';
+
+describe('render', () => {
+	it('displays an empty list', () => {
+		const { asFragment } = render(
+			<SearchBar
+				results={[]}
+				onSearch={() => {}}
+				search=''
+				onClose={() => {}}
+			/>,
+		);
+		expect(asFragment()).toMatchSnapshot();
+	});
+
+	it('displays some items in a list', () => {
+		const { asFragment } = render(
+			<SearchBar
+				results={search}
+				onSearch={() => {}}
+				search='blah'
+				onClose={() => {}}
+			/>,
+		);
+		expect(asFragment()).toMatchSnapshot();
+	});
 });
 
-it('renders an empty list', () => {
-	const { asFragment } = render(
-		<SearchBar
-			results={[]}
-			onSearch={() => {}}
-			search=''
-			onClose={() => {}}
-		/>,
-	);
-	expect(asFragment()).toMatchSnapshot();
-});
+describe('onSearch', () => {
+	let mockOnSearch: ReturnType<typeof vi.fn>;
 
-it('renders some items in a list', () => {
-	const { asFragment } = render(
-		<SearchBar
-			results={search}
-			onSearch={() => {}}
-			search='blah'
-			onClose={() => {}}
-		/>,
-	);
-	expect(asFragment()).toMatchSnapshot();
-});
+	beforeAll(() => {
+		mockOnSearch = vi.fn();
+	});
 
-it('calls onSearch when typed into', async () => {
-	const user = userEvent.setup(); //Set up a User Event
+	it('calls when typed into', async () => {
+		const screen = render(
+			<SearchBar
+				results={[]}
+				onSearch={mockOnSearch}
+				search=''
+				onClose={() => {}}
+			/>,
+		);
 
-	const mockOnSearch = jest.fn(); //Jest Mock Function
+		await screen.getByRole('textbox').fill('h');
 
-	render(
-		<SearchBar
-			results={[]}
-			onSearch={mockOnSearch}
-			search=''
-			onClose={() => {}}
-		/>,
-	);
-
-	const input = screen.getByRole('textbox'); // Select the input field
-
-	await user.type(input, 'h'); // Simulate user typing
-
-	expect(mockOnSearch).toHaveBeenCalledTimes(1); // Called once per character typed
-	expect(mockOnSearch).toHaveBeenCalledWith('H');
+		expect(mockOnSearch).toHaveBeenCalledTimes(1); // Called once per character typed
+		expect(mockOnSearch).toHaveBeenCalledWith('H');
+	});
 });
 
 const search: SearchResults = [

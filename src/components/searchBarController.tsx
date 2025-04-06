@@ -1,34 +1,11 @@
-//import { Icon } from "./Icon";
 import { useState, useEffect } from 'react';
-import swh from '@/assets/sw_helper';
+import swh from '../assets/sw_helper';
 import SearchBar from './searchbar';
+import type { SearchResults } from '../types/stellarium';
 
-export type SearchResult = {
-	interest: number;
-	match: string;
-	model: string;
-	model_data: {
-		Bmag?: number;
-		Umag?: number;
-		Vmag?: number;
-		angle?: number;
-		de?: number;
-		dimx?: number;
-		dimy?: number;
-		pm_de?: number;
-		pm_ra?: number;
-		morpho?: string;
-		ra?: number;
-		rv?: number;
-	};
-	names: string[];
-	short_name: string;
-	types: string[];
-};
+type Props = {};
 
-export type SearchResults = SearchResult[];
-
-export default function SearchBarController() {
+export default function SearchBarController({}: Props) {
 	const [search, setSearch] = useState<string>('');
 	const [results, setResults] = useState<SearchResults>([]);
 	const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
@@ -64,10 +41,10 @@ export default function SearchBarController() {
 		}
 	}, [debouncedSearch]);
 
-	function trim(results: SearchResults): SearchResults {
+	const trim = (results: SearchResults): SearchResults => {
 		results.map((searchresult) => (searchresult.match = searchresult.match.replace('NAME ', '')));
 		return results;
-	}
+	};
 
 	const handleChange = (search: string): void => {
 		setSearch(search);

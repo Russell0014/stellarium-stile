@@ -1,4 +1,94 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`render > displays an empty list 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-VHjGu exzJCt"
+  >
+    <div>
+      <input
+        class="sc-gnOvAp boFJRV"
+        placeholder="Search..."
+        value=""
+      />
+    </div>
+    <div
+      class="sc-dQkurY ZFUqT"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`render > displays some items in a list 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-VHjGu exzJCt"
+  >
+    <div>
+      <input
+        class="sc-gnOvAp boFJRV"
+        placeholder="Search..."
+        value="blah"
+      />
+    </div>
+    <div
+      class="sc-dQkurY ZFUqT"
+    >
+      <div>
+        NAME Andromeda Nebula
+      </div>
+      <div>
+        NAME Angelfish Cluster
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`render displays an empty list 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-VHjGu exzJCt"
+  >
+    <div>
+      <input
+        class="sc-gnOvAp boFJRV"
+        placeholder="Search..."
+        value=""
+      />
+    </div>
+    <div
+      class="sc-dQkurY ZFUqT"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`render displays some items in a list 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-VHjGu exzJCt"
+  >
+    <div>
+      <input
+        class="sc-gnOvAp boFJRV"
+        placeholder="Search..."
+        value="blah"
+      />
+    </div>
+    <div
+      class="sc-dQkurY ZFUqT"
+    >
+      <div>
+        NAME Andromeda Nebula
+      </div>
+      <div>
+        NAME Angelfish Cluster
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
 
 exports[`renders an empty list 1`] = `
 <DocumentFragment>
@@ -38,7 +128,7 @@ exports[`renders some items in a list 1`] = `
         NAME Andromeda Nebula
       </div>
       <div>
-        M 71
+        NAME Angelfish Cluster
       </div>
     </div>
   </div>
