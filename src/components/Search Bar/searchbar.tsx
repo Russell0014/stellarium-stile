@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import type { SearchResults } from '../types/stellarium';
+import type { SearchResults } from '../../types/stellarium';
 
 type Props = {
 	search: string;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import SearchBarController from './searchBarController';
+import SearchBarController from '../Search Bar/searchBarController';
 
 export default function Header() {
 	return (

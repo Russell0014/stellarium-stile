@@ -130,8 +130,11 @@ declare global {
 
 export interface SEngineHelpers {
 	// Date/time helpers
+
 	getCurrentDate: () => string;
 	setObserverTime: (engine: StellariumEngine | null, utcTime: Date) => void;
+
+	setObserverTimeJD: (engine: StellariumEngine | null, utcTime: Date) => void;
 
 	// Observer location helpers
 	setObserverLocation: (

@@ -1,5 +1,5 @@
-import SearchBar from '../searchbar';
-import type { SearchResults } from '../../types/stellarium';
+import SearchBar from '../../Search Bar/searchbar';
+import type { SearchResults } from '@/types/stellarium';
 import { describe, it, expect, beforeAll, vi } from 'vitest';
 
 import { render } from '../tests/init/index';

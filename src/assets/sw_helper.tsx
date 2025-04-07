@@ -40,6 +40,11 @@ const swh: SEngineHelpers = {
 		engine_.core.observer.utc = moment(utcTime).valueOf() / 1000;
 	},
 
+	setObserverTimeJD(engine: any, date: Date) {
+		const jd = date.getTime() / 86400000 + 2440587.5;
+		engine.core.observer.utc = jd;
+	},
+
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
@@ -57,6 +62,7 @@ const swh: SEngineHelpers = {
 		}
 	},
 
+	//Unutilised
 	setObserverLocationByAddress: async (
 		engine: StellariumEngine | null,
 		address: string,

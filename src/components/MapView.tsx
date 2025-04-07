@@ -2,8 +2,9 @@
 import { useEffect, useRef } from 'react';
 import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
-import Header from './header';
-import Footer from './footer';
+import Header from './Nav/header';
+import Footer from './Nav/footer';
+import DateTimeController from './Date Time/dateTimeController';
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -18,8 +19,8 @@ export default function MapView() {
 
 		// If engine is available, you can configure it here
 		if (engine) {
-			// Set location to New York
-			swh.setObserverLocation(engine, -29.9581, 146.855627);
+			// Set location to Brewarrina Fish Traps
+			swh.setObserverLocation(engine, -29.958, 146.8534);
 
 			// Toggle atmosphere
 			swh.toggleAtmosphere(engine, true);
@@ -43,6 +44,7 @@ export default function MapView() {
 					zIndex: '0',
 				}}
 			/>
+			<DateTimeController />
 			<Footer />
 		</>
 	);

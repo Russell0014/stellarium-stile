@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import swh from '../assets/sw_helper';
+import swh from '../../assets/sw_helper';
 import SearchBar from './searchbar';
-import type { SearchResults } from '../types/stellarium';
+import type { SearchResults } from '../../types/stellarium';
 
 type Props = {};
 
