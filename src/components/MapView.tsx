@@ -19,12 +19,20 @@ export default function MapView() {
 
 		// If engine is available, you can configure it here
 		if (engine) {
+			const core = engine.getModule('core');
+			console.log(core);
+
 			// Set location to Brewarrina Fish Traps
 			swh.setObserverLocation(engine, -29.958, 146.8534);
 
 			// Toggle atmosphere
 			swh.toggleAtmosphere(engine, true);
 			swh.setFOV(engine, 2.09);
+
+			core.landscapes.addDataSource({
+				url: 'src/assets/test-skydata/landscapes/guereins',
+				key: 'guereins',
+			});
 		}
 	}, [engine, initEngine]);
 
