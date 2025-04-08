@@ -37,7 +37,6 @@ Union) aimed for a large clean-up: in 1922, it officially accepted the list of
 88 constellation names. In 1928 it also defined precise constellation
 boundaries [#1] still in use today.
 
-
 ## Extras
 
 In the 2nd century CE, Ptolemy in Alexandria published a multi-volume book
@@ -149,17 +148,17 @@ exoplanets.
 
 ## References
 
- - [#1]: Delporte, Eugene: Delimitation scientifique des constellations (tables et cartes), Cambridge, 1930
- - [#2]: facsimile: Uranometria von Johannes Bayer, Kunstschätzeverlag, Gerchsheim, 2010
- - [#3]: facsimile: Die große Flamsteed Edition - Himmelskartographie nach John Flamsteed von 1776 bis 1805, Albireo Verlag, Köln, 2017
- - [#4]: Latußeck, Arndt and Hoffmann, Susanne M: "Ein nützliches Unternehmen", Albireo Verlag, Köln, 2017
- - [#5]: Constellation english names. [IAU Constellations Page](https://www.iau.org/public/themes/constellations/)
- - [#6]: IAU Working Group Star Names. [WGSN](https://www.iau.org/science/scientific_bodies/working_groups/280/)
- - [#7]: Grasshoff, Gerd: The History of Ptolemy's Star Catalogue, Springer, New York, 1990
- - [#8]: Hoffmann, Susanne M.: Hipparchs Himmelsglobus, Springer, Wiesbaden/ New York, 2017
- - [#9]: Constellation. [Article on Wikipedia](http://en.wikipedia.org/wiki/Constellation)
- - [#10]: Star Catalogue. [Article on Wikipedia](http://en.wikipedia.org/wiki/Star_catalogue)
- - [#11]: Constellation image library of the U.S. Naval Observatory and the Space Telescope Science Institute. Johannes Hevelius Engravings. [Link](http://hubblesource.stsci.edu/sources/illustrations/constellations/)
+- [#1]: Delporte, Eugene: Delimitation scientifique des constellations (tables et cartes), Cambridge, 1930
+- [#2]: facsimile: Uranometria von Johannes Bayer, Kunstschätzeverlag, Gerchsheim, 2010
+- [#3]: facsimile: Die große Flamsteed Edition - Himmelskartographie nach John Flamsteed von 1776 bis 1805, Albireo Verlag, Köln, 2017
+- [#4]: Latußeck, Arndt and Hoffmann, Susanne M: "Ein nützliches Unternehmen", Albireo Verlag, Köln, 2017
+- [#5]: Constellation english names. [IAU Constellations Page](https://www.iau.org/public/themes/constellations/)
+- [#6]: IAU Working Group Star Names. [WGSN](https://www.iau.org/science/scientific_bodies/working_groups/280/)
+- [#7]: Grasshoff, Gerd: The History of Ptolemy's Star Catalogue, Springer, New York, 1990
+- [#8]: Hoffmann, Susanne M.: Hipparchs Himmelsglobus, Springer, Wiesbaden/ New York, 2017
+- [#9]: Constellation. [Article on Wikipedia](http://en.wikipedia.org/wiki/Constellation)
+- [#10]: Star Catalogue. [Article on Wikipedia](http://en.wikipedia.org/wiki/Star_catalogue)
+- [#11]: Constellation image library of the U.S. Naval Observatory and the Space Telescope Science Institute. Johannes Hevelius Engravings. [Link](http://hubblesource.stsci.edu/sources/illustrations/constellations/)
 
 ## Authors
 

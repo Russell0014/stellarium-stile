@@ -1,18 +1,16 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
-  "compilerOptions": {
-    "verbatimModuleSyntax": true,
-    "moduleResolution": "node",
-    "allowJs": true,
-    "esModuleInterop": true,
-
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  }
+	"files": [],
+	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+	"compilerOptions": {
+		"verbatimModuleSyntax": false,
+		"moduleResolution": "node",
+		"allowJs": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"baseUrl": "./",
+		"types": ["@vitest/browser/providers/playwright"],
+		"paths": {
+			"@/*": ["src/*"]
+		}
+	}
 }

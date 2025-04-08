@@ -1,6 +1,7 @@
-import React from "react";
-import moment from "moment";
-import { SEngineHelpers } from "@/types/stellarium";
+import moment from 'moment';
+import { SEngineHelpers } from '@/types/stellarium';
+import { SearchResults } from '@/types/stellarium';
+import { SearchResult } from '@/types/stellarium';
 /**
  * The engine parameter refers to the stellarium engine instance
  * that you get from the SEngineContext using the useSEngine hook.
@@ -27,217 +28,227 @@ import { SEngineHelpers } from "@/types/stellarium";
  */
 
 const swh: SEngineHelpers = {
-  // Date/time helper functions
-  getCurrentDate: (): string => {
-    return moment().format("YYYY-MM-DD HH:mm:ss");
-  },
+	// Date/time helper functions
+	getCurrentDate: (): string => {
+		return moment().format('YYYY-MM-DD HH:mm:ss');
+	},
 
-  setObserverTime: (engine_: StellariumEngine | null, utcTime: Date): void => {
-    if (!engine_) return;
+	setObserverTime: (engine_: StellariumEngine | null, utcTime: Date): void => {
+		if (!engine_) return;
 
-    // Convert date to unix timestamp in seconds
-    engine_.core.observer.utc = moment(utcTime).valueOf() / 1000;
-  },
+		// Convert date to unix timestamp in seconds
+		engine_.core.observer.utc = moment(utcTime).valueOf() / 1000;
+	},
 
-  // Observer location helpers
-  setObserverLocation: (
-    engine: StellariumEngine | null,
-    longitude: number,
-    latitude: number,
-    elevation: number = 0
-  ): void => {
-    if (!engine) return;
+	// Observer location helpers
+	setObserverLocation: (
+		engine: StellariumEngine | null,
+		longitude: number,
+		latitude: number,
+		elevation: number = 0,
+	): void => {
+		if (!engine) return;
 
-    engine.core.observer.longitude = longitude;
-    engine.core.observer.latitude = latitude;
+		engine.core.observer.longitude = longitude;
+		engine.core.observer.latitude = latitude;
 
-    if (elevation !== undefined) {
-      engine.core.observer.elevation = elevation;
-    }
-  },
+		if (elevation !== undefined) {
+			engine.core.observer.elevation = elevation;
+		}
+	},
 
-  setObserverLocationByAddress: async (
-    engine: StellariumEngine | null,
-    address: string
-  ): Promise<void> => {
-    if (!engine) return;
+	setObserverLocationByAddress: async (
+		engine: StellariumEngine | null,
+		address: string,
+	): Promise<void> => {
+		if (!engine) return;
 
-    await engine.setObserverPositionByAddress(address);
-  },
+		await engine.setObserverPositionByAddress(address);
+	},
 
-  // View control helpers
-  getFOV: (engine: StellariumEngine | null): number => {
-    if (!engine) return 0;
-    return engine.core.fov;
-  },
+	// View control helpers
+	getFOV: (engine: StellariumEngine | null): number => {
+		if (!engine) return 0;
+		return engine.core.fov;
+	},
 
-  setFOV: (engine: StellariumEngine | null, fov: number): void => {
-    if (!engine) return;
-    engine.core.fov = fov;
-  },
+	setFOV: (engine: StellariumEngine | null, fov: number): void => {
+		if (!engine) return;
+		engine.core.fov = fov;
+	},
 
-  getViewportSize: (engine: StellariumEngine | null): [number, number] => {
-    if (!engine) return [0, 0];
-    return engine.getViewportSize();
-  },
+	getViewportSize: (engine: StellariumEngine | null): [number, number] => {
+		if (!engine) return [0, 0];
+		return engine.getViewportSize();
+	},
 
-  setViewportSize: (
-    engine: StellariumEngine | null,
-    width: number,
-    height: number
-  ): void => {
-    if (!engine) return;
-    engine.setViewportSize(width, height);
-  },
+	setViewportSize: (engine: StellariumEngine | null, width: number, height: number): void => {
+		if (!engine) return;
+		engine.setViewportSize(width, height);
+	},
 
-  // Display settings helpers
-  toggleAtmosphere: (
-    engine: StellariumEngine | null,
-    visible?: boolean
-  ): void => {
-    if (!engine) return;
+	// Display settings helpers
+	toggleAtmosphere: (engine: StellariumEngine | null, visible?: boolean): void => {
+		if (!engine) return;
 
-    if (visible !== undefined) {
-      engine.core.atmosphere.visible = visible;
-    } else {
-      engine.core.atmosphere.visible = !engine.core.atmosphere.visible;
-    }
-  },
+		if (visible !== undefined) {
+			engine.core.atmosphere.visible = visible;
+		} else {
+			engine.core.atmosphere.visible = !engine.core.atmosphere.visible;
+		}
+	},
 
-  toggleStars: (engine: StellariumEngine | null, visible?: boolean): void => {
-    if (!engine) return;
+	toggleStars: (engine: StellariumEngine | null, visible?: boolean): void => {
+		if (!engine) return;
 
-    if (visible !== undefined) {
-      engine.core.stars.visible = visible;
-    } else {
-      engine.core.stars.visible = !engine.core.stars.visible;
-    }
-  },
+		if (visible !== undefined) {
+			engine.core.stars.visible = visible;
+		} else {
+			engine.core.stars.visible = !engine.core.stars.visible;
+		}
+	},
 
-  setStarSize: (engine: StellariumEngine | null, size: number): void => {
-    if (!engine) return;
-    engine.core.stars.size = size;
-  },
+	setStarSize: (engine: StellariumEngine | null, size: number): void => {
+		if (!engine) return;
+		engine.core.stars.size = size;
+	},
 
-  setProjection: (engine: StellariumEngine | null, type: string): void => {
-    if (!engine) return;
-    engine.core.projection.type = type;
-  },
+	setProjection: (engine: StellariumEngine | null, type: string): void => {
+		if (!engine) return;
+		engine.core.projection.type = type;
+	},
 
-  // Landscape helpers
-  getLandscapes: (engine: StellariumEngine | null): string[] => {
-    if (!engine) return [];
-    return engine.listLandscapes();
-  },
+	// Landscape helpers
+	getLandscapes: (engine: StellariumEngine | null): string[] => {
+		if (!engine) return [];
+		return engine.listLandscapes();
+	},
 
-  setLandscape: (
-    engine: StellariumEngine | null,
-    landscapeName: string
-  ): void => {
-    if (!engine) return;
-    engine.core.landscapes.current = landscapeName;
-  },
+	setLandscape: (engine: StellariumEngine | null, landscapeName: string): void => {
+		if (!engine) return;
+		engine.core.landscapes.current = landscapeName;
+	},
 
-  toggleLandscapeVisibility: (
-    engine: StellariumEngine | null,
-    visible?: boolean
-  ): void => {
-    if (!engine) return;
+	toggleLandscapeVisibility: (engine: StellariumEngine | null, visible?: boolean): void => {
+		if (!engine) return;
 
-    if (visible !== undefined) {
-      engine.core.landscapes.visible = visible;
-    } else {
-      engine.core.landscapes.visible = !engine.core.landscapes.visible;
-    }
-  },
+		if (visible !== undefined) {
+			engine.core.landscapes.visible = visible;
+		} else {
+			engine.core.landscapes.visible = !engine.core.landscapes.visible;
+		}
+	},
 
-  // Navigation helpers
-  goToObject: (
-    engine: StellariumEngine | null,
-    objId: string,
-    options?: GoToOptions
-  ): void => {
-    if (!engine) return;
-    engine.goToObject(objId, options);
-  },
+	// Navigation helpers
+	goToObject: (engine: StellariumEngine | null, objId: string, options?: GoToOptions): void => {
+		if (!engine) return;
+		engine.goToObject(objId, options);
+	},
 
-  goToCoordinates: (
-    engine: StellariumEngine | null,
-    longitude: number,
-    latitude: number,
-    duration?: number
-  ): void => {
-    if (!engine) return;
-    engine.goTo(longitude, latitude, duration);
-  },
+	goToCoordinates: (
+		engine: StellariumEngine | null,
+		longitude: number,
+		latitude: number,
+		duration?: number,
+	): void => {
+		if (!engine) return;
+		engine.goTo(longitude, latitude, duration);
+	},
 
-  // Search and object info helpers
-  searchObjects: (
-    engine: StellariumEngine | null,
-    query: string
-  ): SearchResult[] => {
-    if (!engine) return [];
-    return engine.search(query);
-  },
+	// Search and object info helpers
+	searchObjects: async (result: string, limit: number): Promise<SearchResults> => {
+		//Use Proxy Durign Dev otherwise CORS
+		const apiUrl =
+			import.meta.env.MODE === 'development'
+				? //Local Proxy Path
+					'/api/v1/skysources/?q=' + result + '&limit=' + limit
+				: //Real API for Production
+					import.meta.env.VITE_NOCTUASKY_API_SERVER +
+					'/api/v1/skysources/?q=' +
+					result +
+					'&limit=' +
+					limit;
 
-  getObjectInfo: (
-    engine: StellariumEngine | null,
-    objId: string
-  ): ObjectInfo | null => {
-    if (!engine) return null;
-    return engine.getObjectInfo(objId);
-  },
+		try {
+			const response = await fetch(apiUrl);
+			if (!response.ok) {
+				throw new Error('Failed to fetch data');
+			}
+			return await response.json();
+		} catch (error) {
+			console.error(error);
+			return [];
+		}
+	},
 
-  // Coordinate conversion
-  screenToSky: (
-    engine: StellariumEngine | null,
-    x: number,
-    y: number
-  ): SkyPosition | null => {
-    if (!engine) return null;
-    return engine.pointToValues(x, y);
-  },
+	// Search and object info helpers
+	searchObject: async (result: string): Promise<SearchResult | null> => {
+		//Use Proxy Durign Dev otherwise CORS
+		const apiUrl =
+			import.meta.env.MODE === 'development'
+				? //Local Proxy Path
+					'/api/v1/skysources/?q=' + result
+				: //Real API for Production
+					import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result;
 
-  skyToScreen: (
-    engine: StellariumEngine | null,
-    ra: number,
-    dec: number
-  ): [number, number] | null => {
-    if (!engine) return null;
-    return engine.valuesToPoint(ra, dec);
-  },
+		try {
+			const response = await fetch(apiUrl);
+			if (!response.ok) {
+				throw new Error('Failed to fetch data');
+			}
+			return await response.json();
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+	},
 
-  // Utility helpers
-  takeScreenshot: (engine: StellariumEngine | null): string | null => {
-    if (!engine) return null;
-    return engine.screenshot();
-  },
+	getObjectInfo: (engine: StellariumEngine | null, objId: string): ObjectInfo | null => {
+		if (!engine) return null;
+		return engine.getObjectInfo(objId);
+	},
 
-  getConstellationBoundaries: (
-    engine: StellariumEngine | null
-  ): ConstellationBoundary[] => {
-    if (!engine) return [];
-    return engine.getConstellationBoundaries();
-  },
+	// Coordinate conversion
+	screenToSky: (engine: StellariumEngine | null, x: number, y: number): SkyPosition | null => {
+		if (!engine) return null;
+		return engine.pointToValues(x, y);
+	},
 
-  // Data helpers
-  addDataSource: async (
-    engine: StellariumEngine | null,
-    url: string
-  ): Promise<void> => {
-    if (!engine) return;
-    await engine.addDataSource(url);
-  },
+	skyToScreen: (
+		engine: StellariumEngine | null,
+		ra: number,
+		dec: number,
+	): [number, number] | null => {
+		if (!engine) return null;
+		return engine.valuesToPoint(ra, dec);
+	},
 
-  setData: (engine: StellariumEngine | null, key: string, value: any): void => {
-    if (!engine) return;
-    engine.setData(key, value);
-  },
+	// Utility helpers
+	takeScreenshot: (engine: StellariumEngine | null): string | null => {
+		if (!engine) return null;
+		return engine.screenshot();
+	},
 
-  getData: (engine: StellariumEngine | null, key: string): any => {
-    if (!engine) return null;
-    return engine.getData(key);
-  },
+	getConstellationBoundaries: (engine: StellariumEngine | null): ConstellationBoundary[] => {
+		if (!engine) return [];
+		return engine.getConstellationBoundaries();
+	},
+
+	// Data helpers
+	addDataSource: async (engine: StellariumEngine | null, url: string): Promise<void> => {
+		if (!engine) return;
+		await engine.addDataSource(url);
+	},
+
+	setData: (engine: StellariumEngine | null, key: string, value: any): void => {
+		if (!engine) return;
+		engine.setData(key, value);
+	},
+
+	getData: (engine: StellariumEngine | null, key: string): any => {
+		if (!engine) return null;
+		return engine.getData(key);
+	},
 };
 
 export default swh;
