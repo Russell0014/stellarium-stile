@@ -1,6 +1,6 @@
 # Sky Cultures format
 
-__Draft, work in progress__
+**Draft, work in progress**
 
 This is the documentation of the new format used for defining sky cultures in
 Stellarium Web Engine. This is work in progress and this format is therefore
@@ -14,28 +14,29 @@ legacy format and this one.
 
 The main changes brought by this new format are the following:
 
- - all the content is now stored in 2 files instead of many files in the legacy
- format:
-   - a single index.json file containing the definition of the constellations
-     line, illustrations, common names and other metadata.
-   - a single description.md (markdown) file containing the textual description
-     in english of a sky culture with a somewhat rigid structure.
- - translation (po) files for a sky culture are now stored within the sky
-   culture directory, in the po/ directory. The po files contain the
-   constellations and sky object common names, but also the elements related to
-   sky culture description, in markdown format.
- - images for illustrations are now stored into an illustrations/ subdirectory.
- - new metadata was added such as:
-   - thumbnail for each sky culture or constellations
-   - description for constellations or associated to a sky object name
-   - native names and pronunciation for all common names (e.g. chinese
-     characters and pidgin spelling)
-   - multiple names for one sky object or constellation
-   - region name for each sky culture
+- all the content is now stored in 2 files instead of many files in the legacy
+  format:
+  - a single index.json file containing the definition of the constellations
+    line, illustrations, common names and other metadata.
+  - a single description.md (markdown) file containing the textual description
+    in english of a sky culture with a somewhat rigid structure.
+- translation (po) files for a sky culture are now stored within the sky
+  culture directory, in the po/ directory. The po files contain the
+  constellations and sky object common names, but also the elements related to
+  sky culture description, in markdown format.
+- images for illustrations are now stored into an illustrations/ subdirectory.
+- new metadata was added such as:
+  - thumbnail for each sky culture or constellations
+  - description for constellations or associated to a sky object name
+  - native names and pronunciation for all common names (e.g. chinese
+    characters and pidgin spelling)
+  - multiple names for one sky object or constellation
+  - region name for each sky culture
 
 ## JSON file content
 
 The main index.json file must have the following format:
+
 ```
 {
   // Identifier of the constellation, must match the directory name and
@@ -123,7 +124,7 @@ Description of constellation 2.
 
 ## References
 
- - [#1]: Blah blah et al. [website](http://www.blahblah.html)
+- [#1]: Blah blah et al. [website](http://www.blahblah.html)
 
 ## Authors
 
@@ -134,16 +135,16 @@ Free text about the authors and their credits.
 Free text about the licence(s)
 ```
 
-
 ## Culture-specific and "international" names
 
 Sky object names are now split into 2 categories:
- - a global list of "international" names, such as "Orion Nebula" or
-   "Proxima Centauri". This list is independent of any sky culture, and is
-   usually used for faint objects which don't exist in pre-telescope times, or
-   for IAU names.
- - a list of sky culture-specific names. Only these have to be defined in
-   the sky culture index.json file.
+
+- a global list of "international" names, such as "Orion Nebula" or
+  "Proxima Centauri". This list is independent of any sky culture, and is
+  usually used for faint objects which don't exist in pre-telescope times, or
+  for IAU names.
+- a list of sky culture-specific names. Only these have to be defined in
+  the sky culture index.json file.
 
 Sky cultures can specify in the index.json file that sky objects which do not
 have a culture-specific name can fallback to using the "international" name
@@ -173,8 +174,9 @@ name "Eagle", portugueses the name "Águia".
 
 For this reason, we adopted the following standard for the western
 constellation names:
- - "native" name is defined in latin (e.g. "Aquila")
- - "english" name is defined in english (e.g. "Eagle")
+
+- "native" name is defined in latin (e.g. "Aquila")
+- "english" name is defined in english (e.g. "Eagle")
 
 To allow Stellarium to display the proper name for each language, each sky
 culture can define a list of languages for which the native name is preferred
@@ -184,6 +186,7 @@ under the langs_use_native_names property.
 ## Tooling
 
 Beside the file format changes, the new format comes with script tools:
- - a kind of "sky culture compiler" mostly converting markdown data to HTML
-   for display in the app.
- - tool for updating the .po files when the sky culture content was changed.
+
+- a kind of "sky culture compiler" mostly converting markdown data to HTML
+  for display in the app.
+- tool for updating the .po files when the sky culture content was changed.

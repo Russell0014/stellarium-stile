@@ -58,11 +58,11 @@ Lord Jesus's chair.
 
 ## References
 
- - [#1]: Tsimafei Avilin. 2009. [Astronyms in Belarussian folk beliefs](https://www.academia.edu/1586571/Astronyms_in_Belarussian_folk_beliefs). Archaeologia Baltica.
- - [#2]: Tsimafei Avilin. Belarussian Folk Astronomy. [The author's website, in Belarusian](http://aviti.livejournal.com).
- - [#3]: [Belarusian Ethnoastronomy](https://www.academia.edu/6901765/Belarusian_Ethnoastronomy).
- - [#4]: [Ethnoastronomical aspect of traditional belarusian fitonimicon: problem statement](https://www.academia.edu/8787640/Ethnoastronomical_aspect_of_traditional_belarusian_fitonimicon_problem_statement).
- - [#5]: [Meteor Beliefs Project: East European meteor folk-beliefs](https://www.academia.edu/1586711/Meteor_Beliefs_Project_East_European_meteor_folk-beliefs).
+- [#1]: Tsimafei Avilin. 2009. [Astronyms in Belarussian folk beliefs](https://www.academia.edu/1586571/Astronyms_in_Belarussian_folk_beliefs). Archaeologia Baltica.
+- [#2]: Tsimafei Avilin. Belarussian Folk Astronomy. [The author's website, in Belarusian](http://aviti.livejournal.com).
+- [#3]: [Belarusian Ethnoastronomy](https://www.academia.edu/6901765/Belarusian_Ethnoastronomy).
+- [#4]: [Ethnoastronomical aspect of traditional belarusian fitonimicon: problem statement](https://www.academia.edu/8787640/Ethnoastronomical_aspect_of_traditional_belarusian_fitonimicon_problem_statement).
+- [#5]: [Meteor Beliefs Project: East European meteor folk-beliefs](https://www.academia.edu/1586711/Meteor_Beliefs_Project_East_European_meteor_folk-beliefs).
 
 ## Authors
 
