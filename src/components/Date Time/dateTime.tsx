@@ -13,7 +13,7 @@ export default function DateTime({ dateTime, Slider, resetTime }: Props) {
 	return (
 		<>
 			<DateTimeContainer>
-				<p>Date to go here = '{dateTime.toLocaleString()}'</p>
+				<p>{dateTime.toLocaleString()}</p>
 				<p onClick={resetTime}>Reset Time </p>
 				<SliderComponent
 					defaultValue={Slider.defaultValue} //Default Value == current time
@@ -29,14 +29,14 @@ export default function DateTime({ dateTime, Slider, resetTime }: Props) {
 
 const DateTimeContainer = styled.div`
 	position: fixed;
-	top: 20px;
+	bottom: 80px;
 	left: 50%;
 	background: rgba(255, 255, 255, 0.1);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 40vw;
-	height: 40px;
+	width: 20vw;
+	height: 15vh;
 	border-radius: 5px;
 	z-index: 1;
 `;

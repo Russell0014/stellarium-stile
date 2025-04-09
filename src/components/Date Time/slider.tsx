@@ -11,7 +11,7 @@ export type Slidr = {
 };
 
 const SliderComponent = ({ defaultValue, min, max, step, onValueChange }: Slidr) => (
-	<Form>
+	<div>
 		<StyledSliderRoot
 			defaultValue={defaultValue}
 			min={min}
@@ -23,17 +23,10 @@ const SliderComponent = ({ defaultValue, min, max, step, onValueChange }: Slidr)
 			</StyledSliderTrack>
 			<StyledSliderThumb aria-label='Volume' />
 		</StyledSliderRoot>
-	</Form>
+	</div>
 );
 
 export default SliderComponent;
-
-// Styled Components
-const Form = styled.form`
-	display: flex;
-	align-items: center;
-	width: 100%;
-`;
 
 const StyledSliderRoot = styled(Slider.Root)`
 	position: relative;
