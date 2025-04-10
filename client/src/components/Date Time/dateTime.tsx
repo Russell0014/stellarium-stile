@@ -1,19 +1,25 @@
 import styled from 'styled-components';
 import SliderComponent from './slider';
+import SelectionComponent from './selectionButtons';
 import type { Slidr } from './slider';
+import { Moment } from 'moment';
 
 type Props = {
-	dateTime: Date;
 	Slider: Slidr;
 	resetTime: () => void;
 	timeSlider: (n: number) => void;
+	moment: Moment;
+	changeDateTime: (s: string, n: number) => void;
 };
 
-export default function DateTime({ dateTime, Slider, resetTime }: Props) {
+export default function DateTime({ Slider, resetTime, changeDateTime, moment }: Props) {
 	return (
 		<>
 			<DateTimeContainer>
-				<p>{dateTime.toLocaleString()}</p>
+				<SelectionComponent
+					moment={moment}
+					changeDateTime={changeDateTime}
+				/>
 				<p onClick={resetTime}>Reset Time </p>
 				<SliderComponent
 					defaultValue={Slider.defaultValue} //Default Value == current time
@@ -27,16 +33,20 @@ export default function DateTime({ dateTime, Slider, resetTime }: Props) {
 	);
 }
 
+//Fix Div Displays
+//width: 20vw;
+//height: 15vh;
 const DateTimeContainer = styled.div`
 	position: fixed;
-	bottom: 80px;
+	bottom: 20px;
 	left: 50%;
+	padding-top: 10px;
 	background: rgba(255, 255, 255, 0.1);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 20vw;
-	height: 15vh;
+	width: 30vw;
+	height: 30vh;
 	border-radius: 5px;
 	z-index: 1;
 `;
