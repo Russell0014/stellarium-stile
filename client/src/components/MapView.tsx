@@ -20,7 +20,6 @@ export default function MapView() {
 		// If engine is available, you can configure it here
 		if (engine) {
 			const core = engine.getModule('core');
-			console.log(core);
 
 			initializeEngineDataSources(engine);
 
@@ -30,8 +29,19 @@ export default function MapView() {
 			//@ts-ignore
 			window.engine = engine;
 
+			swh.toggleLandscapeVisibility(engine, true);
+			// swh.toggleAtmosphere(engine, false);
+
+			// core.observer.utc = 100;
 			core.constellations.images_visible = true;
 			core.constellations.lines_visible = true;
+
+			core.skycultures.addDataSource({
+				url: 'src/assets/test-skydata/skycultures/kamilaroi',
+				key: 'kamilaroi',
+			});
+			core.skycultures.current_id = 'kamilaroi';
+			core.skycultures.current_id = 'kamilaroi';
 
 			// Set location to Brewarrina Fish Traps
 			swh.setObserverLocation(engine, -29.958, 146.8534);
@@ -134,13 +144,8 @@ function initializeEngineDataSources(engine) {
 	});
 
 	// Sky cultures
-	addDataSourceWithRetry(engine.core.skycultures, {
-		url: `${proxyBase}/data/skycultures/western`,
-		key: 'western',
-	});
-
-	addDataSourceWithRetry(engine.core.skycultures, {
-		url: `${proxyBase}/data/skycultures/kamilaroi`,
-		key: 'kamilaroi',
-	});
+	// addDataSourceWithRetry(engine.core.skycultures, {
+	// 	url: `${proxyBase}/data/skycultures/western`,
+	// 	key: 'western',
+	// });
 }
