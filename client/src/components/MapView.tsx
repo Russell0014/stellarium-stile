@@ -24,6 +24,9 @@ export default function MapView() {
 
 			initializeEngineDataSources(engine);
 
+			core.constellations.images_visible = true;
+			core.constellations.lines_visible = true;
+
 			// Set location to Brewarrina Fish Traps
 			swh.setObserverLocation(engine, -29.958, 146.8534);
 
