@@ -22,6 +22,8 @@ export default function MapView() {
 			const core = engine.getModule('core');
 			console.log(core);
 
+			initializeEngineDataSources(engine);
+
 			// Set location to Brewarrina Fish Traps
 			swh.setObserverLocation(engine, -29.958, 146.8534);
 
@@ -56,4 +58,73 @@ export default function MapView() {
 			<Footer />
 		</>
 	);
+}
+
+// @ts-ignore
+function initializeEngineDataSources(engine) {
+	if (!engine) {
+		console.error('Engine not available');
+		return;
+	}
+
+	const proxyBase = 'http://localhost:5000';
+
+	// Helper function with retry logic
+
+	// @ts-ignore
+	async function addDataSourceWithRetry(target, config, retryCount = 0) {
+		try {
+			target.addDataSource(config);
+			console.log(`Successfully added ${config.key || config.url}`);
+		} catch (error) {
+			console.error(`Failed to initialize ${config.key || config.url}:`, error);
+		}
+	}
+
+	// Stars data
+	addDataSourceWithRetry(engine.core.stars, {
+		url: `${proxyBase}/data/stars/minimal`,
+		key: 'minimal',
+	});
+
+	addDataSourceWithRetry(engine.core.stars, {
+		url: `${proxyBase}/data/stars/base`,
+		key: 'base',
+	});
+
+	addDataSourceWithRetry(engine.core.stars, {
+		url: `${proxyBase}/data/stars/extended`,
+		key: 'extended',
+	});
+
+	// Surveys
+	addDataSourceWithRetry(engine.core.stars, {
+		url: `${proxyBase}/data/stars/gaia`,
+		key: 'gaia',
+	});
+
+	addDataSourceWithRetry(engine.core.milkyway, {
+		url: `${proxyBase}/data/milkyway/default`,
+	});
+
+	addDataSourceWithRetry(engine.core.dss, {
+		url: `${proxyBase}/data/dss/default`,
+	});
+
+	// DSOs
+	addDataSourceWithRetry(engine.core.dsos, {
+		url: `${proxyBase}/data/dsos/base`,
+		key: 'base',
+	});
+
+	addDataSourceWithRetry(engine.core.dsos, {
+		url: `${proxyBase}/data/dsos/extended`,
+		key: 'extended',
+	});
+
+	// Sky cultures
+	addDataSourceWithRetry(engine.core.skycultures, {
+		url: `${proxyBase}/data/skycultures/western`,
+		key: 'western',
+	});
 }
