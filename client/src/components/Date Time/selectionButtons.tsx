@@ -11,13 +11,13 @@ const SelectionButton = ({ moment, changeDateTime }: Props) => {
 		<div>
 			<ButtonContainer>
 				<UpButtons>
-					<button onClick={() => changeDateTime('year', 1)}> ▲ </button>
-					<button onClick={() => changeDateTime('month', 1)}> ▲ </button>
-					<button onClick={() => changeDateTime('day', 1)}> ▲ </button>
+					<Button onClick={() => changeDateTime('year', 1)}> ▲ </Button>
+					<Button onClick={() => changeDateTime('month', 1)}> ▲ </Button>
+					<Button onClick={() => changeDateTime('day', 1)}> ▲ </Button>
 					<Padding> </Padding>
-					<button onClick={() => changeDateTime('hour', 1)}> ▲ </button>
-					<button onClick={() => changeDateTime('minute', 1)}> ▲ </button>
-					<button onClick={() => changeDateTime('second', 1)}> ▲ </button>
+					<Button onClick={() => changeDateTime('hour', 1)}> ▲ </Button>
+					<Button onClick={() => changeDateTime('minute', 1)}> ▲ </Button>
+					<Button onClick={() => changeDateTime('second', 1)}> ▲ </Button>
 				</UpButtons>
 				<DisplayTime>
 					<div>{moment.format('YYYY')}</div>
@@ -29,13 +29,13 @@ const SelectionButton = ({ moment, changeDateTime }: Props) => {
 					<div>{moment.format('ss')}</div>
 				</DisplayTime>
 				<DownButtons>
-					<button onClick={() => changeDateTime('year', -1)}>▼</button>
-					<button onClick={() => changeDateTime('month', -1)}> ▼</button>
-					<button onClick={() => changeDateTime('day', -1)}> ▼</button>
+					<Button onClick={() => changeDateTime('year', -1)}>▼</Button>
+					<Button onClick={() => changeDateTime('month', -1)}> ▼</Button>
+					<Button onClick={() => changeDateTime('day', -1)}> ▼</Button>
 					<Padding> </Padding>
-					<button onClick={() => changeDateTime('hour', -1)}> ▼</button>
-					<button onClick={() => changeDateTime('minute', -1)}>▼ </button>
-					<button onClick={() => changeDateTime('second', -1)}> ▼</button>
+					<Button onClick={() => changeDateTime('hour', -1)}> ▼</Button>
+					<Button onClick={() => changeDateTime('minute', -1)}>▼ </Button>
+					<Button onClick={() => changeDateTime('second', -1)}> ▼</Button>
 				</DownButtons>
 			</ButtonContainer>
 		</div>
@@ -79,3 +79,5 @@ const Padding = styled.div`
 	padding-right: 30px;
 	padding-left: 30px;
 `;
+
+const Button = styled.button``;

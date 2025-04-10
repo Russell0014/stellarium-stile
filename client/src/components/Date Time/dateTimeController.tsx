@@ -32,7 +32,10 @@ export default function DateTimeController() {
 		//Set the observer time
 		requestAnimationFrame(() => {
 			try {
-				swh.setObserverTimeJD(engine, now);
+				const currTime = engine.core.observer.utc;
+				const date = new Date(currTime);
+				swh.setObserverTimeJD(engine, date);
+
 				console.log('Observer time set to:', now.toISOString());
 			} catch (e) {
 				console.error('Something is wrong with the web engine!', e);
@@ -41,19 +44,21 @@ export default function DateTimeController() {
 	}, [engine]);
 
 	//Updates the clock every 1 second
-	useEffect(() => {
-		if (!isRunning) return;
+	// useEffect(() => {
+	// 	if (!isRunning) return;
 
-		const interval = setInterval(() => {
-			setDateTime((prevDateTime) => {
-				const newTime = new Date(prevDateTime.getTime() + 1000);
-				swh.setObserverTimeJD(engine, newTime);
-				return newTime;
-			});
-		}, 1000);
+	// 	const interval = setInterval(() => {
+	// 		setDateTime((prevDateTime) => {
+	// 			const newTime = new Date(prevDateTime.getTime() + 1000);
+	// 			// const timezoneOffset = newTime.getTimezoneOffset();
+	// 			// const localTime = new Date(newTime.getTime() - timezoneOffset * 60000);
+	// 			swh.setObserverTimeJD(engine, newTime);
+	// 			return newTime;
+	// 		});
+	// 	}, 1000);
 
-		return () => clearInterval(interval);
-	}, [isRunning, engine]);
+	// 	return () => clearInterval(interval);
+	// }, [isRunning, engine]);
 
 	const defaultSlider = {
 		defaultValue: [slider],
@@ -69,55 +74,57 @@ export default function DateTimeController() {
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 2000);
+		}, 500);
 		// Get midnight of the current day in local time
 		const midnight = getMidnight();
-		console.log(n);
 
 		// Calculate the new time based on the slider percentage (0-100)
 		const newTime = (n / 100) * 86400 * 1000; // ms since midnight in UTC
 
 		// Create a new Date object from midnight (in UTC)
 		//This should return the correct CURRENT time without Timezone OFFSET
-		const newDateTime = new Date(midnight.getTime() + newTime);
+		let newDateTime = new Date(midnight.getTime() + newTime);
 
 		// Set the date and time adjusted to the local time
 		setDateTime(newDateTime);
 		swh.setObserverTimeJD(engine, newDateTime);
+		console.log(newDateTime.toUTCString());
 	}
 
 	//Reset Time Button
 	function resetTime() {
+		//TODO: Make this a function
 		setIsRunning(false);
-
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 2000);
-		let reset = getLocalTimeFromUTC();
-		setDateTime(reset);
+		}, 500);
+
+		const currTime = engine.core.observer.utc;
+		const date = new Date(currTime);
+
+		setDateTime(date);
 
 		const midnight = getMidnight();
-		const diff = reset.getTime() - midnight.getTime();
+		const diff = date.getTime() - midnight.getTime();
 		setSlider((diff / 1000 / 86400) * 100);
-		swh.setObserverTimeJD(engine, reset);
+
+		swh.setObserverTimeJD(engine, date);
 	}
 
 	//Get local Time from UTC
 	function getLocalTimeFromUTC(): Date {
 		const utcNow = new Date(Date.now());
-		const timezoneOffset = utcNow.getTimezoneOffset();
-		const localTime = new Date(utcNow.getTime() - timezoneOffset * 60000); //Adjusts time by subtracting offset (min -> milliseconds)
-		return localTime;
+		return utcNow;
 	}
 
 	function changeDateTime(s: string, n: number) {
 		setIsRunning(false);
-
+		//TODO: timeout Function
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 2000);
+		}, 50);
 
 		const updatedTime = moment(dateTime);
 
@@ -137,6 +144,7 @@ export default function DateTimeController() {
 
 		const newDateTime = updatedTime.toDate();
 		setDateTime(newDateTime);
+
 		swh.setObserverTimeJD(engine, newDateTime);
 	}
 

@@ -24,6 +24,12 @@ export default function MapView() {
 
 			initializeEngineDataSources(engine);
 
+			//@ts-ignore
+			window.swh = swh;
+
+			//@ts-ignore
+			window.engine = engine;
+
 			core.constellations.images_visible = true;
 			core.constellations.lines_visible = true;
 
@@ -33,6 +39,8 @@ export default function MapView() {
 			// Toggle atmosphere
 			swh.toggleAtmosphere(engine, true);
 			swh.setFOV(engine, 2.09);
+
+			core.skycultures.current_id = 'kamilaroi';
 
 			core.landscapes.addDataSource({
 				url: 'src/assets/test-skydata/landscapes/guereins',
@@ -129,5 +137,10 @@ function initializeEngineDataSources(engine) {
 	addDataSourceWithRetry(engine.core.skycultures, {
 		url: `${proxyBase}/data/skycultures/western`,
 		key: 'western',
+	});
+
+	addDataSourceWithRetry(engine.core.skycultures, {
+		url: `${proxyBase}/data/skycultures/kamilaroi`,
+		key: 'kamilaroi',
 	});
 }
