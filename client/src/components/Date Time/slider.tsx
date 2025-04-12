@@ -10,21 +10,38 @@ export type Slidr = {
 	onValueChange: (n: number) => void;
 };
 
-const SliderComponent = ({ defaultValue, min, max, step, onValueChange }: Slidr) => (
-	<div>
-		<StyledSliderRoot
-			defaultValue={defaultValue}
-			min={min}
-			max={max}
-			step={step}
-			onValueChange={(value) => onValueChange(value[0])}>
-			<StyledSliderTrack>
-				<StyledSliderRange />
-			</StyledSliderTrack>
-			<StyledSliderThumb aria-label='Volume' />
-		</StyledSliderRoot>
-	</div>
-);
+// Use React's useState to maintain internal state that syncs with external value
+import { useState, useEffect } from 'react';
+
+const SliderComponent = ({ defaultValue, min, max, step, onValueChange }: Slidr) => {
+	// Create internal state that's initialized with the prop value
+	const [internalValue, setInternalValue] = useState(defaultValue);
+	
+	// When defaultValue prop changes, update internal state
+	useEffect(() => {
+		console.log('SliderComponent prop changed to:', defaultValue);
+		setInternalValue(defaultValue);
+	}, [defaultValue]);
+	
+	return (
+		<div>
+			<StyledSliderRoot
+				value={internalValue}
+				min={min}
+				max={max}
+				step={step}
+				onValueChange={(value) => {
+					setInternalValue(value);
+					onValueChange(value[0]);
+				}}>
+				<StyledSliderTrack>
+					<StyledSliderRange />
+				</StyledSliderTrack>
+				<StyledSliderThumb aria-label='Time' />
+			</StyledSliderRoot>
+		</div>
+	);
+};
 
 export default SliderComponent;
 

@@ -126,7 +126,9 @@ export default function DateTimeController() {
 		const daysInYear = 365.25;
 
 		// Set slider based on day of year percentage
-		setSlider((dayOfYear / daysInYear) * 100);
+		const newSliderValue = (dayOfYear / daysInYear) * 100;
+		console.log('Reset Time - Setting slider to:', newSliderValue);
+		setSlider(newSliderValue);
 		swh.setObserverTimeJD(engine, reset);
 	}
 
@@ -182,16 +184,17 @@ export default function DateTimeController() {
 		setDateTime(newDateTime);
 		swh.setObserverTimeJD(engine, newDateTime);
 
-		if (s === 'year' || s === 'month' || s === 'day') {
-			const startOfYear = new Date(newDateTime.getFullYear(), 0, 0);
-			const diff = newDateTime.getTime() - startOfYear.getTime();
-			const oneDay = 24 * 60 * 60 * 1000;
-			const dayOfYear = Math.floor(diff / oneDay);
-			const daysInYear = 365.25;
+		// Update the slider for any date/time change
+		const startOfYear = new Date(newDateTime.getFullYear(), 0, 0);
+		const diff = newDateTime.getTime() - startOfYear.getTime();
+		const oneDay = 24 * 60 * 60 * 1000;
+		const dayOfYear = Math.floor(diff / oneDay);
+		const daysInYear = 365.25;
 
-			// Set slider based on day of year percentage
-			setSlider((dayOfYear / daysInYear) * 100);
-		}
+		// Set slider based on day of year percentage
+		const newSliderValue = (dayOfYear / daysInYear) * 100;
+		console.log(`Change ${s} - Setting slider to:`, newSliderValue);
+		setSlider(newSliderValue);
 	}
 
 	return (
