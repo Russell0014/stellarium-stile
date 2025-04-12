@@ -6,7 +6,7 @@ import moment from 'moment';
 
 export default function DateTimeController() {
 	const { engine } = useSEngine();
-	const now = getLocalTimeFromUTC();
+	const now = new Date(Date.now());
 	const [dateTime, setDateTime] = useState<Date>(now);
 	const [slider, setSlider] = useState<number>(50);
 	const [isRunning, setIsRunning] = useState(true);
@@ -20,22 +20,21 @@ export default function DateTimeController() {
 	useEffect(() => {
 		if (!engine) return;
 
-		//Define midnight and compute the difference in time, then create percentage for slider
-		//Need to combine these functions
-		const midnight = getMidnight();
-		const diff = now.getTime() - midnight.getTime();
-		const percentage = (diff / 1000 / 86400) * 100;
+		// Calculate slider position based on day of year
+		const start = new Date(now.getFullYear(), 0, 0);
+		const diff = now.getTime() - start.getTime();
+		const oneDay = 24 * 60 * 60 * 1000;
+		const dayOfYear = Math.floor(diff / oneDay);
+		const daysInYear = 365.25;
 
-		//This does nothing yet
+		// Set slider based on day of year percentage
+		const percentage = (dayOfYear / daysInYear) * 100;
 		setSlider(percentage);
 
 		//Set the observer time
 		requestAnimationFrame(() => {
 			try {
-				const currTime = engine.core.observer.utc;
-				const date = new Date(currTime);
-				swh.setObserverTimeJD(engine, date);
-
+				swh.setObserverTimeJD(engine, now);
 				console.log('Observer time set to:', now.toISOString());
 			} catch (e) {
 				console.error('Something is wrong with the web engine!', e);
@@ -44,23 +43,21 @@ export default function DateTimeController() {
 	}, [engine]);
 
 	//Updates the clock every 1 second
-	// useEffect(() => {
-	// 	if (!isRunning) return;
+	useEffect(() => {
+		if (!isRunning) return;
 
-	// 	const interval = setInterval(() => {
-	// 		setDateTime((prevDateTime) => {
-	// 			const newTime = new Date(prevDateTime.getTime() + 1000);
-	// 			// const timezoneOffset = newTime.getTimezoneOffset();
-	// 			// const localTime = new Date(newTime.getTime() - timezoneOffset * 60000);
-	// 			swh.setObserverTimeJD(engine, newTime);
-	// 			return newTime;
-	// 		});
-	// 	}, 1000);
+		const interval = setInterval(() => {
+			setDateTime((prevDateTime) => {
+				const newTime = new Date(prevDateTime.getTime() + 1000);
+				swh.setObserverTimeJD(engine, newTime);
+				return newTime;
+			});
+		}, 1000);
 
-	// 	return () => clearInterval(interval);
-	// }, [isRunning, engine]);
+		return () => clearInterval(interval);
+	}, [isRunning, engine]);
 
-	const defaultSlider = {
+	const sliderConfig = {
 		defaultValue: [slider],
 		min: 0,
 		max: 100,
@@ -74,83 +71,132 @@ export default function DateTimeController() {
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 500);
-		// Get midnight of the current day in local time
-		const midnight = getMidnight();
+		}, 2000);
 
-		// Calculate the new time based on the slider percentage (0-100)
-		const newTime = (n / 100) * 86400 * 1000; // ms since midnight in UTC
+		// Update slider state to make the controlled component work
+		setSlider(n);
 
-		// Create a new Date object from midnight (in UTC)
-		//This should return the correct CURRENT time without Timezone OFFSET
-		let newDateTime = new Date(midnight.getTime() + newTime);
+		// Get current time of day (hours, minutes, seconds, milliseconds)
+		const hours = dateTime.getHours();
+		const minutes = dateTime.getMinutes();
+		const seconds = dateTime.getSeconds();
+		const ms = dateTime.getMilliseconds();
 
-		// Set the date and time adjusted to the local time
+		// Calculate the number of days in a year (approximate)
+		const daysInYear = 365.25;
+
+		// Calculate the day of the year based on the slider percentage (0-100)
+		const dayOfYear = Math.floor((n / 100) * daysInYear);
+
+		// Create a new Date object for the selected day in current year
+		const newDateTime = new Date(
+			dateTime.getFullYear(),
+			0,
+			1 + dayOfYear,
+			hours,
+			minutes,
+			seconds,
+			ms
+		);
+
+		console.log(`Slider ${n}% -> Day of year: ${dayOfYear} -> ${newDateTime.toISOString()}`);
+
+		// Set the date and time
 		setDateTime(newDateTime);
 		swh.setObserverTimeJD(engine, newDateTime);
-		console.log(newDateTime.toUTCString());
 	}
 
 	//Reset Time Button
 	function resetTime() {
-		//TODO: Make this a function
 		setIsRunning(false);
+
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 500);
+		}, 2000);
+		const reset = new Date(Date.now());
+		setDateTime(reset);
 
-		const currTime = engine.core.observer.utc;
-		const date = new Date(currTime);
+		// Calculate slider position based on day of year
+		const now = new Date();
+		const start = new Date(now.getFullYear(), 0, 0);
+		const diff = now.getTime() - start.getTime();
+		const oneDay = 24 * 60 * 60 * 1000;
+		const dayOfYear = Math.floor(diff / oneDay);
+		const daysInYear = 365.25;
 
-		setDateTime(date);
-
-		const midnight = getMidnight();
-		const diff = date.getTime() - midnight.getTime();
-		setSlider((diff / 1000 / 86400) * 100);
-
-		swh.setObserverTimeJD(engine, date);
-	}
-
-	//Get local Time from UTC
-	function getLocalTimeFromUTC(): Date {
-		const utcNow = new Date(Date.now());
-		return utcNow;
+		// Set slider based on day of year percentage
+		setSlider((dayOfYear / daysInYear) * 100);
+		swh.setObserverTimeJD(engine, reset);
 	}
 
 	function changeDateTime(s: string, n: number) {
 		setIsRunning(false);
-		//TODO: timeout Function
+
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 50);
+		}, 2000);
 
 		const updatedTime = moment(dateTime);
 
 		if (s === 'year') {
-			n > 0 ? updatedTime.add(1, 'y') : updatedTime.subtract(1, 'y');
+			if (n > 0) {
+				updatedTime.add(1, 'y');
+			} else {
+				updatedTime.subtract(1, 'y');
+			}
 		} else if (s === 'month') {
-			n > 0 ? updatedTime.add(1, 'M') : updatedTime.subtract(1, 'M');
+			if (n > 0) {
+				updatedTime.add(1, 'M');
+			} else {
+				updatedTime.subtract(1, 'M');
+			}
 		} else if (s === 'day') {
-			n > 0 ? updatedTime.add(1, 'd') : updatedTime.subtract(1, 'd');
+			if (n > 0) {
+				updatedTime.add(1, 'd');
+			} else {
+				updatedTime.subtract(1, 'd');
+			}
 		} else if (s === 'hour') {
-			n > 0 ? updatedTime.add(1, 'h') : updatedTime.subtract(1, 'h');
+			if (n > 0) {
+				updatedTime.add(1, 'h');
+			} else {
+				updatedTime.subtract(1, 'h');
+			}
 		} else if (s === 'minute') {
-			n > 0 ? updatedTime.add(1, 'm') : updatedTime.subtract(1, 'm');
+			if (n > 0) {
+				updatedTime.add(1, 'm');
+			} else {
+				updatedTime.subtract(1, 'm');
+			}
 		} else if (s === 'second') {
-			n > 0 ? updatedTime.add(1, 's') : updatedTime.subtract(1, 's');
+			if (n > 0) {
+				updatedTime.add(1, 's');
+			} else {
+				updatedTime.subtract(1, 's');
+			}
 		}
 
 		const newDateTime = updatedTime.toDate();
 		setDateTime(newDateTime);
-
 		swh.setObserverTimeJD(engine, newDateTime);
+
+		if (s === 'year' || s === 'month' || s === 'day') {
+			const startOfYear = new Date(newDateTime.getFullYear(), 0, 0);
+			const diff = newDateTime.getTime() - startOfYear.getTime();
+			const oneDay = 24 * 60 * 60 * 1000;
+			const dayOfYear = Math.floor(diff / oneDay);
+			const daysInYear = 365.25;
+
+			// Set slider based on day of year percentage
+			setSlider((dayOfYear / daysInYear) * 100);
+		}
 	}
 
 	return (
 		<DateTime
-			Slider={defaultSlider}
+			Slider={sliderConfig}
 			resetTime={resetTime}
 			timeSlider={timeSlider}
 			changeDateTime={changeDateTime}

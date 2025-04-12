@@ -41,7 +41,10 @@ const swh: SEngineHelpers = {
 	},
 
 	setObserverTimeJD(engine: any, date: Date) {
-		const jd = date.getTime() / 86400000 + 2440587.5;
+		//the web engine function is deceptive. We need to set the time to be local time
+		const timezoneOffset = date.getTimezoneOffset();
+		const localTime = new Date(date.getTime() - timezoneOffset * 60000); //Adjusts time by subtracting offset (min -> milliseconds)
+		const jd = localTime.getTime() / 86400000 + 2440587.5;
 		engine.core.observer.utc = jd;
 	},
 
@@ -50,7 +53,7 @@ const swh: SEngineHelpers = {
 		engine: StellariumEngine | null,
 		longitude: number,
 		latitude: number,
-		elevation: number = 0,
+		elevation: number = 0
 	): void => {
 		if (!engine) return;
 
@@ -65,7 +68,7 @@ const swh: SEngineHelpers = {
 	//Unutilised
 	setObserverLocationByAddress: async (
 		engine: StellariumEngine | null,
-		address: string,
+		address: string
 	): Promise<void> => {
 		if (!engine) return;
 
@@ -155,7 +158,7 @@ const swh: SEngineHelpers = {
 		engine: StellariumEngine | null,
 		longitude: number,
 		latitude: number,
-		duration?: number,
+		duration?: number
 	): void => {
 		if (!engine) return;
 		engine.goTo(longitude, latitude, duration);
@@ -167,13 +170,13 @@ const swh: SEngineHelpers = {
 		const apiUrl =
 			import.meta.env.MODE === 'development'
 				? //Local Proxy Path
-					'/api/v1/skysources/?q=' + result + '&limit=' + limit
+				  '/api/v1/skysources/?q=' + result + '&limit=' + limit
 				: //Real API for Production
-					import.meta.env.VITE_NOCTUASKY_API_SERVER +
-					'/api/v1/skysources/?q=' +
-					result +
-					'&limit=' +
-					limit;
+				  import.meta.env.VITE_NOCTUASKY_API_SERVER +
+				  '/api/v1/skysources/?q=' +
+				  result +
+				  '&limit=' +
+				  limit;
 
 		try {
 			const response = await fetch(apiUrl);
@@ -193,9 +196,9 @@ const swh: SEngineHelpers = {
 		const apiUrl =
 			import.meta.env.MODE === 'development'
 				? //Local Proxy Path
-					'/api/v1/skysources/?q=' + result
+				  '/api/v1/skysources/?q=' + result
 				: //Real API for Production
-					import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result;
+				  import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result;
 
 		try {
 			const response = await fetch(apiUrl);
@@ -223,7 +226,7 @@ const swh: SEngineHelpers = {
 	skyToScreen: (
 		engine: StellariumEngine | null,
 		ra: number,
-		dec: number,
+		dec: number
 	): [number, number] | null => {
 		if (!engine) return null;
 		return engine.valuesToPoint(ra, dec);
