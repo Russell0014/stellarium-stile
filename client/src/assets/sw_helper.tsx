@@ -41,10 +41,8 @@ const swh: SEngineHelpers = {
 	},
 
 	setObserverTimeJD(engine: any, date: Date) {
-		//the web engine function is deceptive. We need to set the time to be local time
-		const timezoneOffset = date.getTimezoneOffset();
-		const localTime = new Date(date.getTime() - timezoneOffset * 60000); //Adjusts time by subtracting offset (min -> milliseconds)
-		const jd = localTime.getTime() / 86400000 + 2440587.5;
+		// Convert to UTC timestamp
+		const jd = date.getTime() / 86400000 + 2440587.5;
 		engine.core.observer.utc = jd;
 	},
 

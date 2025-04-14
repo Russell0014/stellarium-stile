@@ -8,7 +8,8 @@ export default function DateTimeController() {
 	const { engine } = useSEngine();
 	const now = new Date(Date.now());
 	const [dateTime, setDateTime] = useState<Date>(now);
-	const [slider, setSlider] = useState<number>(50);
+	const [dateSlider, setDateSlider] = useState<number>(50);
+	const [timeSlider, setTimeSlider] = useState<number>(50);
 	const [isRunning, setIsRunning] = useState(true);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -20,16 +21,23 @@ export default function DateTimeController() {
 	useEffect(() => {
 		if (!engine) return;
 
-		// Calculate slider position based on day of year
+		// Calculate date slider position based on day of year
 		const start = new Date(now.getFullYear(), 0, 0);
 		const diff = now.getTime() - start.getTime();
 		const oneDay = 24 * 60 * 60 * 1000;
 		const dayOfYear = Math.floor(diff / oneDay);
 		const daysInYear = 365.25;
 
-		// Set slider based on day of year percentage
-		const percentage = (dayOfYear / daysInYear) * 100;
-		setSlider(percentage);
+		// Set date slider based on day of year percentage
+		const datePercentage = (dayOfYear / daysInYear) * 100;
+		setDateSlider(datePercentage);
+
+		// Calculate time slider position based on time of day
+		const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+		const msInDay = 24 * 60 * 60 * 1000;
+		const msFromMidnight = now.getTime() - midnight.getTime();
+		const timePercentage = (msFromMidnight / msInDay) * 100;
+		setTimeSlider(timePercentage);
 
 		//Set the observer time
 		requestAnimationFrame(() => {
@@ -57,15 +65,26 @@ export default function DateTimeController() {
 		return () => clearInterval(interval);
 	}, [isRunning, engine]);
 
-	const sliderConfig = {
-		defaultValue: [slider],
+	// Configuration for date slider (day of year)
+	const dateSliderConfig = {
+		defaultValue: [dateSlider],
 		min: 0,
 		max: 100,
 		step: 1,
-		onValueChange: (value: number) => timeSlider(value),
+		onValueChange: (value: number) => handleDateSlider(value),
 	};
 
-	function timeSlider(n: number) {
+	// Configuration for time slider (time of day)
+	const timeSliderConfig = {
+		defaultValue: [timeSlider],
+		min: 0,
+		max: 100,
+		step: 1,
+		onValueChange: (value: number) => handleTimeSlider(value),
+	};
+
+	// Handler for the date slider
+	function handleDateSlider(n: number) {
 		setIsRunning(false);
 
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -73,8 +92,8 @@ export default function DateTimeController() {
 			setIsRunning(true);
 		}, 2000);
 
-		// Update slider state to make the controlled component work
-		setSlider(n);
+		// Update date slider state
+		setDateSlider(n);
 
 		// Get current time of day (hours, minutes, seconds, milliseconds)
 		const hours = dateTime.getHours();
@@ -99,7 +118,39 @@ export default function DateTimeController() {
 			ms
 		);
 
-		console.log(`Slider ${n}% -> Day of year: ${dayOfYear} -> ${newDateTime.toISOString()}`);
+		console.log(`Date Slider ${n}% -> Day of year: ${dayOfYear} -> ${newDateTime.toISOString()}`);
+
+		// Set the date and time
+		setDateTime(newDateTime);
+		swh.setObserverTimeJD(engine, newDateTime);
+	}
+
+	// Handler for the time slider
+	function handleTimeSlider(n: number) {
+		setIsRunning(false);
+
+		if (timeoutRef.current) clearTimeout(timeoutRef.current);
+		timeoutRef.current = setTimeout(() => {
+			setIsRunning(true);
+		}, 2000);
+
+		// Update time slider state
+		setTimeSlider(n);
+
+		// Keep the same date (year, month, day)
+		const year = dateTime.getFullYear();
+		const month = dateTime.getMonth();
+		const day = dateTime.getDate();
+
+		// Calculate the time based on the slider percentage (0-100)
+		const msInDay = 24 * 60 * 60 * 1000;
+		const msFromMidnight = (n / 100) * msInDay;
+
+		// Create a midnight date and add milliseconds
+		const midnight = new Date(year, month, day, 0, 0, 0, 0);
+		const newDateTime = new Date(midnight.getTime() + msFromMidnight);
+
+		console.log(`Time Slider ${n}% -> Time of day: ${newDateTime.toTimeString()}`);
 
 		// Set the date and time
 		setDateTime(newDateTime);
@@ -117,7 +168,7 @@ export default function DateTimeController() {
 		const reset = new Date(Date.now());
 		setDateTime(reset);
 
-		// Calculate slider position based on day of year
+		// Calculate date slider position based on day of year
 		const now = new Date();
 		const start = new Date(now.getFullYear(), 0, 0);
 		const diff = now.getTime() - start.getTime();
@@ -125,10 +176,19 @@ export default function DateTimeController() {
 		const dayOfYear = Math.floor(diff / oneDay);
 		const daysInYear = 365.25;
 
-		// Set slider based on day of year percentage
-		const newSliderValue = (dayOfYear / daysInYear) * 100;
-		console.log('Reset Time - Setting slider to:', newSliderValue);
-		setSlider(newSliderValue);
+		// Set date slider based on day of year percentage
+		const newDateSliderValue = (dayOfYear / daysInYear) * 100;
+		console.log('Reset Time - Setting date slider to:', newDateSliderValue);
+		setDateSlider(newDateSliderValue);
+
+		// Calculate time slider position based on time of day
+		const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+		const msInDay = 24 * 60 * 60 * 1000;
+		const msFromMidnight = now.getTime() - midnight.getTime();
+		const newTimeSliderValue = (msFromMidnight / msInDay) * 100;
+		console.log('Reset Time - Setting time slider to:', newTimeSliderValue);
+		setTimeSlider(newTimeSliderValue);
+
 		swh.setObserverTimeJD(engine, reset);
 	}
 
@@ -184,24 +244,40 @@ export default function DateTimeController() {
 		setDateTime(newDateTime);
 		swh.setObserverTimeJD(engine, newDateTime);
 
-		// Update the slider for any date/time change
+		// Always update both sliders for any date/time change
+		// Calculate date slider position based on day of year
 		const startOfYear = new Date(newDateTime.getFullYear(), 0, 0);
 		const diff = newDateTime.getTime() - startOfYear.getTime();
 		const oneDay = 24 * 60 * 60 * 1000;
 		const dayOfYear = Math.floor(diff / oneDay);
 		const daysInYear = 365.25;
 
-		// Set slider based on day of year percentage
-		const newSliderValue = (dayOfYear / daysInYear) * 100;
-		console.log(`Change ${s} - Setting slider to:`, newSliderValue);
-		setSlider(newSliderValue);
+		// Set date slider based on day of year percentage
+		const newDateSliderValue = (dayOfYear / daysInYear) * 100;
+		console.log(`Change ${s} - Setting date slider to:`, newDateSliderValue);
+		setDateSlider(newDateSliderValue);
+
+		// Calculate time slider position based on time of day
+		const midnight = new Date(
+			newDateTime.getFullYear(),
+			newDateTime.getMonth(),
+			newDateTime.getDate(),
+			0,
+			0,
+			0
+		);
+		const msInDay = 24 * 60 * 60 * 1000;
+		const msFromMidnight = newDateTime.getTime() - midnight.getTime();
+		const newTimeSliderValue = (msFromMidnight / msInDay) * 100;
+		console.log(`Change ${s} - Setting time slider to:`, newTimeSliderValue);
+		setTimeSlider(newTimeSliderValue);
 	}
 
 	return (
 		<DateTime
-			Slider={sliderConfig}
+			DateSlider={dateSliderConfig}
+			TimeSlider={timeSliderConfig}
 			resetTime={resetTime}
-			timeSlider={timeSlider}
 			changeDateTime={changeDateTime}
 			moment={moment(dateTime)}
 		/>
