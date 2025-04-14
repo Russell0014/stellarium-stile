@@ -5,6 +5,7 @@ import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
 import DateTimeController from './Date Time/dateTimeController';
+import ToggleControls from './ToggleControls';
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,6 +21,7 @@ export default function MapView() {
 		// If engine is available, you can configure it here
 		if (engine) {
 			const core = engine.getModule('core');
+			console.log('Core module:', core);
 
 			initializeEngineDataSources(engine);
 
@@ -76,6 +78,7 @@ export default function MapView() {
 				}}
 			/>
 			<DateTimeController />
+			<ToggleControls />
 			<Footer />
 		</>
 	);
@@ -88,7 +91,7 @@ function initializeEngineDataSources(engine) {
 		return;
 	}
 
-	const proxyBase = 'http://localhost:5000';
+	const proxyBase = 'http://localhost:5050';
 
 	// Helper function with retry logic
 

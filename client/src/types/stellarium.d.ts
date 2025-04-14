@@ -39,6 +39,18 @@ declare global {
 		size: number;
 	}
 
+	// Constellation rendering settings
+	interface StellariumConstellations {
+		visible: boolean;
+		bounds_visible: boolean;
+		illustrations_bscale: number;
+		images_visible: boolean;
+		labels_visible: boolean;
+		lines_animation: boolean;
+		lines_visible: boolean;
+		show_only_pointed: boolean;
+	}
+
 	// Core module interface
 	interface StellariumCore {
 		observer: StellariumObserver;
@@ -48,6 +60,7 @@ declare global {
 		landscapes: StellariumLandscapes;
 		projection: StellariumProjection;
 		stars: StellariumStars;
+		constellations: StellariumConstellations;
 	}
 
 	// Calendar module for date/time management
@@ -154,6 +167,7 @@ export interface SEngineHelpers {
 	// Display settings helpers
 	toggleAtmosphere: (engine: StellariumEngine | null, visible?: boolean) => void;
 	toggleStars: (engine: StellariumEngine | null, visible?: boolean) => void;
+	toggleConstellations: (engine: StellariumEngine | null, visible?: boolean) => void;
 	setStarSize: (engine: StellariumEngine | null, size: number) => void;
 	setProjection: (engine: StellariumEngine | null, type: string) => void;
 
