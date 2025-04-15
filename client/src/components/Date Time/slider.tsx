@@ -16,13 +16,12 @@ import { useState, useEffect } from 'react';
 const SliderComponent = ({ defaultValue, min, max, step, onValueChange }: Slidr) => {
 	// Create internal state that's initialized with the prop value
 	const [internalValue, setInternalValue] = useState(defaultValue);
-	
+
 	// When defaultValue prop changes, update internal state
 	useEffect(() => {
-		console.log('SliderComponent prop changed to:', defaultValue);
 		setInternalValue(defaultValue);
 	}, [defaultValue]);
-	
+
 	return (
 		<div>
 			<StyledSliderRoot
