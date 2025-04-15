@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import DateTime from './dateTime';
 import swh from '@/assets/sw_helper';
 import { useSEngine } from '@/context/SEngineContext';
-import Moment, { Moment as MomentType } from 'moment';
+import Moment from 'moment';
 
 export default function DateTimeController() {
 	const { engine } = useSEngine();
@@ -12,6 +12,11 @@ export default function DateTimeController() {
 	const [timeSlider, setTimeSlider] = useState<number>(50);
 	const [isRunning, setIsRunning] = useState(true);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	//This will run on initialisation
+	//1. Sets the slider to correct position
+	//2. Sets the Location [Need to fix, currently running before MapView.tsx]
+	//3. Updates the core.observer.utc time to Current Time.
 
 	useEffect(() => {
 		if (!engine) return;
@@ -34,7 +39,7 @@ export default function DateTimeController() {
 		setTimeSlider(timePercentage);
 
 		//This is running before MapView is so it's not correctly in the location
-		swh.setObserverLocation(engine, -29.958, 146.8534);
+		swh.setObserverLocation(engine, 146.8534, -29.958);
 
 		const m = Moment(d).local();
 		const newDate = m.local().toDate();
@@ -74,6 +79,8 @@ export default function DateTimeController() {
 		step: 1,
 		onValueChange: (value: number) => handleTimeSlider(value),
 	};
+
+	function geoIP() {}
 
 	// Handler for the date slider
 	function handleDateSlider(n: number) {
