@@ -8,6 +8,13 @@ declare global {
 			translateFn?: (domain: string, str: string) => string;
 		}) => Promise<StellariumEngine>;
 	}
+	// Extend the Date interface to include the setJD method
+	interface Date {
+		setJD(jd: number): void;
+		getJD(): number;
+		setMJD(mjd: number): void;
+		getMJD(): number;
+	}
 
 	// Core observer interface for location and time settings
 	interface StellariumObserver {
@@ -129,13 +136,6 @@ declare global {
 }
 
 export interface SEngineHelpers {
-	// Date/time helpers
-
-	getCurrentDate: () => string;
-	setObserverTime: (engine: StellariumEngine | null, utcTime: Date) => void;
-
-	setObserverTimeJD: (engine: StellariumEngine | null, utcTime: Date) => void;
-
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
