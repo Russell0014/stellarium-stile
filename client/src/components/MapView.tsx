@@ -4,7 +4,6 @@ import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
-import DateTimeController from './Date Time/dateTimeController';
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,7 +74,6 @@ export default function MapView() {
 					zIndex: '0',
 				}}
 			/>
-			<DateTimeController />
 			<Footer />
 		</>
 	);

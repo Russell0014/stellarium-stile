@@ -3,6 +3,7 @@ import SliderComponent from './slider';
 import SelectionComponent from './selectionButtons';
 import type { Slidr } from './slider';
 import { Moment } from 'moment';
+import { useState } from 'react';
 
 type Props = {
 	DateSlider: Slidr;
@@ -19,37 +20,57 @@ export default function DateTime({
 	changeDateTime,
 	moment,
 }: Props) {
+	const [isVisible, setVisible] = useState(false);
+
+	function handleClick() {
+		setVisible(!isVisible);
+	}
 	return (
 		<>
-			<DateTimeContainer>
-				<SelectionComponent
-					moment={moment}
-					changeDateTime={changeDateTime}
-				/>
-				<p onClick={resetTime}>Reset Time </p>
-
-				<SliderContainer>
-					<SliderLabel>Day of Year:</SliderLabel>
-					<SliderComponent
-						defaultValue={DateSlider.defaultValue}
-						min={DateSlider.min}
-						max={DateSlider.max}
-						step={DateSlider.step}
-						onValueChange={DateSlider.onValueChange}
+			{!isVisible && (
+				<button onClick={handleClick}>
+					<div>
+						{moment.format('DD') + '/'}
+						{moment.format('MM') + '/'}
+						{moment.format('YYYY')}
+					</div>
+					{moment.format('HH') + ':'}
+					{moment.format('mm') + ':'}
+					{moment.format('ss')}
+				</button>
+			)}
+			{isVisible && (
+				<DateTimeContainer>
+					<button onClick={handleClick}>x</button>
+					<SelectionComponent
+						moment={moment}
+						changeDateTime={changeDateTime}
 					/>
-				</SliderContainer>
+					<p onClick={resetTime}>Reset Time </p>
 
-				<SliderContainer>
-					<SliderLabel>Time of Day:</SliderLabel>
-					<SliderComponent
-						defaultValue={TimeSlider.defaultValue}
-						min={TimeSlider.min}
-						max={TimeSlider.max}
-						step={TimeSlider.step}
-						onValueChange={TimeSlider.onValueChange}
-					/>
-				</SliderContainer>
-			</DateTimeContainer>
+					<SliderContainer>
+						<SliderLabel>Day of Year:</SliderLabel>
+						<SliderComponent
+							defaultValue={DateSlider.defaultValue}
+							min={DateSlider.min}
+							max={DateSlider.max}
+							step={DateSlider.step}
+							onValueChange={DateSlider.onValueChange}
+						/>
+					</SliderContainer>
+
+					<SliderContainer>
+						<SliderLabel>Time of Day:</SliderLabel>
+						<SliderComponent
+							defaultValue={TimeSlider.defaultValue}
+							min={TimeSlider.min}
+							max={TimeSlider.max}
+							step={TimeSlider.step}
+							onValueChange={TimeSlider.onValueChange}
+						/>
+					</SliderContainer>
+				</DateTimeContainer>
+			)}
 		</>
 	);
 }

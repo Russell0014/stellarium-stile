@@ -1,7 +1,12 @@
 import styled from 'styled-components';
+import DateTimeController from '../Date Time/dateTimeController';
 
 export default function Footer() {
-	return <FooterStyle></FooterStyle>;
+	return (
+		<FooterStyle>
+			<DateTimeController />
+		</FooterStyle>
+	);
 }
 
 export const FooterStyle = styled.div`
@@ -9,6 +14,7 @@ export const FooterStyle = styled.div`
 	display: flex;
 	position: absolute;
 	align-items: center;
+	justify-content: right;
 	width: 100vw;
 	height: 40px;
 	border-width: 2px;
