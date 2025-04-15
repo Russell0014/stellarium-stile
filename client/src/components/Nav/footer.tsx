@@ -1,9 +1,17 @@
 import styled from 'styled-components';
 import DateTimeController from '../Date Time/dateTimeController';
+import { useSEngine } from '@/context/SEngineContext';
 
 export default function Footer() {
+	const { engine } = useSEngine();
+	function trackEmu() {
+		const emu = engine.getObj('CON kamilaroi Emu1');
+		engine.core.selection = emu;
+		engine.pointAndLock(engine.core.selection, 0.5);
+	}
 	return (
 		<FooterStyle>
+			<button onClick={trackEmu}>Track Emu!</button>
 			<DateTimeController />
 		</FooterStyle>
 	);
