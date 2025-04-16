@@ -121,6 +121,16 @@ const swh: SEngineHelpers = {
 		}
 	},
 
+	toggleConstellations: (engine: StellariumEngine | null, visible?: boolean): void => {
+		if (!engine) return;
+
+		if (visible !== undefined) {
+			engine.core.constellations.images_visible = visible;
+		} else {
+			engine.core.constellations.images_visible = !engine.core.constellations.images_visible;
+		}
+	},
+
 	setStarSize: (engine: StellariumEngine | null, size: number): void => {
 		if (!engine) return;
 		engine.core.stars.size = size;
