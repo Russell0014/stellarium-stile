@@ -2,159 +2,264 @@ import { useState, useEffect, useRef } from 'react';
 import DateTime from './dateTime';
 import swh from '@/assets/sw_helper';
 import { useSEngine } from '@/context/SEngineContext';
-import moment from 'moment';
+import Moment from 'moment';
 
 export default function DateTimeController() {
 	const { engine } = useSEngine();
-	const now = getLocalTimeFromUTC();
-	const [dateTime, setDateTime] = useState<Date>(now);
-	const [slider, setSlider] = useState<number>(50);
+	let d = Moment().toDate();
+	const [dateTime, setDateTime] = useState<Date>(d);
+	const [dateSlider, setDateSlider] = useState<number>(1);
+	const [timeSlider, setTimeSlider] = useState<number>(0);
 	const [isRunning, setIsRunning] = useState(true);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-	// Get midnight of today
-	const getMidnight = (): Date => {
-		return new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 0, 0, 0);
-	};
+	// Helper function to get days in year
+	function getDaysInYear(year: number): number {
+		return ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 366 : 365;
+	}
+
+	// Helper function to get day of year (1-366)
+	function getDayOfYear(date: Date): number {
+		const start = new Date(date.getFullYear(), 0, 0);
+		const diff = date.getTime() - start.getTime();
+		const oneDay = 24 * 60 * 60 * 1000;
+		return Math.floor(diff / oneDay);
+	}
+
+	//This will run on initialisation
+	//1. Sets the slider to correct position
+	//2. Sets the Location [Need to fix, currently running before MapView.tsx]
+	//3. Updates the core.observer.utc time to Current Time.
 
 	useEffect(() => {
 		if (!engine) return;
 
-		//Define midnight and compute the difference in time, then create percentage for slider
-		//Need to combine these functions
-		const midnight = getMidnight();
-		const diff = now.getTime() - midnight.getTime();
-		const percentage = (diff / 1000 / 86400) * 100;
+		// Set date slider based on day of year (1-366)
+		const dayOfYear = getDayOfYear(d);
+		setDateSlider(dayOfYear);
+		
+		// Calculate time slider position based on seconds since midnight
+		const hours = d.getHours();
+		const minutes = d.getMinutes();
+		const seconds = d.getSeconds();
+		const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+		setTimeSlider(totalSeconds);
 
-		//This does nothing yet
-		setSlider(percentage);
+		//This is running before MapView is so it's not correctly in the location
+		swh.setObserverLocation(engine, 146.8534, -29.958);
 
-		//Set the observer time
-		requestAnimationFrame(() => {
-			try {
-				const currTime = engine.core.observer.utc;
-				const date = new Date(currTime);
-				swh.setObserverTimeJD(engine, date);
-
-				console.log('Observer time set to:', now.toISOString());
-			} catch (e) {
-				console.error('Something is wrong with the web engine!', e);
-			}
-		});
+		const m = Moment(d).local();
+		const newDate = m.local().toDate();
+		setDateTime(newDate);
+		engine.core.observer.utc = newDate.getMJD();
 	}, [engine]);
 
-	//Updates the clock every 1 second
-	// useEffect(() => {
-	// 	if (!isRunning) return;
+	// //Updates the clock every 1 second
+	useEffect(() => {
+		if (!isRunning) return;
 
-	// 	const interval = setInterval(() => {
-	// 		setDateTime((prevDateTime) => {
-	// 			const newTime = new Date(prevDateTime.getTime() + 1000);
-	// 			// const timezoneOffset = newTime.getTimezoneOffset();
-	// 			// const localTime = new Date(newTime.getTime() - timezoneOffset * 60000);
-	// 			swh.setObserverTimeJD(engine, newTime);
-	// 			return newTime;
-	// 		});
-	// 	}, 1000);
+		const interval = setInterval(() => {
+			setDateTime((prevDateTime) => {
+				const newTime = new Date(prevDateTime.getTime() + 1000);
+				engine.core.observer.utc = newTime.getMJD();
+				return newTime;
+			});
+		}, 1000);
 
-	// 	return () => clearInterval(interval);
-	// }, [isRunning, engine]);
+		return () => clearInterval(interval);
+	}, [isRunning, engine]);
 
-	const defaultSlider = {
-		defaultValue: [slider],
-		min: 0,
-		max: 100,
+	// Configuration for date slider (day of year)
+	const dateSliderConfig = {
+		defaultValue: [dateSlider],
+		min: 1,
+		max: getDaysInYear(dateTime.getFullYear()),
 		step: 1,
-		onValueChange: (value: number) => timeSlider(value),
+		onValueChange: (value: number) => handleDateSlider(value),
 	};
 
-	function timeSlider(n: number) {
+	// Configuration for time slider (time of day)
+	const timeSliderConfig = {
+		defaultValue: [timeSlider],
+		min: 0,
+		max: 86399, // 23:59:59 in seconds (24*60*60 - 1)
+		step: 1,
+		onValueChange: (value: number) => handleTimeSlider(value),
+	};
+
+	function geoIP() {}
+
+	// Handler for the date slider
+	function handleDateSlider(n: number) {
 		setIsRunning(false);
 
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 500);
-		// Get midnight of the current day in local time
-		const midnight = getMidnight();
+		}, 2000);
 
-		// Calculate the new time based on the slider percentage (0-100)
-		const newTime = (n / 100) * 86400 * 1000; // ms since midnight in UTC
+		// Update date slider state
+		setDateSlider(n);
 
-		// Create a new Date object from midnight (in UTC)
-		//This should return the correct CURRENT time without Timezone OFFSET
-		let newDateTime = new Date(midnight.getTime() + newTime);
+		// Get current time of day (hours, minutes, seconds, milliseconds)
+		const hours = dateTime.getHours();
+		const minutes = dateTime.getMinutes();
+		const seconds = dateTime.getSeconds();
+		const ms = dateTime.getMilliseconds();
 
-		// Set the date and time adjusted to the local time
+		// Create a new Date object for the selected day in current year
+		const newDateTime = new Date(
+			dateTime.getFullYear(),
+			0,
+			n, // Direct day of year (1-366)
+			hours,
+			minutes,
+			seconds,
+			ms,
+		);
+
+		console.log(`Date Slider day: ${n} -> ${newDateTime.toISOString()}`);
+
+		// Set the date and time
 		setDateTime(newDateTime);
-		swh.setObserverTimeJD(engine, newDateTime);
-		console.log(newDateTime.toUTCString());
+		engine.core.observer.utc = newDateTime.getMJD();
+	}
+
+	// Handler for the time slider
+	function handleTimeSlider(n: number) {
+		setIsRunning(false);
+
+		if (timeoutRef.current) clearTimeout(timeoutRef.current);
+		timeoutRef.current = setTimeout(() => {
+			setIsRunning(true);
+		}, 2000);
+
+		// Update time slider state
+		setTimeSlider(n);
+
+		// Keep the same date (year, month, day)
+		const year = dateTime.getFullYear();
+		const month = dateTime.getMonth();
+		const day = dateTime.getDate();
+
+		// Calculate hours, minutes, seconds from total seconds
+		const hours = Math.floor(n / 3600);
+		const minutes = Math.floor((n % 3600) / 60);
+		const seconds = n % 60;
+
+		// Create a new date with the selected time
+		const newDateTime = new Date(year, month, day, hours, minutes, seconds);
+
+		console.log(`Time Slider ${n}s -> Time of day: ${newDateTime.toTimeString()}`);
+
+		// Set the date and time
+		setDateTime(newDateTime);
+		engine.core.observer.utc = newDateTime.getMJD();
 	}
 
 	//Reset Time Button
 	function resetTime() {
-		//TODO: Make this a function
 		setIsRunning(false);
+
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 500);
+		}, 2000);
+		const reset = new Date(Date.now());
+		engine.core.observer.utc = reset.getMJD();
+		setDateTime(reset);
 
-		const currTime = engine.core.observer.utc;
-		const date = new Date(currTime);
+		// Set date slider based on day of year
+		const dayOfYear = getDayOfYear(reset);
+		console.log('Reset Time - Setting date slider to day:', dayOfYear);
+		setDateSlider(dayOfYear);
 
-		setDateTime(date);
+		// Calculate time slider position based on seconds since midnight
+		const hours = reset.getHours();
+		const minutes = reset.getMinutes();
+		const seconds = reset.getSeconds();
+		const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+		console.log('Reset Time - Setting time slider to seconds:', totalSeconds);
+		setTimeSlider(totalSeconds);
 
-		const midnight = getMidnight();
-		const diff = date.getTime() - midnight.getTime();
-		setSlider((diff / 1000 / 86400) * 100);
-
-		swh.setObserverTimeJD(engine, date);
-	}
-
-	//Get local Time from UTC
-	function getLocalTimeFromUTC(): Date {
-		const utcNow = new Date(Date.now());
-		return utcNow;
+		engine.core.observer.utc = reset.getMJD();
 	}
 
 	function changeDateTime(s: string, n: number) {
 		setIsRunning(false);
-		//TODO: timeout Function
+
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		timeoutRef.current = setTimeout(() => {
 			setIsRunning(true);
-		}, 50);
+		}, 2000);
 
-		const updatedTime = moment(dateTime);
+		const updatedTime = Moment(dateTime);
 
 		if (s === 'year') {
-			n > 0 ? updatedTime.add(1, 'y') : updatedTime.subtract(1, 'y');
+			if (n > 0) {
+				updatedTime.add(1, 'y');
+			} else {
+				updatedTime.subtract(1, 'y');
+			}
 		} else if (s === 'month') {
-			n > 0 ? updatedTime.add(1, 'M') : updatedTime.subtract(1, 'M');
+			if (n > 0) {
+				updatedTime.add(1, 'M');
+			} else {
+				updatedTime.subtract(1, 'M');
+			}
 		} else if (s === 'day') {
-			n > 0 ? updatedTime.add(1, 'd') : updatedTime.subtract(1, 'd');
+			if (n > 0) {
+				updatedTime.add(1, 'd');
+			} else {
+				updatedTime.subtract(1, 'd');
+			}
 		} else if (s === 'hour') {
-			n > 0 ? updatedTime.add(1, 'h') : updatedTime.subtract(1, 'h');
+			if (n > 0) {
+				updatedTime.add(1, 'h');
+			} else {
+				updatedTime.subtract(1, 'h');
+			}
 		} else if (s === 'minute') {
-			n > 0 ? updatedTime.add(1, 'm') : updatedTime.subtract(1, 'm');
+			if (n > 0) {
+				updatedTime.add(1, 'm');
+			} else {
+				updatedTime.subtract(1, 'm');
+			}
 		} else if (s === 'second') {
-			n > 0 ? updatedTime.add(1, 's') : updatedTime.subtract(1, 's');
+			if (n > 0) {
+				updatedTime.add(1, 's');
+			} else {
+				updatedTime.subtract(1, 's');
+			}
 		}
 
-		const newDateTime = updatedTime.toDate();
+		let newDateTime = updatedTime.toDate();
 		setDateTime(newDateTime);
 
-		swh.setObserverTimeJD(engine, newDateTime);
+		engine.core.observer.utc = newDateTime.getMJD();
+
+		// Update both sliders for any date/time change
+		// Set date slider based on day of year
+		const dayOfYear = getDayOfYear(newDateTime);
+		console.log(`Change ${s} - Setting date slider to day:`, dayOfYear);
+		setDateSlider(dayOfYear);
+
+		// Calculate time slider position based on seconds since midnight
+		const hours = newDateTime.getHours();
+		const minutes = newDateTime.getMinutes();
+		const seconds = newDateTime.getSeconds();
+		const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+		console.log(`Change ${s} - Setting time slider to seconds:`, totalSeconds);
+		setTimeSlider(totalSeconds);
 	}
 
 	return (
 		<DateTime
-			Slider={defaultSlider}
+			DateSlider={dateSliderConfig}
+			TimeSlider={timeSliderConfig}
 			resetTime={resetTime}
-			timeSlider={timeSlider}
 			changeDateTime={changeDateTime}
-			moment={moment(dateTime)}
+			moment={Moment(dateTime)}
 		/>
 	);
 }

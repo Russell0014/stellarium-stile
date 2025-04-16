@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { SEngineHelpers } from '@/types/stellarium';
 import { SearchResults } from '@/types/stellarium';
 import { SearchResult } from '@/types/stellarium';
@@ -27,24 +26,32 @@ import { SearchResult } from '@/types/stellarium';
  * ```
  */
 
+// Prototypes are the mechanism by which JavaScript objects inherit features from one another
+// Every Object in JS has a built-in property, that's what a prototype is.
+//Java Inheritance
+
+//This is prototyped onto the Date object so it has access to setTime().
+//and getTime();
+
+const DDDate = Date;
+
+DDDate.prototype.setJD = function (jd) {
+	this.setTime((jd - 2440587.5) * 86400000);
+};
+
+DDDate.prototype.getJD = function (): number {
+	return this.getTime() / 86400000 + 2440587.5;
+};
+
+DDDate.prototype.getMJD = function () {
+	return this.getJD() - 2400000.5;
+};
+
+DDDate.prototype.setMJD = function (mjd) {
+	this.setJD(mjd + 2400000.5);
+};
+
 const swh: SEngineHelpers = {
-	// Date/time helper functions
-	getCurrentDate: (): string => {
-		return moment().format('YYYY-MM-DD HH:mm:ss');
-	},
-
-	setObserverTime: (engine_: StellariumEngine | null, utcTime: Date): void => {
-		if (!engine_) return;
-
-		// Convert date to unix timestamp in seconds
-		engine_.core.observer.utc = moment(utcTime).valueOf() / 1000;
-	},
-
-	setObserverTimeJD(engine: any, date: Date) {
-		const jd = date.getTime() / 86400000 + 2440587.5;
-		engine.core.observer.utc = jd;
-	},
-
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
@@ -53,9 +60,9 @@ const swh: SEngineHelpers = {
 		elevation: number = 0,
 	): void => {
 		if (!engine) return;
-
-		engine.core.observer.longitude = longitude;
-		engine.core.observer.latitude = latitude;
+		const DD2R = Math.PI / 180;
+		engine.core.observer.longitude = longitude * DD2R;
+		engine.core.observer.latitude = latitude * DD2R;
 
 		if (elevation !== undefined) {
 			engine.core.observer.elevation = elevation;

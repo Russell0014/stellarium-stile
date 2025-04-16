@@ -46,7 +46,7 @@ export default function MapView() {
 			core.skycultures.current_id = 'kamilaroi';
 
 			// Set location to Brewarrina Fish Traps
-			swh.setObserverLocation(engine, -29.958, 146.8534);
+			swh.setObserverLocation(engine, 146.8534, -29.958);
 
 			// Toggle atmosphere
 			swh.toggleAtmosphere(engine, true);
