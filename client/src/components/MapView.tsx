@@ -4,7 +4,6 @@ import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
-import DateTimeController from './Date Time/dateTimeController';
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -44,7 +43,7 @@ export default function MapView() {
 			core.skycultures.current_id = 'kamilaroi';
 
 			// Set location to Brewarrina Fish Traps
-			swh.setObserverLocation(engine, -29.958, 146.8534);
+			swh.setObserverLocation(engine, 146.8534, -29.958);
 
 			// Toggle atmosphere
 			swh.toggleAtmosphere(engine, true);
@@ -75,7 +74,6 @@ export default function MapView() {
 					zIndex: '0',
 				}}
 			/>
-			<DateTimeController />
 			<Footer />
 		</>
 	);
