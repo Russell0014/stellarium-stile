@@ -88,7 +88,7 @@ const DateTimeContainer = styled.div`
 	flex-direction: column;
 	align-items: center;
 	width: 350px;
-	height: 340px;
+	height: 367px;
 	border-radius: 5px;
 	z-index: 1;
 `;
