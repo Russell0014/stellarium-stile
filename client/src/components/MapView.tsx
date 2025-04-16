@@ -4,7 +4,6 @@ import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
-import DateTimeController from './Date Time/dateTimeController';
 import ToggleControls from './ToggleControls';
 
 export default function MapView() {
@@ -77,7 +76,6 @@ export default function MapView() {
 					zIndex: '0',
 				}}
 			/>
-			<DateTimeController />
 			<ToggleControls />
 			<Footer />
 		</>
