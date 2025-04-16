@@ -1,13 +1,3 @@
-# Ignore artifacts
-**/build
-**/coverage
-
-# Dependencies
-**/node_modules
-
-# Distribution directories
-**/dist
-**/dist-ssr
-
-# Cache
-**/.cache
+# Ignore artifacts:
+build
+coverage
