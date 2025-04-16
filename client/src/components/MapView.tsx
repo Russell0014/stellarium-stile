@@ -89,7 +89,7 @@ function initializeEngineDataSources(engine) {
 		return;
 	}
 
-	const proxyBase = 'http://localhost:5050';
+	const proxyBase = 'http://localhost:8000';
 
 	// Helper function with retry logic
 
