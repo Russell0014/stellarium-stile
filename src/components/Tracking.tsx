@@ -7,3 +7,8 @@ export default function Tracking() {}
 
 //engine.pointAndLock(engine.core.selection, 0.5);
 // Not sure what the 0.5 is yet?
+
+//engine.core.fov
+
+//currentFov = engine.core.fov * 180 / Math.PI
+//engine.core.??
