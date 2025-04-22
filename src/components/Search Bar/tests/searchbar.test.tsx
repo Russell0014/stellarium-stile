@@ -1,6 +1,6 @@
 import SearchBar from '../../Search Bar/searchbar';
 import type { SearchResults } from '@/types/stellarium';
-import { describe, it, expect, beforeAll, vi } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, vi, afterEach } from 'vitest';
 
 import { render } from '../tests/init/index';
 
@@ -30,13 +30,22 @@ describe('render', () => {
 	});
 });
 
-describe('onSearch', () => {
+describe('Search Bar', () => {
 	let mockOnSearch: ReturnType<typeof vi.fn>;
 
 	beforeAll(() => {
 		mockOnSearch = vi.fn();
 	});
 
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	//We want to ensure it will call when typed into the search bar
 	it('calls when typed into', async () => {
 		const screen = render(
 			<SearchBar
@@ -51,6 +60,29 @@ describe('onSearch', () => {
 
 		expect(mockOnSearch).toHaveBeenCalledTimes(1); // Called once per character typed
 		expect(mockOnSearch).toHaveBeenCalledWith('H');
+	});
+
+	it('waits 500ms after typing', async () => {
+		//Checking the Debouncer
+		const mock = vi.fn();
+
+		const screen = render(
+			<SearchBar
+				results={[]}
+				onSearch={mockOnSearch}
+				search=''
+				onClose={() => {}}
+			/>,
+		);
+
+		vi.spyOn(screen.getByRole('textbox'), 'fill').mockImplementation(mock);
+		await screen.getByRole('textbox').fill('h');
+
+		expect(mock).not.toBeCalled(); //Expecting the Debouncer to stop the search going through straight away
+
+		vi.waitFor(() => expect(mock).not.toHaveBeenCalledWith('H'), { timeout: 300 }); //The call should not go through after 300ms
+
+		vi.waitFor(() => expect(mock).toHaveBeenCalledWith('H'), { timeout: 500 }); //After 500ms, the query should go through.
 	});
 });
 
@@ -67,7 +99,7 @@ const search: SearchResults = [
 			de: 41.26875,
 			dimx: 177.83,
 			dimy: 69.66,
-			morpho: 'SA(s)b ',
+			morpho: 'SA(s)b',
 			ra: 10.6847083,
 			rv: -300,
 		},

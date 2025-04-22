@@ -3,9 +3,7 @@ import swh from '../../assets/sw_helper';
 import SearchBar from './searchbar';
 import type { SearchResults } from '../../types/stellarium';
 
-type Props = {};
-
-export default function SearchBarController({}: Props) {
+export default function SearchBarController() {
 	const [search, setSearch] = useState<string>('');
 	const [results, setResults] = useState<SearchResults>([]);
 	const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
@@ -33,7 +31,7 @@ export default function SearchBarController({}: Props) {
 					trim(results);
 					setResults(results);
 				} catch (error) {
-					console.log(error);
+					throw new Error('Error fetching results: ' + error);
 				}
 			};
 
