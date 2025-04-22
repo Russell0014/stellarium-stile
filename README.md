@@ -16,3 +16,5 @@ This project was developed for ...
 ## Built with
 
 - [Stellarium Web Engine](https://github.com/Stellarium/stellarium-web-engine)
+
+We cannot get access to the DSO's due to licensing reasons

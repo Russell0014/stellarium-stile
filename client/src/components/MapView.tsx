@@ -21,36 +21,36 @@ export default function MapView() {
 			const core = engine.getModule('core');
 
 			core.dsos.addDataSource({
-				url: 'src/assets/test-skydata/dso/base',
+				url: 'src/assets/skydata/dso/base',
 				key: 'base',
 			});
 
 			core.landscapes.addDataSource({
-				url: 'src/assets/test-skydata/landscapes/guereins',
+				url: 'src/assets/skydata/landscapes/guereins',
 				key: 'guereins',
 			});
 			core.milkyway.addDataSource({
-				url: 'src/assets/test-skydata/surveys/milkyway',
+				url: 'src/assets/skydata/surveys/milkyway',
 			});
 			core.minor_planets.addDataSource({
-				url: 'src/assets/test-skydata/mpcorb.dat',
+				url: 'src/assets/skydata/mpcorb.dat',
 				key: 'mpc_asteroids',
 			});
 			core.planets.addDataSource({
-				url: 'src/assets/test-skydata/surveys/sso/moon',
+				url: 'src/assets/skydata/surveys/sso/moon',
 				key: 'moon',
 			});
 
-			core.stars.addDataSource({ url: 'src/assets/test-skydata/stars/minimal', key: 'minimal' });
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/minimal', key: 'minimal' });
 
-			core.stars.addDataSource({ url: 'src/assets/test-skydata/stars/extended', key: 'extended' });
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/extended', key: 'extended' });
 
 			core.planets.addDataSource({
-				url: 'src/assets/test-skydata/surveys/sso/sun',
+				url: 'src/assets/skydata/surveys/sso/sun',
 				key: 'sun',
 			});
 			core.planets.addDataSource({
-				url: 'src/assets/test-skydata/surveys/sso/moon',
+				url: 'src/assets/skydata/surveys/sso/moon',
 				key: 'default',
 			});
 
@@ -75,12 +75,12 @@ export default function MapView() {
 			swh.setFOV(engine, 2.09);
 
 			core.landscapes.addDataSource({
-				url: 'src/assets/test-skydata/landscapes/guereins',
+				url: 'src/assets/skydata/landscapes/guereins',
 				key: 'guereins',
 			});
 
 			core.skycultures.addDataSource({
-				url: 'src/assets/test-skydata/skycultures/kamilaroi',
+				url: 'src/assets/skydata/skycultures/kamilaroi',
 				key: 'kamilaroi',
 			});
 			core.skycultures.current_id = 'kamilaroi';
