@@ -55,11 +55,18 @@ export default function MapView() {
 				key: 'default',
 			});
 
+			//TO REMOVE AT SOME POINT ->
+
 			//@ts-ignore
 			window.swh = swh;
 
 			//@ts-ignore
 			window.engine = engine;
+
+			// <-
+
+			//We cannot get access to the dsos data - so don't make it visible to the user
+			core.dsos.visible = false;
 
 			swh.toggleLandscapeVisibility(engine, true);
 			// swh.toggleAtmosphere(engine, false);
