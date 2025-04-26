@@ -42,6 +42,8 @@ export default function MapView() {
 				key: 'moon',
 			});
 
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/base', key: 'base' });
+
 			core.stars.addDataSource({ url: 'src/assets/skydata/stars/minimal', key: 'minimal' });
 
 			core.stars.addDataSource({ url: 'src/assets/skydata/stars/extended', key: 'extended' });
