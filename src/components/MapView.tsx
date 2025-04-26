@@ -74,6 +74,8 @@ export default function MapView() {
 			// core.observer.utc = 100;
 			core.constellations.images_visible = true;
 			core.constellations.lines_visible = true;
+			core.constellations.show_only_pointed = false;
+			core.constellations.labels_visible = true;
 
 			// Set location to Brewarrina Fish Traps
 			swh.setObserverLocation(engine, 146.8534, -29.958);
