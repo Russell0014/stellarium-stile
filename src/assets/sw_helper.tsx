@@ -257,6 +257,22 @@ const swh: SEngineHelpers = {
 		return engine.getConstellationBoundaries();
 	},
 
+	// Skyculture helpers
+	getSkycultures: (engine: StellariumEngine | null): string[] => {
+		if (!engine) return [];
+		return ['kamilaroi', 'western'];
+	},
+
+	getCurrentSkyculture: (engine: StellariumEngine | null): string => {
+		if (!engine) return '';
+		return engine.core.skycultures.current_id;
+	},
+
+	setSkyculture: (engine: StellariumEngine | null, skyculture: string): void => {
+		if (!engine) return;
+		engine.core.skycultures.current_id = skyculture;
+	},
+
 	// Data helpers
 	addDataSource: async (engine: StellariumEngine | null, url: string): Promise<void> => {
 		if (!engine) return;

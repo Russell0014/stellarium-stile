@@ -88,9 +88,15 @@ export default function MapView() {
 			});
 
 			core.skycultures.addDataSource({
+				url: 'src/assets/skydata/skycultures/western',
+				key: 'western',
+			});
+			core.skycultures.addDataSource({
 				url: 'src/assets/skydata/skycultures/kamilaroi',
 				key: 'kamilaroi',
 			});
+
+			// Set default skyculture
 			core.skycultures.current_id = 'kamilaroi';
 		}
 	}, [engine, initEngine]);

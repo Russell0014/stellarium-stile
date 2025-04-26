@@ -58,6 +58,12 @@ declare global {
 		show_only_pointed: boolean;
 	}
 
+	// Skyculture settings
+	interface StellariumSkycultures {
+		current_id: string;
+		addDataSource: (options: { url: string; key: string }) => void;
+	}
+
 	// Core module interface
 	interface StellariumCore {
 		observer: StellariumObserver;
@@ -68,6 +74,7 @@ declare global {
 		projection: StellariumProjection;
 		stars: StellariumStars;
 		constellations: StellariumConstellations;
+		skycultures: StellariumSkycultures;
 	}
 
 	// Calendar module for date/time management
@@ -203,6 +210,11 @@ export interface SEngineHelpers {
 	// Utility helpers
 	takeScreenshot: (engine: StellariumEngine | null) => string | null;
 	getConstellationBoundaries: (engine: StellariumEngine | null) => ConstellationBoundary[];
+
+	// Skyculture helpers
+	getSkycultures: (engine: StellariumEngine | null) => string[];
+	getCurrentSkyculture: (engine: StellariumEngine | null) => string;
+	setSkyculture: (engine: StellariumEngine | null, skyculture: string) => void;
 
 	// Data helpers
 	addDataSource: (engine: StellariumEngine | null, url: string) => Promise<void>;
