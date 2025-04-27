@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import DateTimeController from '../Date Time/dateTimeController';
 import { useSEngine } from '@/context/SEngineContext';
+import SkycultureSwitcher from '../Skyculture/SkycultureSwitcher';
 
 export default function Footer() {
 	const { engine } = useSEngine();
@@ -11,6 +12,7 @@ export default function Footer() {
 	}
 	return (
 		<FooterStyle>
+			<SkycultureSwitcher />
 			<button onClick={trackEmu}>Track Emu!</button>
 			<DateTimeController />
 		</FooterStyle>
@@ -22,7 +24,7 @@ export const FooterStyle = styled.div`
 	display: flex;
 	position: absolute;
 	align-items: center;
-	justify-content: right;
+	justify-content: space-between;
 	width: 100vw;
 	height: 40px;
 	border-width: 2px;

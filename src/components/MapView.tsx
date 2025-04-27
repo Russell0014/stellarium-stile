@@ -42,6 +42,8 @@ export default function MapView() {
 				key: 'moon',
 			});
 
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/base', key: 'base' });
+
 			core.stars.addDataSource({ url: 'src/assets/skydata/stars/minimal', key: 'minimal' });
 
 			core.stars.addDataSource({ url: 'src/assets/skydata/stars/extended', key: 'extended' });
@@ -74,6 +76,8 @@ export default function MapView() {
 			// core.observer.utc = 100;
 			core.constellations.images_visible = true;
 			core.constellations.lines_visible = true;
+			core.constellations.show_only_pointed = false;
+			core.constellations.labels_visible = true;
 
 			// Set location to Brewarrina Fish Traps
 			swh.setObserverLocation(engine, 146.8534, -29.958);
@@ -88,9 +92,15 @@ export default function MapView() {
 			});
 
 			core.skycultures.addDataSource({
+				url: 'src/assets/skydata/skycultures/western',
+				key: 'western',
+			});
+			core.skycultures.addDataSource({
 				url: 'src/assets/skydata/skycultures/kamilaroi',
 				key: 'kamilaroi',
 			});
+
+			// Set default skyculture
 			core.skycultures.current_id = 'kamilaroi';
 		}
 	}, [engine, initEngine]);
