@@ -9,6 +9,15 @@ declare global {
 		}) => Promise<StellariumEngine>;
 	}
 
+	// Extend the Date interface to include the setJD method
+	interface Date {
+		setJD(jd: number): void;
+		getJD(): number;
+		setMJD(mjd: number): void;
+		getMJD(): number;
+	}
+
+
 	// Core observer interface for location and time settings
 	interface StellariumObserver {
 		longitude: number;
@@ -39,6 +48,24 @@ declare global {
 		size: number;
 	}
 
+	// Constellation rendering settings
+	interface StellariumConstellations {
+		visible: boolean;
+		bounds_visible: boolean;
+		illustrations_bscale: number;
+		images_visible: boolean;
+		labels_visible: boolean;
+		lines_animation: boolean;
+		lines_visible: boolean;
+		show_only_pointed: boolean;
+	}
+
+	// Skyculture settings
+	interface StellariumSkycultures {
+		current_id: string;
+		addDataSource: (options: { url: string; key: string }) => void;
+	}
+
 	// Core module interface
 	interface StellariumCore {
 		observer: StellariumObserver;
@@ -48,6 +75,9 @@ declare global {
 		landscapes: StellariumLandscapes;
 		projection: StellariumProjection;
 		stars: StellariumStars;
+		constellations: StellariumConstellations;
+		skycultures: StellariumSkycultures;
+
 	}
 
 	// Calendar module for date/time management
@@ -129,10 +159,7 @@ declare global {
 }
 
 export interface SEngineHelpers {
-	// Date/time helpers
-	getCurrentDate: () => string;
-	setObserverTime: (engine: StellariumEngine | null, utcTime: Date) => void;
-
+  
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
@@ -151,6 +178,8 @@ export interface SEngineHelpers {
 	// Display settings helpers
 	toggleAtmosphere: (engine: StellariumEngine | null, visible?: boolean) => void;
 	toggleStars: (engine: StellariumEngine | null, visible?: boolean) => void;
+	toggleConstellations: (engine: StellariumEngine | null, visible?: boolean) => void;
+
 	setStarSize: (engine: StellariumEngine | null, size: number) => void;
 	setProjection: (engine: StellariumEngine | null, type: string) => void;
 
@@ -186,6 +215,12 @@ export interface SEngineHelpers {
 	// Utility helpers
 	takeScreenshot: (engine: StellariumEngine | null) => string | null;
 	getConstellationBoundaries: (engine: StellariumEngine | null) => ConstellationBoundary[];
+
+	// Skyculture helpers
+	getSkycultures: (engine: StellariumEngine | null) => string[];
+	getCurrentSkyculture: (engine: StellariumEngine | null) => string;
+	setSkyculture: (engine: StellariumEngine | null, skyculture: string) => void;
+
 
 	// Data helpers
 	addDataSource: (engine: StellariumEngine | null, url: string) => Promise<void>;
