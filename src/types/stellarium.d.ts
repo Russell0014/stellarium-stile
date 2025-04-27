@@ -8,6 +8,7 @@ declare global {
 			translateFn?: (domain: string, str: string) => string;
 		}) => Promise<StellariumEngine>;
 	}
+
 	// Extend the Date interface to include the setJD method
 	interface Date {
 		setJD(jd: number): void;
@@ -15,6 +16,7 @@ declare global {
 		setMJD(mjd: number): void;
 		getMJD(): number;
 	}
+
 
 	// Core observer interface for location and time settings
 	interface StellariumObserver {
@@ -75,6 +77,7 @@ declare global {
 		stars: StellariumStars;
 		constellations: StellariumConstellations;
 		skycultures: StellariumSkycultures;
+
 	}
 
 	// Calendar module for date/time management
@@ -156,6 +159,7 @@ declare global {
 }
 
 export interface SEngineHelpers {
+  
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
@@ -175,6 +179,7 @@ export interface SEngineHelpers {
 	toggleAtmosphere: (engine: StellariumEngine | null, visible?: boolean) => void;
 	toggleStars: (engine: StellariumEngine | null, visible?: boolean) => void;
 	toggleConstellations: (engine: StellariumEngine | null, visible?: boolean) => void;
+
 	setStarSize: (engine: StellariumEngine | null, size: number) => void;
 	setProjection: (engine: StellariumEngine | null, type: string) => void;
 
@@ -215,6 +220,7 @@ export interface SEngineHelpers {
 	getSkycultures: (engine: StellariumEngine | null) => string[];
 	getCurrentSkyculture: (engine: StellariumEngine | null) => string;
 	setSkyculture: (engine: StellariumEngine | null, skyculture: string) => void;
+
 
 	// Data helpers
 	addDataSource: (engine: StellariumEngine | null, url: string) => Promise<void>;

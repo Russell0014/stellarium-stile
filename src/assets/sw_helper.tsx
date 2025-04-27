@@ -1,3 +1,4 @@
+
 import { SEngineHelpers } from '@/types/stellarium';
 import { SearchResults } from '@/types/stellarium';
 import { SearchResult } from '@/types/stellarium';
@@ -25,6 +26,7 @@ import { SearchResult } from '@/types/stellarium';
  * }
  * ```
  */
+
 
 // Prototypes are the mechanism by which JavaScript objects inherit features from one another
 // Every Object in JS has a built-in property, that's what a prototype is.
@@ -63,6 +65,7 @@ const swh: SEngineHelpers = {
 		const DD2R = Math.PI / 180;
 		engine.core.observer.longitude = longitude * DD2R;
 		engine.core.observer.latitude = latitude * DD2R;
+
 
 		if (elevation !== undefined) {
 			engine.core.observer.elevation = elevation;

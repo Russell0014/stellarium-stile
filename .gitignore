@@ -1,11 +1,3 @@
-# Dependencies
-**/node_modules
-
-# Build outputs
-**/dist
-**/dist-ssr
-*.local
-
 # Logs
 logs
 *.log
@@ -14,6 +6,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
 
 # Editor directories and files
 .vscode/*
@@ -26,9 +23,6 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# Environment variables
+# env
 .env
-**/.env
 
-# Cache files
-**/.eslintcache
