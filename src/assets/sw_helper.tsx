@@ -1,4 +1,4 @@
-import moment from 'moment';
+
 import { SEngineHelpers } from '@/types/stellarium';
 import { SearchResults } from '@/types/stellarium';
 import { SearchResult } from '@/types/stellarium';
@@ -27,19 +27,33 @@ import { SearchResult } from '@/types/stellarium';
  * ```
  */
 
+
+// Prototypes are the mechanism by which JavaScript objects inherit features from one another
+// Every Object in JS has a built-in property, that's what a prototype is.
+//Java Inheritance
+
+//This is prototyped onto the Date object so it has access to setTime().
+//and getTime();
+
+const DDDate = Date;
+
+DDDate.prototype.setJD = function (jd) {
+	this.setTime((jd - 2440587.5) * 86400000);
+};
+
+DDDate.prototype.getJD = function (): number {
+	return this.getTime() / 86400000 + 2440587.5;
+};
+
+DDDate.prototype.getMJD = function () {
+	return this.getJD() - 2400000.5;
+};
+
+DDDate.prototype.setMJD = function (mjd) {
+	this.setJD(mjd + 2400000.5);
+};
+
 const swh: SEngineHelpers = {
-	// Date/time helper functions
-	getCurrentDate: (): string => {
-		return moment().format('YYYY-MM-DD HH:mm:ss');
-	},
-
-	setObserverTime: (engine_: StellariumEngine | null, utcTime: Date): void => {
-		if (!engine_) return;
-
-		// Convert date to unix timestamp in seconds
-		engine_.core.observer.utc = moment(utcTime).valueOf() / 1000;
-	},
-
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
@@ -48,15 +62,17 @@ const swh: SEngineHelpers = {
 		elevation: number = 0,
 	): void => {
 		if (!engine) return;
+		const DD2R = Math.PI / 180;
+		engine.core.observer.longitude = longitude * DD2R;
+		engine.core.observer.latitude = latitude * DD2R;
 
-		engine.core.observer.longitude = longitude;
-		engine.core.observer.latitude = latitude;
 
 		if (elevation !== undefined) {
 			engine.core.observer.elevation = elevation;
 		}
 	},
 
+	//Unutilised
 	setObserverLocationByAddress: async (
 		engine: StellariumEngine | null,
 		address: string,
@@ -105,6 +121,16 @@ const swh: SEngineHelpers = {
 			engine.core.stars.visible = visible;
 		} else {
 			engine.core.stars.visible = !engine.core.stars.visible;
+		}
+	},
+
+	toggleConstellations: (engine: StellariumEngine | null, visible?: boolean): void => {
+		if (!engine) return;
+
+		if (visible !== undefined) {
+			engine.core.constellations.images_visible = visible;
+		} else {
+			engine.core.constellations.images_visible = !engine.core.constellations.images_visible;
 		}
 	},
 
@@ -232,6 +258,22 @@ const swh: SEngineHelpers = {
 	getConstellationBoundaries: (engine: StellariumEngine | null): ConstellationBoundary[] => {
 		if (!engine) return [];
 		return engine.getConstellationBoundaries();
+	},
+
+	// Skyculture helpers
+	getSkycultures: (engine: StellariumEngine | null): string[] => {
+		if (!engine) return [];
+		return ['kamilaroi', 'western'];
+	},
+
+	getCurrentSkyculture: (engine: StellariumEngine | null): string => {
+		if (!engine) return '';
+		return engine.core.skycultures.current_id;
+	},
+
+	setSkyculture: (engine: StellariumEngine | null, skyculture: string): void => {
+		if (!engine) return;
+		engine.core.skycultures.current_id = skyculture;
 	},
 
 	// Data helpers

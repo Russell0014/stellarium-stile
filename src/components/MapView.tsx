@@ -2,8 +2,10 @@
 import { useEffect, useRef } from 'react';
 import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
-import Header from './header';
-import Footer from './footer';
+import Header from './Nav/header';
+import Footer from './Nav/footer';
+import ToggleControls from './ToggleControls';
+
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -18,12 +20,90 @@ export default function MapView() {
 
 		// If engine is available, you can configure it here
 		if (engine) {
-			// Set location to New York
-			swh.setObserverLocation(engine, -29.9581, 146.855627);
+			const core = engine.getModule('core');
+
+			core.dsos.addDataSource({
+				url: 'src/assets/skydata/dso/base',
+				key: 'base',
+			});
+
+			core.landscapes.addDataSource({
+				url: 'src/assets/skydata/landscapes/guereins',
+				key: 'guereins',
+			});
+			core.milkyway.addDataSource({
+				url: 'src/assets/skydata/surveys/milkyway',
+			});
+			core.minor_planets.addDataSource({
+				url: 'src/assets/skydata/mpcorb.dat',
+				key: 'mpc_asteroids',
+			});
+			core.planets.addDataSource({
+				url: 'src/assets/skydata/surveys/sso/moon',
+				key: 'moon',
+			});
+
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/base', key: 'base' });
+
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/minimal', key: 'minimal' });
+
+			core.stars.addDataSource({ url: 'src/assets/skydata/stars/extended', key: 'extended' });
+
+			core.planets.addDataSource({
+				url: 'src/assets/skydata/surveys/sso/sun',
+				key: 'sun',
+			});
+			core.planets.addDataSource({
+				url: 'src/assets/skydata/surveys/sso/moon',
+				key: 'default',
+			});
+
+			//TO REMOVE AT SOME POINT ->
+
+			//@ts-ignore
+			window.swh = swh;
+
+			//@ts-ignore
+			window.engine = engine;
+
+			// <-
+
+			//We cannot get access to the dsos data - so don't make it visible to the user
+			core.dsos.visible = false;
+
+			swh.toggleLandscapeVisibility(engine, true);
+			// swh.toggleAtmosphere(engine, false);
+
+			// core.observer.utc = 100;
+			core.constellations.images_visible = true;
+			core.constellations.lines_visible = true;
+			core.constellations.show_only_pointed = false;
+			core.constellations.labels_visible = true;
+
+			// Set location to Brewarrina Fish Traps
+			swh.setObserverLocation(engine, 146.8534, -29.958);
 
 			// Toggle atmosphere
 			swh.toggleAtmosphere(engine, true);
 			swh.setFOV(engine, 2.09);
+
+			core.landscapes.addDataSource({
+				url: 'src/assets/skydata/landscapes/guereins',
+				key: 'guereins',
+			});
+
+			core.skycultures.addDataSource({
+				url: 'src/assets/skydata/skycultures/western',
+				key: 'western',
+			});
+			core.skycultures.addDataSource({
+				url: 'src/assets/skydata/skycultures/kamilaroi',
+				key: 'kamilaroi',
+			});
+
+			// Set default skyculture
+			core.skycultures.current_id = 'kamilaroi';
+
 		}
 	}, [engine, initEngine]);
 
@@ -43,6 +123,7 @@ export default function MapView() {
 					zIndex: '0',
 				}}
 			/>
+			<ToggleControls />
 			<Footer />
 		</>
 	);
