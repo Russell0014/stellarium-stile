@@ -1,39 +1,6 @@
-
 import { SEngineHelpers } from '@/types/stellarium';
 import { SearchResults } from '@/types/stellarium';
 import { SearchResult } from '@/types/stellarium';
-/**
- * The engine parameter refers to the stellarium engine instance
- * that you get from the SEngineContext using the useSEngine hook.
- *
- * Usage example:
- * ```
- * import swh from '@/assets/sw_helper';
- * import { useSEngine } from '@/context/SEngineContext';
- *
- * function MyComponent() {
- *   const { engine } = useSEngine();
- *
- *   useEffect(() => {
- *     if (engine) {
- *       // Set location to New York
- *       swh.setObserverLocation(engine, -74.006, 40.7128);
- *
- *       // Toggle atmosphere
- *       swh.toggleAtmosphere(engine, true);
- *     }
- *   }, [engine]);
- * }
- * ```
- */
-
-
-// Prototypes are the mechanism by which JavaScript objects inherit features from one another
-// Every Object in JS has a built-in property, that's what a prototype is.
-//Java Inheritance
-
-//This is prototyped onto the Date object so it has access to setTime().
-//and getTime();
 
 const DDDate = Date;
 
@@ -66,41 +33,14 @@ const swh: SEngineHelpers = {
 		engine.core.observer.longitude = longitude * DD2R;
 		engine.core.observer.latitude = latitude * DD2R;
 
-
 		if (elevation !== undefined) {
 			engine.core.observer.elevation = elevation;
 		}
 	},
 
-	//Unutilised
-	setObserverLocationByAddress: async (
-		engine: StellariumEngine | null,
-		address: string,
-	): Promise<void> => {
-		if (!engine) return;
-
-		await engine.setObserverPositionByAddress(address);
-	},
-
-	// View control helpers
-	getFOV: (engine: StellariumEngine | null): number => {
-		if (!engine) return 0;
-		return engine.core.fov;
-	},
-
 	setFOV: (engine: StellariumEngine | null, fov: number): void => {
 		if (!engine) return;
 		engine.core.fov = fov;
-	},
-
-	getViewportSize: (engine: StellariumEngine | null): [number, number] => {
-		if (!engine) return [0, 0];
-		return engine.getViewportSize();
-	},
-
-	setViewportSize: (engine: StellariumEngine | null, width: number, height: number): void => {
-		if (!engine) return;
-		engine.setViewportSize(width, height);
 	},
 
 	// Display settings helpers
@@ -134,22 +74,6 @@ const swh: SEngineHelpers = {
 		}
 	},
 
-	setStarSize: (engine: StellariumEngine | null, size: number): void => {
-		if (!engine) return;
-		engine.core.stars.size = size;
-	},
-
-	setProjection: (engine: StellariumEngine | null, type: string): void => {
-		if (!engine) return;
-		engine.core.projection.type = type;
-	},
-
-	// Landscape helpers
-	getLandscapes: (engine: StellariumEngine | null): string[] => {
-		if (!engine) return [];
-		return engine.listLandscapes();
-	},
-
 	setLandscape: (engine: StellariumEngine | null, landscapeName: string): void => {
 		if (!engine) return;
 		engine.core.landscapes.current = landscapeName;
@@ -165,20 +89,10 @@ const swh: SEngineHelpers = {
 		}
 	},
 
-	// Navigation helpers
+	// maybe keep ? search bar might need it
 	goToObject: (engine: StellariumEngine | null, objId: string, options?: GoToOptions): void => {
 		if (!engine) return;
 		engine.goToObject(objId, options);
-	},
-
-	goToCoordinates: (
-		engine: StellariumEngine | null,
-		longitude: number,
-		latitude: number,
-		duration?: number,
-	): void => {
-		if (!engine) return;
-		engine.goTo(longitude, latitude, duration);
 	},
 
 	// Search and object info helpers
@@ -227,37 +141,6 @@ const swh: SEngineHelpers = {
 			console.error(error);
 			return null;
 		}
-	},
-
-	getObjectInfo: (engine: StellariumEngine | null, objId: string): ObjectInfo | null => {
-		if (!engine) return null;
-		return engine.getObjectInfo(objId);
-	},
-
-	// Coordinate conversion
-	screenToSky: (engine: StellariumEngine | null, x: number, y: number): SkyPosition | null => {
-		if (!engine) return null;
-		return engine.pointToValues(x, y);
-	},
-
-	skyToScreen: (
-		engine: StellariumEngine | null,
-		ra: number,
-		dec: number,
-	): [number, number] | null => {
-		if (!engine) return null;
-		return engine.valuesToPoint(ra, dec);
-	},
-
-	// Utility helpers
-	takeScreenshot: (engine: StellariumEngine | null): string | null => {
-		if (!engine) return null;
-		return engine.screenshot();
-	},
-
-	getConstellationBoundaries: (engine: StellariumEngine | null): ConstellationBoundary[] => {
-		if (!engine) return [];
-		return engine.getConstellationBoundaries();
 	},
 
 	// Skyculture helpers
