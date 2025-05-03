@@ -17,7 +17,6 @@ declare global {
 		getMJD(): number;
 	}
 
-
 	// Core observer interface for location and time settings
 	interface StellariumObserver {
 		longitude: number;
@@ -77,7 +76,6 @@ declare global {
 		stars: StellariumStars;
 		constellations: StellariumConstellations;
 		skycultures: StellariumSkycultures;
-
 	}
 
 	// Calendar module for date/time management
@@ -159,7 +157,6 @@ declare global {
 }
 
 export interface SEngineHelpers {
-  
 	// Observer location helpers
 	setObserverLocation: (
 		engine: StellariumEngine | null,
@@ -167,60 +164,31 @@ export interface SEngineHelpers {
 		latitude: number,
 		elevation?: number,
 	) => void;
-	setObserverLocationByAddress: (engine: StellariumEngine | null, address: string) => Promise<void>;
 
 	// View control helpers
-	getFOV: (engine: StellariumEngine | null) => number;
 	setFOV: (engine: StellariumEngine | null, fov: number) => void;
-	getViewportSize: (engine: StellariumEngine | null) => [number, number];
-	setViewportSize: (engine: StellariumEngine | null, width: number, height: number) => void;
 
 	// Display settings helpers
 	toggleAtmosphere: (engine: StellariumEngine | null, visible?: boolean) => void;
 	toggleStars: (engine: StellariumEngine | null, visible?: boolean) => void;
 	toggleConstellations: (engine: StellariumEngine | null, visible?: boolean) => void;
 
-	setStarSize: (engine: StellariumEngine | null, size: number) => void;
-	setProjection: (engine: StellariumEngine | null, type: string) => void;
-
 	// Landscape helpers
-	getLandscapes: (engine: StellariumEngine | null) => string[];
 	setLandscape: (engine: StellariumEngine | null, landscapeName: string) => void;
 	toggleLandscapeVisibility: (engine: StellariumEngine | null, visible?: boolean) => void;
 
 	// Navigation helpers
 	goToObject: (engine: StellariumEngine | null, objId: string, options?: GoToOptions) => void;
-	goToCoordinates: (
-		engine: StellariumEngine | null,
-		longitude: number,
-		latitude: number,
-		duration?: number,
-	) => void;
 
 	// Search and object info helpers
 	searchObjects: (query: string, limit: number) => Promise<SearchResult[]>;
 
 	searchObject: (query: string) => Promise<SearchResult | null>;
 
-	getObjectInfo: (engine: StellariumEngine | null, objId: string) => ObjectInfo | null;
-
-	// Coordinate conversion
-	screenToSky: (engine: StellariumEngine | null, x: number, y: number) => SkyPosition | null;
-	skyToScreen: (
-		engine: StellariumEngine | null,
-		ra: number,
-		dec: number,
-	) => [number, number] | null;
-
-	// Utility helpers
-	takeScreenshot: (engine: StellariumEngine | null) => string | null;
-	getConstellationBoundaries: (engine: StellariumEngine | null) => ConstellationBoundary[];
-
 	// Skyculture helpers
 	getSkycultures: (engine: StellariumEngine | null) => string[];
 	getCurrentSkyculture: (engine: StellariumEngine | null) => string;
 	setSkyculture: (engine: StellariumEngine | null, skyculture: string) => void;
-
 
 	// Data helpers
 	addDataSource: (engine: StellariumEngine | null, url: string) => Promise<void>;
