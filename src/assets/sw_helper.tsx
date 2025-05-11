@@ -96,50 +96,22 @@ const swh: SEngineHelpers = {
 	},
 
 	// Search and object info helpers
-	searchObjects: async (result: string, limit: number): Promise<SearchResults> => {
-		//Use Proxy Durign Dev otherwise CORS
-		const apiUrl =
-			import.meta.env.MODE === 'development'
-				? //Local Proxy Path
-					'/api/v1/skysources/?q=' + result + '&limit=' + limit
-				: //Real API for Production
-					import.meta.env.VITE_NOCTUASKY_API_SERVER +
-					'/api/v1/skysources/?q=' +
-					result +
-					'&limit=' +
-					limit;
+	searchObjects: async (result: string, limit: number, engine: StellariumEngine | null = null): Promise<SearchResults> => {
+		// Import dynamically to avoid circular dependencies
+		const { searchSkyObjects } = await import('../utils/skyDataSearch');
 
 		try {
-			const response = await fetch(apiUrl);
-			if (!response.ok) {
-				throw new Error('Failed to fetch data');
+			// Get the current skyculture if engine is provided
+			let currentSkyculture = '';
+			if (engine) {
+				currentSkyculture = engine.core.skycultures.current_id;
 			}
-			return await response.json();
+			
+			// Use the local sky data search implementation
+			return await searchSkyObjects(result, limit, currentSkyculture);
 		} catch (error) {
-			console.error(error);
+			console.error('Error searching sky objects:', error);
 			return [];
-		}
-	},
-
-	// Search and object info helpers
-	searchObject: async (result: string): Promise<SearchResult | null> => {
-		//Use Proxy Durign Dev otherwise CORS
-		const apiUrl =
-			import.meta.env.MODE === 'development'
-				? //Local Proxy Path
-					'/api/v1/skysources/?q=' + result
-				: //Real API for Production
-					import.meta.env.VITE_NOCTUASKY_API_SERVER + '/api/v1/skysources/?q=' + result;
-
-		try {
-			const response = await fetch(apiUrl);
-			if (!response.ok) {
-				throw new Error('Failed to fetch data');
-			}
-			return await response.json();
-		} catch (error) {
-			console.error(error);
-			return null;
 		}
 	},
 
