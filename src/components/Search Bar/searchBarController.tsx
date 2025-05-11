@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import swh from '../../assets/sw_helper';
 import SearchBar from './searchbar';
+import SkyObjectInfoPopup from '../SkyObjectInfoPopup';
 import type { SearchResults, SearchResult } from '../../types/stellarium';
 import { useSEngine } from '../../context/SEngineContext';
 
@@ -8,6 +9,8 @@ export default function SearchBarController() {
 	const [search, setSearch] = useState<string>('');
 	const [results, setResults] = useState<SearchResults>([]);
 	const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+	const [selectedObject, setSelectedObject] = useState<SearchResult | null>(null);
+	const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 	const { engine } = useSEngine();
 
 	useEffect(() => {
@@ -116,17 +119,33 @@ export default function SearchBarController() {
 			console.error('Navigation error:', error);
 		}
 
+		// Show object info popup
+		setSelectedObject(result);
+		setIsPopupOpen(true);
+
 		// Close the search dropdown
 		onClose();
 	};
 
+	// Handle popup close
+	const handlePopupClose = () => {
+		setIsPopupOpen(false);
+	};
+
 	return (
-		<SearchBar
-			search={search}
-			results={results}
-			onSearch={handleChange}
-			onClose={onClose}
-			onResultClick={handleResultClick}
-		/>
+		<>
+			<SearchBar
+				search={search}
+				results={results}
+				onSearch={handleChange}
+				onClose={onClose}
+				onResultClick={handleResultClick}
+			/>
+			<SkyObjectInfoPopup
+				isOpen={isPopupOpen}
+				onClose={handlePopupClose}
+				skyObject={selectedObject}
+			/>
+		</>
 	);
 }
