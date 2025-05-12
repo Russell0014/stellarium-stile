@@ -2,7 +2,7 @@ import SearchBar from '../../Search Bar/searchbar';
 import type { SearchResults } from '@/types/stellarium';
 import { describe, it, expect, beforeAll, beforeEach, vi, afterEach } from 'vitest';
 
-import { render } from '../tests/init/index';
+import { render } from '../../tests/init/index';
 
 describe('render', () => {
 	it('displays an empty list', () => {

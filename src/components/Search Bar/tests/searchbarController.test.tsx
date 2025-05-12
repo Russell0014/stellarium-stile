@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import SearchBarController from '../searchBarController';
 
-import { render } from '../tests/init/index';
+import { render } from '../../tests/init/index';
 import { userEvent } from '@vitest/browser/context';
 import swh from '../../../assets/sw_helper';
 import { SearchResults } from '@/types/stellarium';
