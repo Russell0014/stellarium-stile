@@ -12,16 +12,14 @@ type Props = {
 export default function SearchBar({ search, results, onSearch, onClose, onResultClick }: Props) {
 	return (
 		<SearchDiv>
-			<div>
-				<SearchText
-					placeholder='Search...'
-					value={search}
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-						onSearch(e.target.value.toUpperCase().replace(/\s+/g, ''));
-					}}
-					onBlur={onClose}
-				/>
-			</div>
+			<SearchText
+				placeholder='Search for stars, constellation...'
+				value={search}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+					onSearch(e.target.value.toUpperCase().replace(/\s+/g, ''));
+				}}
+				onBlur={onClose}
+			/>
 			{results.length > 0 && (
 				<SearchDropDown>
 					{results.map((searchresult) => (
@@ -40,25 +38,24 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 
 const SearchDiv = styled.div`
 	display: flex;
-	align-items: center;
 	flex-direction: column;
 	align-self: start;
 	position: relative;
-	width: 200px;
+	width: 300px;
 `;
 
 const SearchText = styled.input`
-	background: none;
 	id: search;
-	border: 0;
-	border-bottom: 2px solid white;
+	background: rgba(0, 0, 0, 0.7);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 0.33rem;
 	color: white;
-	padding: 8px 4px;
-	width: 100%;
-	font-size: 16px;
+	padding: 0.5rem 1.25rem;
 
 	&:focus {
 		outline: none;
+		border-color: rgba(255, 255, 255);
 	}
 
 	&::placeholder {
