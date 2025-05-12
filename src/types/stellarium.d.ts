@@ -181,7 +181,7 @@ export interface SEngineHelpers {
 	goToObject: (engine: StellariumEngine | null, objId: string, options?: GoToOptions) => void;
 
 	// Search and object info helpers
-	searchObjects: (query: string, limit: number) => Promise<SearchResult[]>;
+	searchObjects: (query: string, limit: number, engine?: StellariumEngine | null) => Promise<SearchResult[]>;
 
 	searchObject: (query: string) => Promise<SearchResult | null>;
 
