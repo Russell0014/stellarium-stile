@@ -31,7 +31,10 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 							onMouseDown={(e) => e.preventDefault()}
 							onClick={() => onResultClick(searchresult)}>
 							<img src={icon_search} />
-							{searchresult.short_name}
+							<p>
+								{searchresult.short_name}
+								<span>{searchresult.model}</span>
+							</p>
 						</SearchResultItem>
 					))}
 				</SearchDropDown>
@@ -45,7 +48,7 @@ const SearchDiv = styled.div`
 	flex-direction: column;
 	align-self: start;
 	position: relative;
-	width: 350px;
+	width: 380px;
 `;
 
 const SearchText = styled.input`
@@ -87,15 +90,26 @@ const SearchDropDown = styled.div`
 const SearchResultItem = styled.div`
 	display: flex;
 	align-items: center;
-	gap: 0.5rem;
-	padding: 1.25rem 1rem;
+	gap: 1rem;
+	padding: 0rem 1.75rem;
 	cursor: pointer;
 	transition: background-color 0.2s;
 	color: white;
 	text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
-	font-weight: 500;
+	font-weight: 700;
 
 	&:hover {
 		background-color: rgba(255, 255, 255, 0.3);
+	}
+
+	p {
+		display: flex;
+		flex-direction: column;
+		text-transform: capitalize;
+	}
+
+	p span {
+		font-size: 14px;
+		font-weight: 400;
 	}
 `;
