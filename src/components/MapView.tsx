@@ -4,8 +4,6 @@ import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
-import ToggleControls from './ToggleControls';
-
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -103,7 +101,6 @@ export default function MapView() {
 
 			// Set default skyculture
 			core.skycultures.current_id = 'kamilaroi';
-
 		}
 	}, [engine, initEngine]);
 
@@ -123,7 +120,6 @@ export default function MapView() {
 					zIndex: '0',
 				}}
 			/>
-			<ToggleControls />
 			<Footer />
 		</>
 	);

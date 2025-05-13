@@ -1,13 +1,19 @@
 import styled from 'styled-components';
-import SliderComponent from './slider';
-import SelectionComponent from './selectionButtons';
-import type { Slidr } from './slider';
+import TimeUpdateComponent from './TimeUpdateComponent';
 import { Moment } from 'moment';
-import { useState } from 'react';
+import DayOfYearSlider from './DayOfYearSlider';
+import place from '@/assets/icons/place.svg';
+
+export type Slidr = {
+	defaultValue: number[];
+	min: number;
+	max: number;
+	step: number;
+	onValueChange: (n: number) => void;
+};
 
 type Props = {
 	DateSlider: Slidr;
-	TimeSlider: Slidr;
 	resetTime: () => void;
 	moment: Moment;
 	changeDateTime: (s: string, n: number) => void;
@@ -15,94 +21,77 @@ type Props = {
 
 export default function DateTime({
 	DateSlider,
-	TimeSlider,
+
 	resetTime,
 	changeDateTime,
 	moment,
 }: Props) {
-	const [isVisible, setVisible] = useState(false);
-
-	function handleClick() {
-		setVisible(!isVisible);
-	}
 	return (
-		<>
-			{!isVisible && (
-				<button onClick={handleClick}>
-					<div>
-						{moment.format('DD') + '/'}
-						{moment.format('MM') + '/'}
-						{moment.format('YYYY')}
-					</div>
-					{moment.format('HH') + ':'}
-					{moment.format('mm') + ':'}
-					{moment.format('ss')}
-				</button>
-			)}
-			{isVisible && (
-				<DateTimeContainer>
-					<button onClick={handleClick}>x</button>
-					<SelectionComponent
-						moment={moment}
-						changeDateTime={changeDateTime}
+		<div>
+			<div>
+				<DayOfYearSlider
+					value={DateSlider.defaultValue[0]}
+					min={DateSlider.min}
+					max={DateSlider.max}
+					onValueChange={(v) => DateSlider.onValueChange(v)}
+				/>
+			</div>
+
+			<ExtraControlsContainer>
+				{/* This is currently hard coded becuase it cannot be changed, 
+				and the only thing saved in the engine is the latitude and longitude 
+				if we add a way to change locations, we'd need to update this */}
+				<SVGWrapper>
+					<img
+						src={place}
+						alt='star icon'
 					/>
-					<p onClick={resetTime}>Reset Time </p>
+					<p>Brewarrina Fish Traps</p>
+				</SVGWrapper>
 
-					<SliderContainer>
-						<SliderLabel>Day of Year:</SliderLabel>
-						<SliderComponent
-							defaultValue={DateSlider.defaultValue}
-							min={DateSlider.min}
-							max={DateSlider.max}
-							step={DateSlider.step}
-							onValueChange={DateSlider.onValueChange}
-						/>
-					</SliderContainer>
+				<TimeUpdateComponent
+					moment={moment}
+					changeDateTime={changeDateTime}
+				/>
 
-					<SliderContainer>
-						<SliderLabel>Time of Day:</SliderLabel>
-						<SliderComponent
-							defaultValue={TimeSlider.defaultValue}
-							min={TimeSlider.min}
-							max={TimeSlider.max}
-							step={TimeSlider.step}
-							onValueChange={TimeSlider.onValueChange}
-						/>
-					</SliderContainer>
-				</DateTimeContainer>
-			)}
-		</>
+				<ResetButton onClick={resetTime}>
+					<p>Reset</p>
+				</ResetButton>
+			</ExtraControlsContainer>
+		</div>
 	);
 }
 
-//Fix Div Displays
-//width: 20vw;
-//height: 15vh;
-const DateTimeContainer = styled.div`
-	position: fixed;
-	bottom: 50px;
-	left: 50%;
-	padding-top: 10px;
-	background: rgba(255, 255, 255, 0.1);
+const SVGWrapper = styled.div`
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	width: 350px;
-	height: 367px;
-	border-radius: 5px;
-	z-index: 1;
-`;
-
-const SliderContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 80%;
-	margin: 8px 0;
-`;
-
-const SliderLabel = styled.div`
+	gap: 8px;
 	color: white;
+`;
+
+const ExtraControlsContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	font-family: 'Roboto Mono';
 	font-size: 14px;
-	margin-bottom: 5px;
+	align-items: center;
+`;
+
+const ResetButton = styled.button`
+	font-family: 'Roboto Mono';
+	padding: 4px 8px;
+
+	height: 30px;
+	display: flex;
+	align-items: center;
+
+	cursor: pointer;
+
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	color: white;
+	background: rgba(0, 0, 0, 0.5);
+	&:hover {
+		background: rgba(0, 0, 0, 0.8);
+	}
 `;

@@ -1,8 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import DateTime from '../dateTime';
-import SelectionButton from '../selectionButtons';
+import DateTime, { Slidr } from '../dateTime';
+import SelectionButton from '../TimeUpdateComponent';
 import { render } from '../../tests/init/index';
-import { Slidr } from '../slider';
 import moment from 'moment';
 
 const slider: Slidr = {
@@ -19,7 +18,6 @@ describe('DateTime', () => {
 		const { asFragment } = render(
 			<DateTime
 				DateSlider={slider}
-				TimeSlider={slider}
 				resetTime={() => {}}
 				moment={moment_}
 				changeDateTime={(s: string, n: number) => {}}
