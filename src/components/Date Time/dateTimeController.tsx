@@ -15,7 +15,7 @@ export default function DateTimeController() {
 
 	// Helper function to get days in year
 	function getDaysInYear(year: number): number {
-		return ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 366 : 365;
+		return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365;
 	}
 
 	// Helper function to get day of year (1-366)
@@ -37,7 +37,7 @@ export default function DateTimeController() {
 		// Set date slider based on day of year (1-366)
 		const dayOfYear = getDayOfYear(d);
 		setDateSlider(dayOfYear);
-		
+
 		// Calculate time slider position based on seconds since midnight
 		const hours = d.getHours();
 		const minutes = d.getMinutes();
@@ -91,6 +91,8 @@ export default function DateTimeController() {
 
 	// Handler for the date slider
 	function handleDateSlider(n: number) {
+		if (!engine?.core) return;
+
 		setIsRunning(false);
 
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);

@@ -3,7 +3,7 @@ import SliderComponent from './slider';
 import SelectionComponent from './selectionButtons';
 import type { Slidr } from './slider';
 import { Moment } from 'moment';
-import { useState } from 'react';
+import DayOfYearSlider from './DayOfYearSlider';
 
 type Props = {
 	DateSlider: Slidr;
@@ -20,78 +20,36 @@ export default function DateTime({
 	changeDateTime,
 	moment,
 }: Props) {
-	const [isVisible, setVisible] = useState(false);
-
-	function handleClick() {
-		setVisible(!isVisible);
-	}
 	return (
-		<>
-			{!isVisible && (
-				<button onClick={handleClick}>
-					<div>
-						{moment.format('DD') + '/'}
-						{moment.format('MM') + '/'}
-						{moment.format('YYYY')}
-					</div>
-					{moment.format('HH') + ':'}
-					{moment.format('mm') + ':'}
-					{moment.format('ss')}
-				</button>
-			)}
-			{isVisible && (
-				<DateTimeContainer>
-					<button onClick={handleClick}>x</button>
-					<SelectionComponent
-						moment={moment}
-						changeDateTime={changeDateTime}
-					/>
-					<p onClick={resetTime}>Reset Time </p>
+		<div>
+			{/* <SelectionComponent
+				moment={moment}
+				changeDateTime={changeDateTime}
+			/>
+			<p onClick={resetTime}>Reset Time </p> */}
 
-					<SliderContainer>
-						<SliderLabel>Day of Year:</SliderLabel>
-						<SliderComponent
-							defaultValue={DateSlider.defaultValue}
-							min={DateSlider.min}
-							max={DateSlider.max}
-							step={DateSlider.step}
-							onValueChange={DateSlider.onValueChange}
-						/>
-					</SliderContainer>
+			<div>
+				<DayOfYearSlider
+					value={DateSlider.defaultValue[0]}
+					min={DateSlider.min}
+					max={DateSlider.max}
+					onValueChange={(v) => DateSlider.onValueChange(v)}
+				/>
+			</div>
 
-					<SliderContainer>
-						<SliderLabel>Time of Day:</SliderLabel>
-						<SliderComponent
-							defaultValue={TimeSlider.defaultValue}
-							min={TimeSlider.min}
-							max={TimeSlider.max}
-							step={TimeSlider.step}
-							onValueChange={TimeSlider.onValueChange}
-						/>
-					</SliderContainer>
-				</DateTimeContainer>
-			)}
-		</>
+			{/* <SliderContainer>
+				<SliderLabel>Time of Day:</SliderLabel>
+				<SliderComponent
+					defaultValue={TimeSlider.defaultValue}
+					min={TimeSlider.min}
+					max={TimeSlider.max}
+					step={TimeSlider.step}
+					onValueChange={TimeSlider.onValueChange}
+				/>
+			</SliderContainer> */}
+		</div>
 	);
 }
-
-//Fix Div Displays
-//width: 20vw;
-//height: 15vh;
-const DateTimeContainer = styled.div`
-	position: fixed;
-	bottom: 50px;
-	left: 50%;
-	padding-top: 10px;
-	background: rgba(255, 255, 255, 0.1);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 350px;
-	height: 367px;
-	border-radius: 5px;
-	z-index: 1;
-`;
 
 const SliderContainer = styled.div`
 	display: flex;
