@@ -4,11 +4,16 @@ import moment from 'moment';
 import styled from 'styled-components';
 
 type Props = {
-	/** 1-based day-of-year (1 … 365/366) */
 	value: number;
 	min: number;
 	max: number;
 	onValueChange: (n: number) => void;
+};
+
+type TickData = {
+	position: number;
+	isMonthStart: boolean;
+	monthIndex: number;
 };
 
 const monthShort = [
@@ -56,24 +61,19 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 		return starts;
 	}, []);
 
-	// Initialize timeline width and position
 	useEffect(() => {
 		if (containerRef.current) {
-			// Reduce the pixels per day to make months closer together
-			// 1.5px per day instead of 3px
-			totalWidth.current = (max - min + 1) * 1.5;
+			totalWidth.current = (max - min + 1) * 3;
 			updatePositionFromValue(value);
 		}
 	}, []);
 
-	// Sync position with external value changes
 	useEffect(() => {
 		if (!isDragging) {
 			updatePositionFromValue(value);
 		}
 	}, [value, isDragging]);
 
-	// Convert timeline position to day value
 	const calculateValueFromPosition = (offsetX: number) => {
 		if (!containerRef.current) return value;
 
@@ -86,7 +86,6 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 		return Math.max(min, Math.min(max, dayAtCenter));
 	};
 
-	// Convert day value to timeline position
 	const updatePositionFromValue = (day: number) => {
 		if (!containerRef.current) return;
 
@@ -98,7 +97,6 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 		setOffset(-newOffset);
 	};
 
-	// Drag interaction handlers
 	const handleMouseDown = (e: React.MouseEvent) => {
 		setIsDragging(true);
 		setStartX(e.clientX);
@@ -147,7 +145,6 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 		setIsDragging(false);
 	};
 
-	// Global event listeners for drag handling
 	useEffect(() => {
 		const handleGlobalMouseUp = () => {
 			if (isDragging) {
@@ -187,19 +184,15 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 					{day} {monthName}
 				</div>
 				<span>▼</span>
-
-				<TickerIndicator />
 			</Ticker>
 
 			<TrackContainer ref={containerRef}>
-				<CenterIndicator />
-
 				<Timeline
 					ref={timelineRef}
 					style={{
 						width: `${totalWidth.current}px`,
 						transform: `translateX(${offset}px)`,
-						transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+						transition: isDragging ? 'none' : 'transform 0.15s ease-out',
 					}}
 					onMouseDown={handleMouseDown}
 					onTouchStart={handleTouchStart}
@@ -209,45 +202,122 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 					onTouchEnd={handleDragEnd}
 					onMouseLeave={handleDragEnd}
 					className={isDragging ? 'dragging' : ''}>
-					{/* Month markers */}
-					{monthStarts.map((start, idx) => (
-						<MonthTickContainer
-							key={idx}
-							style={{
-								// Ensure the tick is centered, not left-aligned with the day position
-								left: `${((start - min) / (max - min + 1)) * totalWidth.current}px`,
-								transform: 'translateX(-50%)',
-							}}>
-							<MonthTick $isActive={value >= start && value < (monthStarts[idx + 1] ?? 367)} />
-							<MonthLabel $isActive={value >= start && value < (monthStarts[idx + 1] ?? 367)}>
-								{monthShort[idx]}
-							</MonthLabel>
-						</MonthTickContainer>
-					))}
-					{/* Day markers (every 10 days) */}
-					{Array.from({ length: Math.ceil((max - min + 1) / 10) }).map((_, idx) => {
-						const dayValue = min + idx * 10;
-						return (
-							<DayTick
-								key={dayValue}
-								style={{
-									left: `${((dayValue - min) / (max - min + 1)) * totalWidth.current}px`,
-								}}
-								$isActive={Math.abs(value - dayValue) < 2}
-							/>
-						);
-					})}
+					{(() => {
+						const allTicks: TickData[] = [];
+
+						monthStarts.forEach((start, idx) => {
+							allTicks.push({
+								position: start,
+								isMonthStart: true,
+								monthIndex: idx,
+							});
+						});
+
+						// Add intermediate ticks
+						monthStarts.forEach((start, idx) => {
+							const nextStart = monthStarts[idx + 1] || 366;
+							const interval = Math.floor((nextStart - start) / 3);
+
+							[1, 2].forEach((tickNum) => {
+								const dayValue = start + interval * tickNum;
+								if (dayValue < nextStart) {
+									allTicks.push({
+										position: dayValue,
+										isMonthStart: false,
+										monthIndex: idx,
+									});
+								}
+							});
+						});
+
+						// Find the tick closest to the current value
+						let closestTick: TickData | null = null;
+						let minDistance = Infinity;
+
+						allTicks.forEach((tick) => {
+							const distance = Math.abs(tick.position - value);
+							if (distance < minDistance) {
+								minDistance = distance;
+								closestTick = tick;
+							}
+						});
+
+						return allTicks.map((tick, index) => {
+							const distanceFromCenter = Math.abs(tick.position - value);
+							const isClosest = tick === closestTick;
+							const height = isClosest
+								? 35
+								: Math.max(10, 30 - Math.min(distanceFromCenter * 0.8, 60));
+
+							return (
+								<TickContainer
+									key={`tick-${index}`}
+									style={{
+										left: `${((tick.position - min) / (max - min + 1)) * totalWidth.current}px`,
+									}}>
+									<TickWrapper>
+										<Tick
+											$isActive={isClosest}
+											style={{
+												width: '2px',
+												transform: isClosest ? 'scaleY(1)' : `scaleY(${height / 35})`,
+												transformOrigin: 'center',
+											}}
+										/>
+									</TickWrapper>
+									{tick.isMonthStart && (
+										<TickLabel $isActive={isClosest}>{monthShort[tick.monthIndex]}</TickLabel>
+									)}
+								</TickContainer>
+							);
+						});
+					})()}
 				</Timeline>
 			</TrackContainer>
 		</Container>
 	);
 }
 
-const Container = styled.div`
+const TickWrapper = styled.div`
+	height: 35px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	/* Add will-change for better performance */
+	will-change: transform;
+`;
+
+const Tick = styled.div<{ $isActive: boolean }>`
+	width: 2px;
+	height: 35px;
+	background: ${(p) => (p.$isActive ? '#fff' : 'rgba(255, 255, 255, 0.8)')};
+	opacity: ${(p) => (p.$isActive ? 1 : 0.6)};
+	transform-origin: center;
+	will-change: transform, opacity;
+	transition:
+		transform 0.15s ease-out,
+		opacity 0.15s ease-out,
+		background 0.15s ease-out;
+`;
+
+const TickLabel = styled.span<{ $isActive: boolean }>`
+	font-size: 14px;
+	margin-top: 8px;
+	color: ${(p) => (p.$isActive ? '#fff' : 'rgba(255, 255, 255, 0.8)')};
+	transform: ${(p) => (p.$isActive ? 'scale(1.1)' : 'none')};
+	transition: all 0.15s ease-out; /* Faster transition */
+	white-space: nowrap;
+	opacity: ${(p) => (p.$isActive ? 1 : 0.8)};
+	will-change: transform, opacity;
+`;
+
+const TickContainer = styled.div`
+	position: absolute;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 100%;
+	transform: translateX(-50%);
 `;
 
 const Ticker = styled.div`
@@ -257,11 +327,19 @@ const Ticker = styled.div`
 	color: white;
 	font-weight: 600;
 	letter-spacing: 0.04em;
+	margin-bottom: 10px;
 
 	span {
 		font-size: 12px;
 		margin-top: 4px;
 	}
+`;
+
+const Container = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
 `;
 
 const TrackContainer = styled.div`
@@ -278,26 +356,6 @@ const TrackContainer = styled.div`
 	position: relative;
 	height: 85px;
 	overflow: hidden;
-`;
-
-const TickerIndicator = styled.div`
-	width: 2px;
-	height: 10px;
-	background: #fff;
-	margin-top: 4px;
-`;
-
-const CenterIndicator = styled.div`
-	position: absolute;
-	top: 0;
-	height: 70px; /* Adjust as needed */
-	left: 50%;
-	width: 2px;
-	background: #fff;
-	transform: translateX(-50%);
-	z-index: 10;
-	pointer-events: none;
-	max-height: 55px;
 `;
 
 const Timeline = styled.div`
@@ -317,28 +375,4 @@ const MonthTickContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-`;
-
-const MonthTick = styled.div<{ $isActive: boolean }>`
-	width: 2px;
-	height: 50px;
-	background: white;
-`;
-
-const MonthLabel = styled.span<{ $isActive: boolean }>`
-	font-size: 14px;
-	margin-top: 8px;
-	color: ${(p) => (p.$isActive ? '#fff' : 'rgba(255, 255, 255, 0.8)')};
-	transform: ${(p) => (p.$isActive ? 'scale(1.1)' : 'none')};
-	transition: all 0.2s;
-	white-space: nowrap;
-`;
-
-const DayTick = styled.div<{ $isActive: boolean }>`
-	position: absolute;
-	top: 20px;
-	width: 1px;
-	height: 10px;
-	background: ${(p) => (p.$isActive ? '#fff' : 'rgba(255, 255, 255, 0.50)')};
-	opacity: ${(p) => (p.$isActive ? 1 : 0.5)};
 `;
