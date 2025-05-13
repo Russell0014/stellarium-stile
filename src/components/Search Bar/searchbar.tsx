@@ -3,6 +3,14 @@ import type { SearchResults, SearchResult } from '../../types/stellarium';
 
 // temp for now
 import icon_search from '@/assets/icons/search.svg';
+import constellation from '@/assets/icons/constellation.svg';
+import star from '@/assets/icons/star.svg';
+import planet from '@/assets/icons/planet.svg';
+import galaxy from '@/assets/icons/galaxy.svg';
+import cluster from '@/assets/icons/open_galactic_cluster.svg';
+import interstellar from '@/assets/icons/interstellar_matter.svg';
+import sun from '@/assets/icons/sun.svg';
+import moon from '@/assets/icons/moon.svg';
 
 type Props = {
 	search: string;
@@ -11,6 +19,18 @@ type Props = {
 	onClose: () => void;
 	onResultClick: (result: SearchResult) => void;
 };
+
+const modelIcons = {
+	star: star,
+	constellation: constellation,
+	planet: planet,
+	galaxy: galaxy,
+	cluster: cluster,
+	interstellar: interstellar,
+	sun: sun,
+	moon: moon,
+};
+type ModelName = keyof typeof modelIcons;
 
 export default function SearchBar({ search, results, onSearch, onClose, onResultClick }: Props) {
 	return (
@@ -30,7 +50,7 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 							key={searchresult.match}
 							onMouseDown={(e) => e.preventDefault()}
 							onClick={() => onResultClick(searchresult)}>
-							<img src={icon_search} />
+							<img src={modelIcons[(searchresult.model as ModelName) || 'galaxy']} />
 							<p>
 								{searchresult.short_name}
 								<span>{searchresult.model}</span>
