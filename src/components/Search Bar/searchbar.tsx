@@ -41,7 +41,6 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 					onSearch(e.target.value.toUpperCase().replace(/\s+/g, ''));
 				}}
-				onBlur={onClose}
 			/>
 			{results.length > 0 && (
 				<SearchDropDown>
@@ -64,22 +63,22 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 }
 
 const SearchDiv = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-self: start;
 	position: relative;
-	width: 400px;
+	max-width: 376px;
+	box-sizing: border-box;
 `;
 
 const SearchText = styled.input`
 	id: search;
-	background: rgba(0, 0, 0, 0.6);
-	backdrop-filter: blur(5px);
+	box-sizing: border-box;
+	background: rgba(0, 0, 0, 0.5);
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	border: 1px solid rgba(255, 255, 255, 0.3);
+	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 8px;
 	color: white;
-	padding: 0.5rem 1.25rem;
+	padding: 0.5rem 0.75rem;
+	backdrop-filter: blur(5px);
+	width: 100%;
 
 	&:focus {
 		outline: none;
@@ -91,23 +90,22 @@ const SearchText = styled.input`
 `;
 
 const SearchDropDown = styled.div`
-	flex-direction: column;
-	padding-inline: 8px 0;
-	background: rgba(0, 0, 0, 0.6);
-	backdrop-filter: blur(5px);
-	margin-top: 0.5rem;
-	border-radius: 8px;
-	width: calc(100% - 10px);
-	max-height: calc(100vh - 7.5rem);
-	overflow-y: auto;
+	box-sizing: border-box;
 	position: absolute;
-	top: 100%;
-	z-index: 10;
+	background: rgba(0, 0, 0, 0.5);
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	border: 1px solid rgba(255, 255, 255, 0.3);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 8px;
+	padding-block: 0.75rem;
+	top: calc(100% + 1rem);
+	width: 100%;
+	max-height: 527px;
+	overflow: auto;
+	scrollbar-gutter: stable both-edges;
 
+	/* scrollbar */
 	&::-webkit-scrollbar {
-		width: 20px;
+		width: 1.25rem;
 	}
 
 	&::-webkit-scrollbar-track {
@@ -117,7 +115,7 @@ const SearchDropDown = styled.div`
 	&::-webkit-scrollbar-thumb {
 		background-color: rgba(255, 255, 255, 0.3);
 		border-radius: 999px;
-		border: 7px solid transparent;
+		border: 0.4em solid transparent;
 		background-clip: content-box;
 	}
 
@@ -129,23 +127,14 @@ const SearchDropDown = styled.div`
 const SearchResultItem = styled.div`
 	display: flex;
 	align-items: center;
-	gap: 1rem;
-	padding: 0rem 1.75rem;
-	cursor: pointer;
-	transition: background-color 0.2s;
+	gap: 2rem;
+	padding: 0.25rem 0.75rem;
 	color: white;
+	height: 65px;
 	text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 	font-weight: 700;
 	border: none;
 	border-radius: 5px;
-
-	&:first-child {
-		margin-top: 8px;
-	}
-
-	&:last-child {
-		margin-bottom: 8px;
-	}
 
 	&:hover {
 		background-color: rgba(255, 255, 255, 0.3);
@@ -161,4 +150,7 @@ const SearchResultItem = styled.div`
 		font-size: 14px;
 		font-weight: 400;
 	}
+
+	cursor: pointer;
+	transition: background-color 0.2s;
 `;
