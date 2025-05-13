@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import DateTime from '../dateTime';
-import SelectionButton from '../selectionButtons';
+import SelectionButton from '../TimeUpdateComponent';
 import { render } from '../../tests/init/index';
 import { Slidr } from '../slider';
 import moment from 'moment';

@@ -267,7 +267,7 @@ const Ticker = styled.div`
 const TrackContainer = styled.div`
 	position: relative;
 	width: 400px;
-	height: 110px;
+	height: 85px;
 	overflow: hidden;
 `;
 

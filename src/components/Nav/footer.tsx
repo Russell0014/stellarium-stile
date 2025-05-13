@@ -96,7 +96,7 @@ const StyledP = styled.p`
 	margin: 0;
 `;
 
-const StyledInlineButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
+export const StyledInlineButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
 	justify-content: center;
 	min-width: 250px;
 	height: 40px;
@@ -164,7 +164,7 @@ const FooterContainer = styled.div`
 	display: flex;
 	padding: 24px;
 	justify-content: space-between;
-	align-items: center;
+	align-items: end;
 `;
 
 const FooterStyle = styled.div`
