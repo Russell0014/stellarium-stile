@@ -265,8 +265,17 @@ const Ticker = styled.div`
 `;
 
 const TrackContainer = styled.div`
+	@media (min-width: 1000px) {
+		width: 400px;
+	}
+	@media (min-width: 800px) {
+		width: 500px;
+	}
+	@media (min-width: 1200px) {
+		width: 700px;
+	}
+
 	position: relative;
-	width: 400px;
 	height: 85px;
 	overflow: hidden;
 `;

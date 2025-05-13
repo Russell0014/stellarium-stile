@@ -258,7 +258,6 @@ export default function DateTimeController() {
 	return (
 		<DateTime
 			DateSlider={dateSliderConfig}
-			TimeSlider={timeSliderConfig}
 			resetTime={resetTime}
 			changeDateTime={changeDateTime}
 			moment={Moment(dateTime)}

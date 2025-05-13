@@ -1,13 +1,19 @@
 import styled from 'styled-components';
 import TimeUpdateComponent from './TimeUpdateComponent';
-import type { Slidr } from './slider';
 import { Moment } from 'moment';
 import DayOfYearSlider from './DayOfYearSlider';
 import place from '@/assets/icons/place.svg';
 
+export type Slidr = {
+	defaultValue: number[];
+	min: number;
+	max: number;
+	step: number;
+	onValueChange: (n: number) => void;
+};
+
 type Props = {
 	DateSlider: Slidr;
-	TimeSlider: Slidr;
 	resetTime: () => void;
 	moment: Moment;
 	changeDateTime: (s: string, n: number) => void;
@@ -15,7 +21,7 @@ type Props = {
 
 export default function DateTime({
 	DateSlider,
-	TimeSlider,
+
 	resetTime,
 	changeDateTime,
 	moment,
