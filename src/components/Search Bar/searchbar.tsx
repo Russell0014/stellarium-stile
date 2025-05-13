@@ -68,7 +68,7 @@ const SearchDiv = styled.div`
 	flex-direction: column;
 	align-self: start;
 	position: relative;
-	width: 380px;
+	width: 400px;
 `;
 
 const SearchText = styled.input`
@@ -91,20 +91,39 @@ const SearchText = styled.input`
 `;
 
 const SearchDropDown = styled.div`
-	display: flex;
 	flex-direction: column;
+	padding-inline: 8px 0;
 	background: rgba(0, 0, 0, 0.6);
 	backdrop-filter: blur(5px);
 	margin-top: 0.5rem;
 	border-radius: 8px;
-	width: 100%;
-	max-height: 300px;
+	width: calc(100% - 10px);
+	max-height: calc(100vh - 7.5rem);
 	overflow-y: auto;
 	position: absolute;
 	top: 100%;
 	z-index: 10;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	border: 1px solid rgba(255, 255, 255, 0.3);
+
+	&::-webkit-scrollbar {
+		width: 20px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: rgba(255, 255, 255, 0.3);
+		border-radius: 999px;
+		border: 7px solid transparent;
+		background-clip: content-box;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background-color: #a8bbbf;
+	}
 `;
 
 const SearchResultItem = styled.div`
@@ -117,6 +136,16 @@ const SearchResultItem = styled.div`
 	color: white;
 	text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 	font-weight: 700;
+	border: none;
+	border-radius: 5px;
+
+	&:first-child {
+		margin-top: 8px;
+	}
+
+	&:last-child {
+		margin-bottom: 8px;
+	}
 
 	&:hover {
 		background-color: rgba(255, 255, 255, 0.3);
