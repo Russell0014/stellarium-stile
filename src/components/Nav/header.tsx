@@ -12,8 +12,9 @@ export default function Header() {
 const HeaderStyle = styled.div`
 	z-index: 1;
 	position: absolute;
-	top: 1rem;
-	left: 0;
-	right: 0;
-	padding-left: 2.125rem;
+	display: flex;
+	padding: 24px;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
 `;

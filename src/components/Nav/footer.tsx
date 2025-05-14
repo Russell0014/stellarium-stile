@@ -18,6 +18,8 @@ export default function Footer() {
 		const emu = engine.getObj('CON kamilaroi Emu1');
 		engine.core.selection = emu;
 		engine.pointAndLock(engine.core.selection, 0.5);
+		engine.core.selection = {};
+		engine.core.lock = {};
 	}
 
 	const [starsVisible, setStarsVisible] = useState(true);

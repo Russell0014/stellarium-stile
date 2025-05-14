@@ -35,6 +35,10 @@ type ModelName = keyof typeof modelIcons;
 export default function SearchBar({ search, results, onSearch, onClose, onResultClick }: Props) {
 	return (
 		<SearchDiv>
+			<img
+				src={icon_search}
+				alt='search icon'
+			/>
 			<SearchText
 				placeholder='Search for stars, constellation...'
 				value={search}
@@ -51,7 +55,9 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 							onClick={() => onResultClick(searchresult)}>
 							<img src={modelIcons[(searchresult.model as ModelName) || 'galaxy']} />
 							<p>
-								{searchresult.short_name}
+								{searchresult.model === 'constellation' && searchresult.names && searchresult.names.length > 0
+									? searchresult.names[0] // Use the first name (English name) for constellations
+									: searchresult.short_name}
 								<span>{searchresult.model}</span>
 							</p>
 						</SearchResultItem>
@@ -63,29 +69,29 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 }
 
 const SearchDiv = styled.div`
-	position: relative;
-	max-width: 376px;
-	box-sizing: border-box;
+	display: flex;
+	width: 376px;
+	padding: 8px 12px;
+	align-items: center;
+	gap: 4px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	background: rgba(0, 0, 0, 0.5);
 `;
 
 const SearchText = styled.input`
-	id: search;
-	box-sizing: border-box;
-	background: rgba(0, 0, 0, 0.5);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	border: 1px solid rgba(255, 255, 255, 0.25);
-	border-radius: 8px;
-	color: white;
-	padding: 0.5rem 0.75rem;
-	backdrop-filter: blur(5px);
 	width: 100%;
+	border: none;
+	background: transparent;
+	color: white
+	font-family: 'Open Sans';
 
 	&:focus {
 		outline: none;
 	}
 
 	&::placeholder {
-		color: rgba(255, 255, 255, 0.7);
+		color: rgba(255, 255, 255, 0.4);
 	}
 `;
 
@@ -96,9 +102,9 @@ const SearchDropDown = styled.div`
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 8px;
-	padding-block: 0.75rem;
-	top: calc(100% + 1rem);
-	width: 100%;
+	top: 80px;
+	left: 24px;
+	width: 400px;
 	max-height: 527px;
 	overflow: auto;
 	scrollbar-gutter: stable both-edges;
@@ -132,7 +138,8 @@ const SearchResultItem = styled.div`
 	color: white;
 	height: 65px;
 	text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
-	font-weight: 700;
+	font-weight: 600;
+	font-size: 14px;
 	border: none;
 	border-radius: 5px;
 
@@ -147,7 +154,7 @@ const SearchResultItem = styled.div`
 	}
 
 	p span {
-		font-size: 14px;
+		font-size: 12px;
 		font-weight: 400;
 	}
 
