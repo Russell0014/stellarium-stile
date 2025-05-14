@@ -4,7 +4,6 @@ import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
-import ToggleControls from './ToggleControls';
 import SkyObjectInfoPopup from './SkyObjectInfoPopup';
 import type { SearchResult } from '../types/stellarium';
 import { searchSkyObjects } from '../utils/skyDataSearch';
@@ -16,127 +15,64 @@ export default function MapView() {
 	const [selectedObject, setSelectedObject] = useState<SearchResult | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
-	// Function to extract object identifier from a sky object
-	const extractObjectIdentifier = (obj: any): string | null => {
-		if (!obj || !obj.designations) return null;
-
-		const names = obj.designations();
-		if (!names || names.length === 0) return null;
-
-		// For objects with NAME prefix (planets, sun, moon)
+	const getIdentifier = (obj: any): string | null => {
+		const names: string[] = obj.designations() || [];
+		// Strip "NAME " for SolarSystemObjects
 		if (names[0].startsWith('NAME ')) {
-			return names[0].substring(5); // Return the name without 'NAME ' prefix
+			return names[0].slice(5);
 		}
 
-		// For constellations (CON prefix)
+		// Strip "CON <culture> " for constellations
 		if (names[0].startsWith('CON ')) {
-			// Extract the constellation name from the identifier
-			// Format is usually: 'CON western X' or 'CON kamilaroi Y'
 			const parts = names[0].split(' ');
-			if (parts.length >= 3) {
-				// Return the last part which is usually the constellation abbreviation
-				// or a meaningful identifier
-				return parts[parts.length - 1];
-			}
-			return names[0];
+			return parts[parts.length - 1];
 		}
-
-		// For other objects, return the first name
 		return names[0];
 	};
 
-	// Function to convert a sky object from engine to SearchResult format
 	const skyObjectToSearchResult = async (obj: any): Promise<SearchResult | null> => {
-		if (!obj || !engine) return null;
+		const id = getIdentifier(obj);
+		if (!id || !engine) return null;
 
-		try {
-			// Get object information
-			console.log('obj designations:', obj.designations());
-			const names = obj.designations ? obj.designations() : [];
-			if (!names || names.length === 0) return null;
-
-			// Extract object identifier for searching
-			const identifier = extractObjectIdentifier(obj);
-			if (!identifier) return null;
-
-			// Get current skyculture
-			const currentSkyculture = engine.core.skycultures.current_id || '';
-
-			// Try to find the object in skyDataSearch
-			const searchResults = await searchSkyObjects(identifier, 5, currentSkyculture);
-
-			// If we found a match, return the first result
-			if (searchResults && searchResults.length > 0) {
-				// Sometimes the search might return multiple results, so find the best match
-				// based on the exact identifier
-				const exactMatch = searchResults.find((result) => {
-					// Check if any name matches our identifier
-					return result.names.some(
-						(name) => name === identifier || name.endsWith(identifier) || name.includes(identifier),
-					);
-				});
-
-				return exactMatch || searchResults[0];
-			}
-		} catch (error) {
-			console.error('Error converting sky object to search result:', error);
-			return null;
+		const culture = engine.core.skycultures.current_id || '';
+		const hits = await searchSkyObjects(id, 1, culture);
+		if (hits.length) {
+			return { ...hits[0] };
 		}
+
+		// fallback: minimal JSONData
+		const json = { ...obj.jsonData } as SearchResult;
+		return json;
 	};
 
-	// Handle canvas click to select sky objects
-	const handleCanvasClick = (event: MouseEvent<HTMLCanvasElement>) => {
-		if (!engine || !canvasRef.current) return;
-
-		// Get canvas bounds
-		const rect = canvasRef.current.getBoundingClientRect();
-
-		// Calculate click position within canvas (normalized to 0-1)
-		const x = (event.clientX - rect.left) / rect.width;
-		const y = (event.clientY - rect.top) / rect.height;
-
+	/** Handle clicks anywhere on the canvas */
+	const handleCanvasClick = async (_: MouseEvent<HTMLCanvasElement>) => {
+		if (!engine) return;
+		let raw: any;
 		try {
-			// Use setTimeout to give the engine time to process the click
-			setTimeout(async () => {
-				if (engine.core.selection) {
-					// The engine made a selection based on the click
-					const selectedObj = engine.core.selection;
+			raw = engine.core.selection;
+		} catch {
+			return setIsPopupOpen(false);
+		}
 
-					// Convert to search result and open popup
-					// Now using async/await since skyObjectToSearchResult is async
-					try {
-						const searchResult = await skyObjectToSearchResult(selectedObj);
-						if (searchResult) {
-							setSelectedObject(searchResult);
-							setIsPopupOpen(true);
-						}
-					} catch (error) {
-						console.error('Error getting search result:', error);
-						setIsPopupOpen(false);
-						setSelectedObject(null);
-					}
-				} else {
-					// No selection was made, close popup
-					setIsPopupOpen(false);
-					setSelectedObject(null);
-				}
-			}, 50);
-		} catch (error) {
-			console.error('Error handling canvas click:', error);
+		if (!raw?.jsonData) {
 			setIsPopupOpen(false);
-			setSelectedObject(null);
+			return;
+		}
+
+		const result = await skyObjectToSearchResult(raw);
+		if (result) {
+			setSelectedObject(result);
+			setIsPopupOpen(true);
 		}
 	};
 
 	// Handle popup close
 	const handlePopupClose = () => {
 		setIsPopupOpen(false);
-		engine.core.selection = {};
-		engine.core.lock = {};
 	};
 
 	useEffect(() => {
-		// Initialize the engine if not already done
 		if (!engine && canvasRef.current) {
 			initEngine(canvasRef.current);
 		}

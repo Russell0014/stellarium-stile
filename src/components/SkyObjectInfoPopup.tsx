@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { SearchResult } from '../types/stellarium';
 import planetData from '../assets/skydata/planets/planet_data.json';
-// Import constellation descriptions as a dynamic import
 import constellationDescriptionsJson from '../assets/skydata/constellation_descriptions.json';
-// Import icons
 import constellationSVG from '../assets/icons/constellation.svg';
 import planetSVG from '../assets/icons/planet.svg';
 import closeSVG from '../assets/icons/close.svg';
+import starSVG from '../assets/icons/star.svg';
 
 interface SkyObjectInfoPopupProps {
 	isOpen: boolean;
@@ -18,155 +17,119 @@ interface SkyObjectInfoPopupProps {
 const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose, skyObject }) => {
 	if (!isOpen || !skyObject) return null;
 
-	// Get description based on object type
-	const getDescription = (): string => {
-		if (!skyObject) return '';
+	// Strip a leading "NAME " if present
+	const getCleanName = (raw: string) => (raw.startsWith('NAME ') ? raw.slice(5) : raw);
 
-		if (skyObject.model === 'planet' || skyObject.model === 'sun' || skyObject.model === 'moon') {
-			// For planets, sun, and moon
-			const objName = skyObject.short_name;
+	// Find the CON ID from names array
+	const getConstellationId = (names: string[]) => {
+		for (const name of names) {
+			if (name.startsWith('CON ')) return name;
+		}
+		return names[names.length - 1] || '';
+	};
 
-			// For planets, use the Wikipedia description from planet_data.json
-			if (planetData[objName] && planetData[objName].wikipedia_description) {
-				return planetData[objName].wikipedia_description;
-			}
+	const cleanShort = getCleanName(skyObject.short_name || skyObject.names[0]);
 
-			// Default description for celestial bodies without specific data
-			return `${objName} is a celestial body in our solar system.`;
-		} else if (skyObject.model === 'constellation') {
-			// For constellations, find the description in the constellation_descriptions.json
-			// Try to find the constellation ID - check all names for a match
-			let constellationId = null;
+	// Description logic
+	const getDescription = () => {
+		const { model, names, short_name } = skyObject;
 
-			// Check if any name starts with 'CON ', which is a constellation ID
-			for (const name of skyObject.names) {
-				if (
-					name.startsWith('CON ') ||
-					name.includes('CON western') ||
-					name.includes('CON kamilaroi')
-				) {
-					constellationId = name;
-					break;
-				}
-			}
+		if (model === 'planet' || model === 'sun' || model === 'moon') {
+			const desc =
+				short_name in planetData
+					? planetData[short_name as keyof typeof planetData]?.wikipedia_description
+					: undefined;
+			return desc || `${cleanShort} is a celestial body in our solar system.`;
+		}
 
-			// If no CON prefix found, use the last name as a fallback
-			if (!constellationId && skyObject.names.length > 0) {
-				constellationId = skyObject.names[skyObject.names.length - 1];
-			}
+		if (model === 'constellation') {
+			const cid = getConstellationId(names);
+			const info = constellationDescriptionsJson.find((c) => c.id === cid);
+			return info?.description || `${cleanShort} is a constellation in the sky.`;
+		}
 
-			// Find the description in the JSON
-			const constellationInfo = constellationDescriptionsJson.find(
-				(item) => item.id === constellationId,
+		if (model === 'star') {
+			return `${cleanShort} is a star in the sky.`;
+		}
+
+		// Fallback
+		return `${cleanShort} is a celestial object.`;
+	};
+
+	// Alt names logic
+	const getAlternativeNames = () => {
+		const { model, names, short_name } = skyObject;
+
+		// Planets: from data file
+		if (model === 'planet' || model === 'sun' || model === 'moon') {
+			const noct =
+				short_name in planetData
+					? planetData[short_name as keyof typeof planetData]?.noctua?.names
+					: [];
+			return noct.map(getCleanName).filter((name: string) => name !== cleanShort);
+		}
+
+		// Others: filter out technical prefixes
+		return names
+			.map(getCleanName)
+			.filter(
+				(name) => name !== cleanShort && !name.startsWith('HIP ') && !name.startsWith('CON '),
 			);
+	};
 
-			if (constellationInfo) {
-				return constellationInfo.description;
+	// Type & icon
+	const getObjectType = () => {
+		switch (skyObject.model) {
+			case 'planet':
+				return 'Planet';
+			case 'sun':
+			case 'star':
+				return 'Star';
+			case 'moon':
+				return 'Moon';
+			case 'constellation': {
+				const style = skyObject.types?.find((t) => ['Western', 'Kamilaroi'].includes(t));
+				return style ? `${style} Constellation` : 'Constellation';
 			}
-
-			// Default description for constellations without specific data
-			return `${skyObject.names[0]} is a constellation in the sky.`;
+			default:
+				return 'Celestial Object';
 		}
-
-		// Default description for unknown types
-		return `${skyObject.short_name} is a celestial object.`;
 	};
 
-	// Get alternative names
-	const getAlternativeNames = (): string[] => {
-		if (!skyObject) return [];
+	const getObjectIcon = () =>
+		skyObject.model === 'constellation'
+			? constellationSVG
+			: skyObject.model === 'star'
+				? starSVG
+				: planetSVG;
 
-		// For planets, use the names from planet_data.json
-		if (skyObject.model === 'planet' || skyObject.model === 'sun' || skyObject.model === 'moon') {
-			const objName = skyObject.short_name;
-
-			// Check if the object has additional names in planet_data.json
-			if (planetData[objName] && planetData[objName].noctua && planetData[objName].noctua.names) {
-				// Filter out the short_name and NAME prefix
-				return planetData[objName].noctua.names.filter(
-					(name) => name !== skyObject.short_name && !name.startsWith('NAME '),
-				);
-			}
-		}
-
-		// For constellations and other objects, use the names from the SearchResult
-		if (skyObject.names) {
-			// Filter out the main name and any technical IDs or prefixes
-			return skyObject.names.filter(
-				(name) =>
-					name !== skyObject.short_name &&
-					!name.startsWith('NAME ') &&
-					!name.startsWith('HIP ') &&
-					!name.startsWith('CON ') &&
-					!name.includes('CON western') &&
-					!name.includes('CON kamilaroi'),
-			);
-		}
-
-		return [];
-	};
-
-	// Determine the type of object
-	const getObjectType = (): string => {
-		if (!skyObject) return '';
-
-		if (skyObject.model === 'planet') return 'Planet';
-		if (skyObject.model === 'sun') return 'Star';
-		if (skyObject.model === 'moon') return 'Moon';
-		if (skyObject.model === 'constellation') {
-			// Check if it's a Western or Kamilaroi constellation
-			const skyculture = skyObject.types?.find((t) => t === 'Western' || t === 'Kamilaroi');
-			return skyculture ? `${skyculture} Constellation` : 'Constellation';
-		}
-
-		return 'Celestial Object';
-	};
-
-	// Get the appropriate icon based on object type
-	const getObjectIcon = (): string => {
-		if (!skyObject) return planetSVG;
-
-		if (skyObject.model === 'constellation') {
-			return constellationSVG;
-		}
-
-		// Default to star icon for planets, stars, and other objects
-		return planetSVG;
-	};
-
-	// Added useEffect to handle clicks outside the popup
+	// Close-on-outside-click
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			// Check if click is outside the popup content
-			const popupElement = document.getElementById('sky-object-popup-content');
-			if (popupElement && !popupElement.contains(event.target as Node)) {
-				onClose();
-			}
+		const handleOutside = (e: MouseEvent) => {
+			const el = document.getElementById('popup-content');
+			if (el && !el.contains(e.target as Node)) onClose();
 		};
-
-		// Add event listener to window
-		if (isOpen) {
-			document.addEventListener('mousedown', handleClickOutside);
-		}
-
-		// Cleanup
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
+		if (isOpen) document.addEventListener('mousedown', handleOutside);
+		return () => document.removeEventListener('mousedown', handleOutside);
 	}, [isOpen, onClose]);
+
+	const altNames = getAlternativeNames();
+	const typeLabel = getObjectType();
+	const icon = getObjectIcon();
+	const desc = getDescription();
 
 	return (
 		<PopupOverlay>
-			<PopupContent id='sky-object-popup-content'>
+			<PopupContent id='popup-content'>
 				<PopupHeader>
 					<Title>
 						<SkyObjectIcon
-							src={getObjectIcon()}
-							alt={getObjectType() + ' icon'}
+							src={icon}
+							alt={typeLabel + ' icon'}
 						/>
 						<TitleText>
-							{skyObject.short_name}
-							<ObjectType>{getObjectType()}</ObjectType>
+							{cleanShort}
+							<ObjectType>{typeLabel}</ObjectType>
 						</TitleText>
 					</Title>
 					<CloseButton onClick={onClose}>
@@ -177,18 +140,20 @@ const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose
 					</CloseButton>
 				</PopupHeader>
 
-				{getAlternativeNames().length > 0 && (
+				{altNames.length > 0 && (
 					<Section>
 						<SectionTitle>Also known as</SectionTitle>
-						<NamesList>{getAlternativeNames().join(', ')}</NamesList>
+						<NamesList>{altNames.join(', ')}</NamesList>
 					</Section>
 				)}
 
-				<Description>{getDescription()}</Description>
+				<Description>{desc}</Description>
 			</PopupContent>
 		</PopupOverlay>
 	);
 };
+
+export default SkyObjectInfoPopup;
 
 // Styled components
 const PopupOverlay = styled.div`
@@ -219,7 +184,7 @@ const PopupContent = styled.div`
 	overflow-y: auto;
 	color: white;
 	position: relative;
-	margin: 60px 20px 0 0;
+	margin: 24px 24px 0 0;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 	pointer-events: auto;
 `;
@@ -319,5 +284,3 @@ const SkyObjectIcon = styled.img`
 	align-items: center;
 	justify-content: center;
 `;
-
-export default SkyObjectInfoPopup;

@@ -120,8 +120,6 @@ export default function DateTimeController() {
 			ms,
 		);
 
-		console.log(`Date Slider day: ${n} -> ${newDateTime.toISOString()}`);
-
 		// Set the date and time
 		setDateTime(newDateTime);
 		engine.core.observer.utc = newDateTime.getMJD();
@@ -152,8 +150,6 @@ export default function DateTimeController() {
 		// Create a new date with the selected time
 		const newDateTime = new Date(year, month, day, hours, minutes, seconds);
 
-		console.log(`Time Slider ${n}s -> Time of day: ${newDateTime.toTimeString()}`);
-
 		// Set the date and time
 		setDateTime(newDateTime);
 		engine.core.observer.utc = newDateTime.getMJD();
@@ -173,7 +169,6 @@ export default function DateTimeController() {
 
 		// Set date slider based on day of year
 		const dayOfYear = getDayOfYear(reset);
-		console.log('Reset Time - Setting date slider to day:', dayOfYear);
 		setDateSlider(dayOfYear);
 
 		// Calculate time slider position based on seconds since midnight
@@ -181,7 +176,6 @@ export default function DateTimeController() {
 		const minutes = reset.getMinutes();
 		const seconds = reset.getSeconds();
 		const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-		console.log('Reset Time - Setting time slider to seconds:', totalSeconds);
 		setTimeSlider(totalSeconds);
 
 		engine.core.observer.utc = reset.getMJD();
@@ -243,7 +237,6 @@ export default function DateTimeController() {
 		// Update both sliders for any date/time change
 		// Set date slider based on day of year
 		const dayOfYear = getDayOfYear(newDateTime);
-		console.log(`Change ${s} - Setting date slider to day:`, dayOfYear);
 		setDateSlider(dayOfYear);
 
 		// Calculate time slider position based on seconds since midnight
@@ -251,7 +244,6 @@ export default function DateTimeController() {
 		const minutes = newDateTime.getMinutes();
 		const seconds = newDateTime.getSeconds();
 		const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-		console.log(`Change ${s} - Setting time slider to seconds:`, totalSeconds);
 		setTimeSlider(totalSeconds);
 	}
 

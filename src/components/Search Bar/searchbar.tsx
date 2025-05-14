@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import type { SearchResults, SearchResult } from '../../types/stellarium';
-
+import { useRef } from 'react';
 // temp for now
 import icon_search from '@/assets/icons/search.svg';
 import constellation from '@/assets/icons/constellation.svg';
@@ -19,7 +19,6 @@ export type SearchBarProps = {
 	onClose: () => void;
 	onResultClick: (result: SearchResult) => void;
 };
-
 const modelIcons = {
 	star: star,
 	constellation: constellation,
@@ -39,8 +38,23 @@ export default function SearchBar({
 	onClose,
 	onResultClick,
 }: SearchBarProps) {
+	const ref = useRef<HTMLDivElement>(null);
 	return (
-		<SearchDiv>
+		<SearchDiv
+			ref={ref}
+			onBlur={(e: React.FocusEvent<HTMLDivElement>) => {
+				if (ref.current?.contains(e.relatedTarget)) {
+					return;
+				}
+				onClose();
+			}}
+			onPointerDown={(e: React.MouseEvent<HTMLDivElement>) => {
+				if (ref.current?.contains(document.activeElement)) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+				// Stop focus changing when clicking inside div
+			}}>
 			<img
 				src={icon_search}
 				alt='search icon'
@@ -54,7 +68,7 @@ export default function SearchBar({
 			/>
 			{results.length > 0 && (
 				<SearchDropDown>
-					{results.map((searchresult) => (
+					{results?.map((searchresult) => (
 						<SearchResultItem
 							key={searchresult.match}
 							onMouseDown={(e) => e.preventDefault()}
@@ -112,7 +126,7 @@ const SearchDropDown = styled.div`
 	border-radius: 8px;
 	top: 80px;
 	left: 24px;
-	width: 400px;
+	width: 402px;
 	max-height: 527px;
 	overflow: auto;
 	scrollbar-gutter: stable both-edges;
