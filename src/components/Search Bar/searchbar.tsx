@@ -12,7 +12,7 @@ import interstellar from '@/assets/icons/interstellar_matter.svg';
 import sun from '@/assets/icons/sun.svg';
 import moon from '@/assets/icons/moon.svg';
 
-type Props = {
+export type SearchBarProps = {
 	search: string;
 	results: SearchResults;
 	onSearch: (searchTerm: string) => void;
@@ -32,7 +32,13 @@ const modelIcons = {
 };
 type ModelName = keyof typeof modelIcons;
 
-export default function SearchBar({ search, results, onSearch, onClose, onResultClick }: Props) {
+export default function SearchBar({
+	search,
+	results,
+	onSearch,
+	onClose,
+	onResultClick,
+}: SearchBarProps) {
 	return (
 		<SearchDiv>
 			<img
@@ -55,7 +61,9 @@ export default function SearchBar({ search, results, onSearch, onClose, onResult
 							onClick={() => onResultClick(searchresult)}>
 							<img src={modelIcons[(searchresult.model as ModelName) || 'galaxy']} />
 							<p>
-								{searchresult.model === 'constellation' && searchresult.names && searchresult.names.length > 0
+								{searchresult.model === 'constellation' &&
+								searchresult.names &&
+								searchresult.names.length > 0
 									? searchresult.names[0] // Use the first name (English name) for constellations
 									: searchresult.short_name}
 								<span>{searchresult.model}</span>
