@@ -1,17 +1,78 @@
 // src/components/MapView.tsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, MouseEvent } from 'react';
 import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import Header from './Nav/header';
 import Footer from './Nav/footer';
+import SkyObjectInfoPopup from './SkyObjectInfoPopup';
+import type { SearchResult } from '../types/stellarium';
+import { searchSkyObjects } from '../utils/skyDataSearch';
 
 export default function MapView() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const { engine, initEngine } = useSEngine();
 	const canvasId = 'stellarium-canvas';
+	const [selectedObject, setSelectedObject] = useState<SearchResult | null>(null);
+	const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+
+	const getIdentifier = (obj: any): string | null => {
+		const names: string[] = obj.designations() || [];
+		// Strip "NAME " for SolarSystemObjects
+		if (names[0].startsWith('NAME ')) {
+			return names[0].slice(5);
+		}
+
+		// Strip "CON <culture> " for constellations
+		if (names[0].startsWith('CON ')) {
+			const parts = names[0].split(' ');
+			return parts[parts.length - 1];
+		}
+		return names[0];
+	};
+
+	const skyObjectToSearchResult = async (obj: any): Promise<SearchResult | null> => {
+		const id = getIdentifier(obj);
+		if (!id || !engine) return null;
+
+		const culture = engine.core.skycultures.current_id || '';
+		const hits = await searchSkyObjects(id, 1, culture);
+		if (hits.length) {
+			return { ...hits[0] };
+		}
+
+		// fallback: minimal JSONData
+		const json = { ...obj.jsonData } as SearchResult;
+		return json;
+	};
+
+	/** Handle clicks anywhere on the canvas */
+	const handleCanvasClick = async (_: MouseEvent<HTMLCanvasElement>) => {
+		if (!engine) return;
+		let raw: any;
+		try {
+			raw = engine.core.selection;
+		} catch {
+			return setIsPopupOpen(false);
+		}
+
+		if (!raw?.jsonData) {
+			setIsPopupOpen(false);
+			return;
+		}
+
+		const result = await skyObjectToSearchResult(raw);
+		if (result) {
+			setSelectedObject(result);
+			setIsPopupOpen(true);
+		}
+	};
+
+	// Handle popup close
+	const handlePopupClose = () => {
+		setIsPopupOpen(false);
+	};
 
 	useEffect(() => {
-		// Initialize the engine if not already done
 		if (!engine && canvasRef.current) {
 			initEngine(canvasRef.current);
 		}
@@ -119,8 +180,14 @@ export default function MapView() {
 					border: '1px solid #333',
 					zIndex: '0',
 				}}
+				onClick={handleCanvasClick}
 			/>
 			<Footer />
+			<SkyObjectInfoPopup
+				isOpen={isPopupOpen}
+				onClose={handlePopupClose}
+				skyObject={selectedObject}
+			/>
 		</>
 	);
 }

@@ -8,4 +8,9 @@ export default defineConfig({
 			instances: [{ browser: 'chromium' }],
 		},
 	},
+	resolve: {
+		alias: {
+			'@/': new URL('./src/', import.meta.url).pathname,
+		},
+	},
 });

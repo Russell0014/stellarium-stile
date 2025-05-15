@@ -28,21 +28,28 @@ describe('DateTime', () => {
 		expect(fragment).not.null;
 	});
 
-	it.todo('Buttons increments time on press.', () => {
-		// check current date
-		const currDate = new Date();
-		const changeDateTime = (s: string, n: number) => {};
+	it('Buttons increments time on press.', () => {
+		let moment = moment_;
+		const changeDateTime = (s: string, n: number) => {
+			moment.add(n, s as moment.DurationInputArg2);
+		};
 
-		// call function to increment
+		// we will simulate button presses here
+		changeDateTime('h', 1);
+		changeDateTime('h', 1);
+
 		const { asFragment } = render(
 			<SelectionButton
-				moment={moment_}
+				moment={moment}
 				changeDateTime={changeDateTime}
 			/>,
 		);
-		expect(asFragment());
+		// div/div/date_time
+		const time = asFragment().lastChild?.lastChild?.textContent;
 
-		// check if date changed on press
+		// just compare formatted dates
+		expect(asFragment());
+		expect(time).toEqual(`${moment.format('HH')}:${moment.format('mm')}`);
 	});
 
 	it('Time Changes.', () => {});

@@ -137,8 +137,6 @@ export default function DayOfYearSlider({ value, min, max, onValueChange }: Prop
 		if (newValue !== value) {
 			onValueChange(newValue);
 		}
-
-		e.preventDefault();
 	};
 
 	const handleDragEnd = () => {

@@ -3,17 +3,16 @@
 exports[`Render > should render 1`] = `
 <DocumentFragment>
   <div
-    class="sc-VHjGu exzJCt"
+    class="sc-VHjGu fSaRHZ"
   >
-    <div>
-      <input
-        class="sc-gnOvAp boFJRV"
-        placeholder="Search..."
-        value=""
-      />
-    </div>
-    <div
-      class="sc-dQkurY ZFUqT"
+    <img
+      alt="search icon"
+      src="data:image/svg+xml,%3csvg%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M15.7549%2014.255H14.9649L14.6849%2013.985C15.6649%2012.845%2016.2549%2011.365%2016.2549%209.755C16.2549%206.165%2013.3449%203.255%209.75488%203.255C6.16488%203.255%203.25488%206.165%203.25488%209.755C3.25488%2013.345%206.16488%2016.255%209.75488%2016.255C11.3649%2016.255%2012.8449%2015.665%2013.9849%2014.685L14.2549%2014.965V15.755L19.2549%2020.745L20.7449%2019.255L15.7549%2014.255ZM9.75488%2014.255C7.26488%2014.255%205.25488%2012.245%205.25488%209.755C5.25488%207.26501%207.26488%205.255%209.75488%205.255C12.2449%205.255%2014.2549%207.26501%2014.2549%209.755C14.2549%2012.245%2012.2449%2014.255%209.75488%2014.255Z'%20fill='white'%20fill-opacity='0.65'/%3e%3c/svg%3e"
+    />
+    <input
+      class="sc-gnOvAp iVSvww"
+      placeholder="Search for stars, constellation..."
+      value=""
     />
   </div>
 </DocumentFragment>

@@ -5,15 +5,24 @@ import { render } from '../../tests/init/index';
 import { userEvent } from '@vitest/browser/context';
 import swh from '../../../assets/sw_helper';
 import { SearchResults } from '@/types/stellarium';
+import { SEngineProvider } from '@/context/SEngineContext';
+
+const MockSearchBar = () => {
+	return (
+		<SEngineProvider>
+			<SearchBarController />
+		</SEngineProvider>
+	);
+};
 
 describe('Render', () => {
 	it('should render', () => {
-		const { asFragment } = render(<SearchBarController />);
+		const { asFragment } = render(<MockSearchBar />);
 		expect(asFragment()).toMatchSnapshot();
 	});
 
 	it('should render with initial state', () => {
-		const { getByRole } = render(<SearchBarController />);
+		const { getByRole } = render(<MockSearchBar />);
 		const input = getByRole('textbox');
 		expect(input).toHaveValue(''); // Initial search value should be empty
 	});
@@ -32,7 +41,7 @@ describe('searchBarControlller', () => {
 		//Checking the Debouncer
 		const mock = vi.fn();
 
-		const screen = render(<SearchBarController />);
+		const screen = render(<MockSearchBar />);
 
 		vi.spyOn(screen.getByRole('textbox'), 'fill').mockImplementation(mock);
 		await screen.getByRole('textbox').fill('h');
@@ -46,7 +55,7 @@ describe('searchBarControlller', () => {
 
 	it('should fetch search results when typing', async () => {
 		const mockSearchObjects = vi.spyOn(swh, 'searchObjects').mockResolvedValue([]);
-		const { getByRole } = render(<SearchBarController />);
+		const { getByRole } = render(<MockSearchBar />);
 		const input = getByRole('textbox');
 
 		await userEvent.type(input, 'galaxy');
@@ -65,7 +74,7 @@ describe('searchBarControlller', () => {
 
 	it('should not fetch results for invalid input', async () => {
 		const mockSearchObjects = vi.spyOn(swh, 'searchObjects').mockResolvedValue([]);
-		const { getByRole } = render(<SearchBarController />);
+		const { getByRole } = render(<MockSearchBar />);
 		const input = getByRole('textbox');
 
 		await userEvent.click(input); // Clicked Input

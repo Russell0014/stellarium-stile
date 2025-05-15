@@ -8,7 +8,7 @@ interface Constellation {
 	id: string;
 	common_name: {
 		english: string;
-		native: string;
+		native?: string;
 	};
 	iau?: string;
 }
@@ -99,7 +99,7 @@ const getSkyObjects = (): Record<string, SearchResult[]> => {
 	if (kamilaroiSkyculture && kamilaroiSkyculture.constellations) {
 		kamilaroiSkyculture.constellations.forEach((constellation: Constellation) => {
 			const constellationName = constellation.common_name.english;
-			const constellationNativeName = constellation.common_name.native;
+			const constellationNativeName = constellation.common_name.english;
 			const constellationId = constellation.id;
 
 			// Create a key for the constellation using its English name
@@ -149,7 +149,7 @@ export const searchSkyObjects = async (
 	if (!query) {
 		return [];
 	}
-	
+
 	// Normalize the skyculture name for comparison
 	const normalizedSkyculture = currentSkyculture.toLowerCase();
 
@@ -201,12 +201,14 @@ export const searchSkyObjects = async (
 			if (typeFilter.length > 0 && !obj.types?.some((t) => typeFilter.includes(t))) {
 				continue;
 			}
-			
+
 			// Filter constellations based on the current skyculture
 			if (obj.model === 'constellation' && normalizedSkyculture) {
 				// If it's a constellation, check if it matches the current skyculture
-				const objSkyculture = obj.types?.find(t => t === 'Western' || t === 'Kamilaroi')?.toLowerCase();
-				
+				const objSkyculture = obj.types
+					?.find((t) => t === 'Western' || t === 'Kamilaroi')
+					?.toLowerCase();
+
 				// Skip this constellation if it doesn't match the current skyculture
 				if (objSkyculture !== normalizedSkyculture) {
 					continue;
@@ -238,7 +240,7 @@ export const searchSkyObjects = async (
 			const hasMatch =
 				cleanName.toUpperCase().includes(query) ||
 				shortName.toUpperCase().includes(query) ||
-				objNames.some((n) => n.toUpperCase().includes(query));
+				objNames.some((n) => n && n.toUpperCase().includes(query));
 
 			if (hasMatch) {
 				results.push(obj);
