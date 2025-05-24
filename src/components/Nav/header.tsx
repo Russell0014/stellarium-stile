@@ -10,7 +10,7 @@ export default function Header() {
 }
 
 const HeaderStyle = styled.div`
-	z-index: 1;
+	z-index: 2;
 	position: absolute;
 	display: flex;
 	padding: 24px;

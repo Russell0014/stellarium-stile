@@ -73,7 +73,8 @@ export default function SearchBar({
 							key={searchresult.match}
 							onMouseDown={(e) => e.preventDefault()}
 							onClick={() => onResultClick(searchresult)}>
-							<img src={modelIcons[(searchresult.model as ModelName) || 'galaxy']} />
+							{/* default to galaxy icon if ineligible model icon */}
+							<img src={modelIcons[(searchresult.model || 'galaxy') as ModelName]} />
 							<p>
 								{searchresult.model === 'constellation' &&
 								searchresult.names &&
@@ -91,11 +92,12 @@ export default function SearchBar({
 }
 
 const SearchDiv = styled.div`
-	display: flex;
+	box-sizing: border-box;
+	position: relative;
 	width: 376px;
 	padding: 8px 12px;
+	display: flex;
 	align-items: center;
-	gap: 4px;
 	border-radius: 8px;
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	background: rgba(0, 0, 0, 0.5);
@@ -110,6 +112,7 @@ const SearchText = styled.input`
 
 	&:focus {
 		outline: none;
+		color: white;
 	}
 
 	&::placeholder {
@@ -118,22 +121,23 @@ const SearchText = styled.input`
 `;
 
 const SearchDropDown = styled.div`
-	box-sizing: border-box;
+	width: 100%;
 	position: absolute;
+	left: 0%;
+	top: 100%;
+	margin-top: 8px;
+	padding-block: 12px;
 	background: rgba(0, 0, 0, 0.5);
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 8px;
-	top: 80px;
-	left: 24px;
-	width: 402px;
 	max-height: 527px;
 	overflow: auto;
 	scrollbar-gutter: stable both-edges;
 
 	/* scrollbar */
 	&::-webkit-scrollbar {
-		width: 1.25rem;
+		width: 12px;
 	}
 
 	&::-webkit-scrollbar-track {
@@ -143,7 +147,7 @@ const SearchDropDown = styled.div`
 	&::-webkit-scrollbar-thumb {
 		background-color: rgba(255, 255, 255, 0.3);
 		border-radius: 999px;
-		border: 0.4em solid transparent;
+		border: 3.5px solid transparent;
 		background-clip: content-box;
 	}
 
