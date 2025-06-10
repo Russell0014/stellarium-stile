@@ -24,6 +24,8 @@ export default function Footer() {
 
 	const [starsVisible, setStarsVisible] = useState(true);
 	const [constellationsVisible, setConstellationsVisible] = useState(true);
+	const [currentSkyculture, setCurrentSkyculture] = useState<string>('kamilaroi');
+
 
 	const toggleStars = () => {
 		setStarsVisible(!starsVisible);
@@ -71,16 +73,18 @@ export default function Footer() {
 				<DateTimeController />
 
 				<ButtonsContainer>
-					<StyledInlineButton
-						$variant='primary'
-						onClick={trackEmu}>
-						<img
-							src={emu}
-							alt='constellation icon'
-						/>
-						<StyledP>Track Emu</StyledP>
-					</StyledInlineButton>
-					<SkycultureSwitcher />
+					{currentSkyculture === 'kamilaroi' && (
+						<StyledInlineButton
+							$variant='primary'
+							onClick={trackEmu}>
+							<img
+								src={emu}
+								alt='constellation icon'
+							/>
+							<StyledP>Track Emu</StyledP>
+						</StyledInlineButton>
+					)}
+					<SkycultureSwitcher onSkycultureChange={setCurrentSkyculture} />
 				</ButtonsContainer>
 			</FooterContainer>
 		</FooterStyle>

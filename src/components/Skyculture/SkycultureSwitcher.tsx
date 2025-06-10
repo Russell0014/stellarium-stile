@@ -4,7 +4,11 @@ import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
 import arrowSvg from '@/assets/icons/arrow_drop_down.svg';
 
-export default function SkycultureSwitcher() {
+interface SkycultureSwitcherProps {
+	onSkycultureChange: (skyculture: string) => void;
+}
+
+export default function SkycultureSwitcher({ onSkycultureChange }: SkycultureSwitcherProps) {
 	const { engine } = useSEngine();
 	const [currentSkyculture, setCurrentSkyculture] = useState<string>('');
 	const [skycultures, setSkycultures] = useState<string[]>([]);
@@ -25,6 +29,7 @@ export default function SkycultureSwitcher() {
 		if (engine) {
 			swh.setSkyculture(engine, skyculture);
 			setCurrentSkyculture(skyculture);
+			onSkycultureChange(skyculture);
 		}
 	};
 
