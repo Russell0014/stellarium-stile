@@ -1,31 +1,31 @@
-import SearchBar from '../../Search Bar/searchbar';
+import SearchBar, { type SearchBarProps } from '@/components/Search Bar/searchbar';
 import type { SearchResults } from '@/types/stellarium';
 import { describe, it, expect, beforeAll, beforeEach, vi, afterEach } from 'vitest';
 
-import { render } from '../tests/init/index';
+import { render } from '../../tests/init/index';
+import { SEngineProvider } from '@/context/SEngineContext';
 
+const MockSearchBar = (props: Partial<SearchBarProps>) => {
+	return (
+		<SEngineProvider>
+			<SearchBar
+				results={props.results || []}
+				onSearch={props.onSearch || (() => {})}
+				search={props.search || ''}
+				onClose={props.onClose || (() => {})}
+				onResultClick={props.onResultClick || (() => {})}
+			/>
+		</SEngineProvider>
+	);
+};
 describe('render', () => {
 	it('displays an empty list', () => {
-		const { asFragment } = render(
-			<SearchBar
-				results={[]}
-				onSearch={() => {}}
-				search=''
-				onClose={() => {}}
-			/>,
-		);
+		const { asFragment } = render(<MockSearchBar />);
 		expect(asFragment()).toMatchSnapshot();
 	});
 
 	it('displays some items in a list', () => {
-		const { asFragment } = render(
-			<SearchBar
-				results={search}
-				onSearch={() => {}}
-				search='blah'
-				onClose={() => {}}
-			/>,
-		);
+		const { asFragment } = render(<MockSearchBar results={search} />);
 		expect(asFragment()).toMatchSnapshot();
 	});
 });
@@ -47,14 +47,7 @@ describe('Search Bar', () => {
 
 	//We want to ensure it will call when typed into the search bar
 	it('calls when typed into', async () => {
-		const screen = render(
-			<SearchBar
-				results={[]}
-				onSearch={mockOnSearch}
-				search=''
-				onClose={() => {}}
-			/>,
-		);
+		const screen = render(<MockSearchBar onSearch={mockOnSearch} />);
 
 		await screen.getByRole('textbox').fill('h');
 
@@ -66,14 +59,7 @@ describe('Search Bar', () => {
 		//Checking the Debouncer
 		const mock = vi.fn();
 
-		const screen = render(
-			<SearchBar
-				results={[]}
-				onSearch={mockOnSearch}
-				search=''
-				onClose={() => {}}
-			/>,
-		);
+		const screen = render(<MockSearchBar onSearch={mockOnSearch} />);
 
 		vi.spyOn(screen.getByRole('textbox'), 'fill').mockImplementation(mock);
 		await screen.getByRole('textbox').fill('h');

@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSEngine } from '@/context/SEngineContext';
 import swh from '@/assets/sw_helper';
+import arrowSvg from '@/assets/icons/arrow_drop_down.svg';
 
-export default function SkycultureSwitcher() {
+interface SkycultureSwitcherProps {
+	onSkycultureChange: (skyculture: string) => void;
+}
+
+export default function SkycultureSwitcher({ onSkycultureChange }: SkycultureSwitcherProps) {
 	const { engine } = useSEngine();
 	const [currentSkyculture, setCurrentSkyculture] = useState<string>('');
 	const [skycultures, setSkycultures] = useState<string[]>([]);
@@ -24,57 +29,82 @@ export default function SkycultureSwitcher() {
 		if (engine) {
 			swh.setSkyculture(engine, skyculture);
 			setCurrentSkyculture(skyculture);
+			onSkycultureChange(skyculture);
 		}
 	};
 
 	const formatSkycultureName = (name: string): string => {
-		return name.charAt(0).toUpperCase() + name.slice(1);
+		return name.charAt(0).toUpperCase() + name.slice(1) + ' Skyculture';
 	};
 
 	return (
-		<SkycultureContainer>
-			<SkycultureLabel>Skyculture:</SkycultureLabel>
+		<SelectWrapper>
 			<SkycultureSelect
 				value={currentSkyculture}
-				onChange={(e) => handleSkycultureChange(e.target.value)}>
-				{skycultures.map((skyculture) => (
-					<option key={skyculture} value={skyculture}>
-						{formatSkycultureName(skyculture)}
+				onChange={(e) => handleSkycultureChange(e.target.value)}
+				$variant='secondary'>
+				{skycultures.map((sc) => (
+					<option
+						key={sc}
+						value={sc}>
+						{formatSkycultureName(sc)}
 					</option>
 				))}
 			</SkycultureSelect>
-		</SkycultureContainer>
+			<Arrow
+				src={arrowSvg}
+				aria-hidden
+			/>
+		</SelectWrapper>
 	);
 }
 
-const SkycultureContainer = styled.div`
+const SelectWrapper = styled.div`
+	width: 250px;
 	display: flex;
+	justify-content: center;
 	align-items: center;
-	margin-right: auto; /* Push to the left */
-	padding-left: 10px;
+	position: relative;
 `;
 
-const SkycultureLabel = styled.span`
-	color: white;
-	margin-right: 8px;
-	font-size: 14px;
-`;
+const SkycultureSelect = styled.select<{ $variant: 'primary' | 'secondary' }>`
+	/* kill native arrow */
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 
-const SkycultureSelect = styled.select`
-	background-color: rgba(0, 0, 0, 0.5);
-	color: white;
-	border: 1px solid rgba(255, 255, 255, 0.3);
-	border-radius: 4px;
-	padding: 4px 8px;
-	font-size: 14px;
+	width: 100%;
+	height: 40px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	padding: 8px 36px 8px 12px; /* room for arrow on the right */
 	cursor: pointer;
-	
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.7);
-	}
-	
-	&:focus {
-		outline: none;
-		border-color: rgba(255, 255, 255, 0.5);
-	}
+
+	/* centre *both* normal and last line of text */
+	text-align: center;
+	text-align-last: center;
+
+	${({ $variant }) =>
+		$variant === 'primary'
+			? `
+        color: black;
+        background: #fff;
+        &:hover { background: #E0E0E0; }
+      `
+			: `
+        color: white;
+        background: rgba(0,0,0,.5);
+        &:hover { background: rgba(0,0,0,.8); }
+      `}
+`;
+
+const Arrow = styled.img`
+	position: absolute;
+	pointer-events: none;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 24px;
+	height: auto;
+	opacity: 0.85;
 `;

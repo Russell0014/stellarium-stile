@@ -43,6 +43,10 @@ const SearchText = styled.input`
 
 	&:focus {
 		outline: none;
+		color: white;
+	}
+	&::placeholder {
+		color: white;
 	}
 `;
 
