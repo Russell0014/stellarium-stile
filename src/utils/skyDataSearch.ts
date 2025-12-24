@@ -1,6 +1,3 @@
-import planetData from '../assets/skydata/planets/planet_data.json';
-import westernSkyculture from '../assets/skydata/skycultures/western/index.json';
-import kamilaroiSkyculture from '../assets/skydata/skycultures/kamilaroi/index.json';
 import type { SearchResults, SearchResult } from '../types/stellarium';
 
 // Interface for constellation data from skycultures
@@ -13,128 +10,166 @@ interface Constellation {
 	iau?: string;
 }
 
-// Combine planet and constellation data into a single searchable collection
-const getSkyObjects = (): Record<string, SearchResult[]> => {
-	const allData: Record<string, SearchResult[]> = {};
+interface SkycultureData {
+	constellations?: Constellation[];
+}
 
-	// Process planet data and add each planet as a search result
-	Object.entries(planetData).forEach(([name, data]) => {
-		if (!allData[name]) {
-			allData[name] = [];
+// Cache for loaded data
+let skyObjectsCache: Record<string, SearchResult[]> | null = null;
+let isLoading = false;
+let loadPromise: Promise<Record<string, SearchResult[]>> | null = null;
+
+// Combine planet and constellation data into a single searchable collection
+const loadSkyObjects = async (): Promise<Record<string, SearchResult[]>> => {
+	// Return cached data if available
+	if (skyObjectsCache) {
+		return skyObjectsCache;
+	}
+
+	// If already loading, wait for the existing promise
+	if (isLoading && loadPromise) {
+		return loadPromise;
+	}
+
+	isLoading = true;
+	loadPromise = (async () => {
+		const allData: Record<string, SearchResult[]> = {};
+
+		try {
+			// Fetch data from public folder
+			const [planetDataRes, westernRes, kamilaroiRes] = await Promise.all([
+				fetch('/skydata/planets/planet_data.json'),
+				fetch('/skydata/skycultures/western/index.json'),
+				fetch('/skydata/skycultures/kamilaroi/index.json'),
+			]);
+
+			const planetData = await planetDataRes.json();
+			const westernSkyculture: SkycultureData = await westernRes.json();
+			const kamilaroiSkyculture: SkycultureData = await kamilaroiRes.json();
+
+			// Process planet data and add each planet as a search result
+			Object.entries(planetData).forEach(([name, data]) => {
+				if (!allData[name]) {
+					allData[name] = [];
+				}
+
+				// Create a search result for the planet
+				const planetInfo = data as { interest?: number; model_data?: Record<string, unknown> };
+				const planetResult: SearchResult = {
+					interest: planetInfo.interest || 5.0, // High interest for planets
+					match: `NAME ${name}`,
+					model: 'planet',
+					model_data: {
+						...(planetInfo.model_data || {}),
+					},
+					names: [name],
+					short_name: name,
+					types: ['SSO', 'Pl'],
+				};
+
+				allData[name].push(planetResult);
+			});
+
+			// Add Moon as a searchable object
+			allData['Moon'] = [
+				{
+					interest: 5.0,
+					match: 'NAME Moon',
+					model: 'moon',
+					model_data: {},
+					names: ['Moon'],
+					short_name: 'Moon',
+					types: ['Moo', 'SSO'],
+				},
+			];
+
+			// Add Sun as a searchable object
+			allData['Sun'] = [
+				{
+					interest: 5.0,
+					match: 'NAME Sun',
+					model: 'sun',
+					model_data: {},
+					names: ['Sun'],
+					short_name: 'Sun',
+					types: ['Sun', 'SSO'],
+				},
+			];
+
+			// Process western constellation data
+			if (westernSkyculture && westernSkyculture.constellations) {
+				westernSkyculture.constellations.forEach((constellation: Constellation) => {
+					const constellationName = constellation.common_name.english;
+					const constellationNativeName = constellation.common_name.native;
+					const constellationId = constellation.id;
+					const constellationIAU = constellation.iau || '';
+
+					// Create a key for the constellation using its English name
+					const key = constellationName.replace(/\s+/g, '');
+
+					if (!allData[key]) {
+						allData[key] = [];
+					}
+
+					// Create a search result for the constellation
+					const constellationResult: SearchResult = {
+						interest: 4.8, // High interest for constellations
+						match: `NAME ${constellationName}`,
+						model: 'constellation',
+						model_data: {},
+						names: [
+							constellationName,
+							constellationNativeName || constellationName,
+							`${constellationIAU}`,
+							constellationId,
+						].filter(Boolean) as string[],
+						short_name: constellationNativeName || constellationName,
+						types: ['Con', 'Western'],
+					};
+
+					allData[key].push(constellationResult);
+				});
+			}
+
+			// Process Kamilaroi constellation data
+			if (kamilaroiSkyculture && kamilaroiSkyculture.constellations) {
+				kamilaroiSkyculture.constellations.forEach((constellation: Constellation) => {
+					const constellationName = constellation.common_name.english;
+					const constellationNativeName = constellation.common_name.english;
+					const constellationId = constellation.id;
+
+					// Create a key for the constellation using its English name
+					const key = constellationName.replace(/\s+/g, '');
+
+					if (!allData[key]) {
+						allData[key] = [];
+					}
+
+					// Create a search result for the constellation
+					const constellationResult: SearchResult = {
+						interest: 4.7, // High interest for constellations
+						match: `NAME ${constellationName}`,
+						model: 'constellation',
+						model_data: {},
+						names: [constellationName, constellationNativeName, constellationId],
+						short_name: constellationNativeName,
+						types: ['Con', 'Kamilaroi'],
+					};
+
+					allData[key].push(constellationResult);
+				});
+			}
+		} catch (error) {
+			console.error('Error loading sky data:', error);
 		}
 
-		// Create a search result for the planet
-		const planetInfo = data as { interest?: number; model_data?: Record<string, unknown> };
-		const planetResult: SearchResult = {
-			interest: planetInfo.interest || 5.0, // High interest for planets
-			match: `NAME ${name}`,
-			model: 'planet',
-			model_data: {
-				...(planetInfo.model_data || {}),
-			},
-			names: [name],
-			short_name: name,
-			types: ['SSO', 'Pl'],
-		};
+		skyObjectsCache = allData;
+		isLoading = false;
+		return allData;
+	})();
 
-		allData[name].push(planetResult);
-	});
-
-	// Add Moon as a searchable object
-	allData['Moon'] = [
-		{
-			interest: 5.0,
-			match: 'NAME Moon',
-			model: 'moon',
-			model_data: {},
-			names: ['Moon'],
-			short_name: 'Moon',
-			types: ['Moo', 'SSO'],
-		},
-	];
-
-	// Add Sun as a searchable object
-	allData['Sun'] = [
-		{
-			interest: 5.0,
-			match: 'NAME Sun',
-			model: 'sun',
-			model_data: {},
-			names: ['Sun'],
-			short_name: 'Sun',
-			types: ['Sun', 'SSO'],
-		},
-	];
-
-	// Process western constellation data
-	if (westernSkyculture && westernSkyculture.constellations) {
-		westernSkyculture.constellations.forEach((constellation: Constellation) => {
-			const constellationName = constellation.common_name.english;
-			const constellationNativeName = constellation.common_name.native;
-			const constellationId = constellation.id;
-			const constellationIAU = constellation.iau || '';
-
-			// Create a key for the constellation using its English name
-			const key = constellationName.replace(/\s+/g, '');
-
-			if (!allData[key]) {
-				allData[key] = [];
-			}
-
-			// Create a search result for the constellation
-			const constellationResult: SearchResult = {
-				interest: 4.8, // High interest for constellations
-				match: `NAME ${constellationName}`,
-				model: 'constellation',
-				model_data: {},
-				names: [
-					constellationName,
-					constellationNativeName || constellationName,
-					`${constellationIAU}`,
-					constellationId,
-				].filter(Boolean) as string[],
-				short_name: constellationNativeName || constellationName,
-				types: ['Con', 'Western'],
-			};
-
-			allData[key].push(constellationResult);
-		});
-	}
-
-	// Process Kamilaroi constellation data
-	if (kamilaroiSkyculture && kamilaroiSkyculture.constellations) {
-		kamilaroiSkyculture.constellations.forEach((constellation: Constellation) => {
-			const constellationName = constellation.common_name.english;
-			const constellationNativeName = constellation.common_name.english;
-			const constellationId = constellation.id;
-
-			// Create a key for the constellation using its English name
-			const key = constellationName.replace(/\s+/g, '');
-
-			if (!allData[key]) {
-				allData[key] = [];
-			}
-
-			// Create a search result for the constellation
-			const constellationResult: SearchResult = {
-				interest: 4.7, // High interest for constellations
-				match: `NAME ${constellationName}`,
-				model: 'constellation',
-				model_data: {},
-				names: [constellationName, constellationNativeName, constellationId],
-				short_name: constellationNativeName,
-				types: ['Con', 'Kamilaroi'],
-			};
-
-			allData[key].push(constellationResult);
-		});
-	}
-
-	return allData;
+	return loadPromise;
 };
-
-// Cache of all sky objects for fast lookup
-const skyObjects = getSkyObjects();
 
 /**
  * Search for sky objects by name
@@ -148,6 +183,7 @@ export const searchSkyObjects = async (
 	limit: number = 10,
 	currentSkyculture: string = '',
 ): Promise<SearchResults> => {
+	const skyObjects = await loadSkyObjects();
 	query = query.toUpperCase();
 	const results: SearchResult[] = [];
 
@@ -284,4 +320,4 @@ export const searchSkyObjects = async (
 };
 
 // Export for testing
-export const _skyObjects = skyObjects;
+export const _getSkyObjects = loadSkyObjects;

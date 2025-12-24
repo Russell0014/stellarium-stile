@@ -1,12 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SearchResult } from '../types/stellarium';
-import planetData from '../assets/skydata/planets/planet_data.json';
-import constellationDescriptionsJson from '../assets/skydata/constellation_descriptions.json';
 import constellationSVG from '../assets/icons/constellation.svg';
 import planetSVG from '../assets/icons/planet.svg';
 import closeSVG from '../assets/icons/close.svg';
 import starSVG from '../assets/icons/star.svg';
+
+// Types for the JSON data
+interface PlanetInfo {
+	noctua?: { names?: string[] };
+	wikipedia_description?: string;
+}
+
+interface ConstellationDescription {
+	id: string;
+	description: string;
+}
+
+// Cache for loaded data
+let planetDataCache: Record<string, PlanetInfo> | null = null;
+let constellationDescCache: ConstellationDescription[] | null = null;
+
+const loadPlanetData = async (): Promise<Record<string, PlanetInfo>> => {
+	if (planetDataCache) return planetDataCache;
+	try {
+		const res = await fetch('/skydata/planets/planet_data.json');
+		planetDataCache = await res.json();
+		return planetDataCache!;
+	} catch {
+		return {};
+	}
+};
+
+const loadConstellationDescriptions = async (): Promise<ConstellationDescription[]> => {
+	if (constellationDescCache) return constellationDescCache;
+	try {
+		const res = await fetch('/skydata/constellation_descriptions.json');
+		constellationDescCache = await res.json();
+		return constellationDescCache!;
+	} catch {
+		return [];
+	}
+};
 
 interface SkyObjectInfoPopupProps {
 	isOpen: boolean;
@@ -15,6 +50,16 @@ interface SkyObjectInfoPopupProps {
 }
 
 const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose, skyObject }) => {
+	const [planetData, setPlanetData] = useState<Record<string, PlanetInfo>>({});
+	const [constellationDescriptions, setConstellationDescriptions] = useState<
+		ConstellationDescription[]
+	>([]);
+
+	useEffect(() => {
+		loadPlanetData().then(setPlanetData);
+		loadConstellationDescriptions().then(setConstellationDescriptions);
+	}, []);
+
 	if (!isOpen || !skyObject) return null;
 
 	// Strip a leading "NAME " if present
@@ -36,15 +81,13 @@ const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose
 
 		if (model === 'planet' || model === 'sun' || model === 'moon') {
 			const desc =
-				short_name in planetData
-					? planetData[short_name as keyof typeof planetData]?.wikipedia_description
-					: undefined;
+				short_name in planetData ? planetData[short_name]?.wikipedia_description : undefined;
 			return desc || `${cleanShort} is a celestial body in our solar system.`;
 		}
 
 		if (model === 'constellation') {
 			const cid = getConstellationId(names);
-			const info = constellationDescriptionsJson.find((c) => c.id === cid);
+			const info = constellationDescriptions.find((c: ConstellationDescription) => c.id === cid);
 			return info?.description || `${cleanShort} is a constellation in the sky.`;
 		}
 
@@ -62,11 +105,8 @@ const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose
 
 		// Planets: from data file
 		if (model === 'planet' || model === 'sun' || model === 'moon') {
-			const noct =
-				short_name in planetData
-					? planetData[short_name as keyof typeof planetData]?.noctua?.names
-					: [];
-			return noct.map(getCleanName).filter((name: string) => name !== cleanShort);
+			const noct = short_name in planetData ? planetData[short_name]?.noctua?.names : [];
+			return (noct || []).map(getCleanName).filter((name: string) => name !== cleanShort);
 		}
 
 		// Others: filter out technical prefixes

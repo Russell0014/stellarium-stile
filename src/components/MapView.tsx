@@ -82,38 +82,38 @@ export default function MapView() {
 			const core = engine.getModule('core');
 
 			core.dsos.addDataSource({
-				url: 'src/assets/skydata/dso/base',
+				url: '/skydata/dso/base',
 				key: 'base',
 			});
 
 			core.landscapes.addDataSource({
-				url: 'src/assets/skydata/landscapes/guereins',
+				url: '/skydata/landscapes/guereins',
 				key: 'guereins',
 			});
 			core.milkyway.addDataSource({
-				url: 'src/assets/skydata/surveys/milkyway',
+				url: '/skydata/surveys/milkyway',
 			});
 			core.minor_planets.addDataSource({
-				url: 'src/assets/skydata/mpcorb.dat',
+				url: '/skydata/mpcorb.dat',
 				key: 'mpc_asteroids',
 			});
 			core.planets.addDataSource({
-				url: 'src/assets/skydata/surveys/sso/moon',
+				url: '/skydata/surveys/sso/moon',
 				key: 'moon',
 			});
 
-			core.stars.addDataSource({ url: 'src/assets/skydata/stars/base', key: 'base' });
+			core.stars.addDataSource({ url: '/skydata/stars/base', key: 'base' });
 
-			core.stars.addDataSource({ url: 'src/assets/skydata/stars/minimal', key: 'minimal' });
+			core.stars.addDataSource({ url: '/skydata/stars/minimal', key: 'minimal' });
 
-			core.stars.addDataSource({ url: 'src/assets/skydata/stars/extended', key: 'extended' });
+			core.stars.addDataSource({ url: '/skydata/stars/extended', key: 'extended' });
 
 			core.planets.addDataSource({
-				url: 'src/assets/skydata/surveys/sso/sun',
+				url: '/skydata/surveys/sso/sun',
 				key: 'sun',
 			});
 			core.planets.addDataSource({
-				url: 'src/assets/skydata/surveys/sso/moon',
+				url: '/skydata/surveys/sso/moon',
 				key: 'default',
 			});
 
@@ -147,16 +147,16 @@ export default function MapView() {
 			swh.setFOV(engine, 2.09);
 
 			core.landscapes.addDataSource({
-				url: 'src/assets/skydata/landscapes/guereins',
+				url: '/skydata/landscapes/guereins',
 				key: 'guereins',
 			});
 
 			core.skycultures.addDataSource({
-				url: 'src/assets/skydata/skycultures/western',
+				url: '/skydata/skycultures/western',
 				key: 'western',
 			});
 			core.skycultures.addDataSource({
-				url: 'src/assets/skydata/skycultures/kamilaroi',
+				url: '/skydata/skycultures/kamilaroi',
 				key: 'kamilaroi',
 			});
 
