@@ -61,13 +61,6 @@ npm test
 
 **Important Notice**: This project contains Indigenous cultural content and sky knowledge that requires respectful handling and appropriate permissions for public deployment.
 
-### Why We Cannot Deploy Publicly
-
-- Contains sacred and culturally sensitive Indigenous astronomical knowledge
-- Requires consultation with traditional knowledge holders before public release
-- Cultural protocols around sharing traditional knowledge must be followed
-- The Stile team are currently in communications with Kamilaroi first nations representatives to get formal approval
-
 ## Assets
 
 ### 1. Deep Sky Objects (DSO)
@@ -100,7 +93,8 @@ Key fields include constellation lines (HIP star numbers), overlay images with a
 
 ### 3. Landscapes
 
-Panoramic ground views generated using HIPSTER tool. Stored as WebP images under `landscapes/[name]/` directories.
+Panoramic ground views generated using HIPSTER tool. Stored as WebP images under `public/skydata/landscapes/[name]/` directories.
+Images can be made using the [HIPSTER tool](https://github.com/Russell0014/stellarium-hipster).
 
 ### 4. Stars
 
