@@ -68,11 +68,6 @@ npm test
 - Cultural protocols around sharing traditional knowledge must be followed
 - The Stile team are currently in communications with Kamilaroi first nations representatives to get formal approval
 
-## Project URLs
-
-- **GitHub Repository**: [https://github.com/StileEducation/rmit-2025-stellarium]
-- **Note**: Web deployment unavailable due to Indigenous rights considerations
-
 ## Assets
 
 ### 1. Deep Sky Objects (DSO)
