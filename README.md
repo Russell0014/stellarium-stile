@@ -25,8 +25,8 @@
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/StileEducation/rmit-2025-stellarium
-   cd rmit-2025-stellarium
+   git clone https://github.com/Russell0014/stellarium-stile.git
+   cd stellarium-stile
    ```
 
 2. Install dependencies:
