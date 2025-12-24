@@ -60,6 +60,17 @@ const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose
 		loadConstellationDescriptions().then(setConstellationDescriptions);
 	}, []);
 
+	// Close-on-outside-click
+	useEffect(() => {
+		const handleOutside = (e: MouseEvent) => {
+			const el = document.getElementById('popup-content');
+			if (el && !el.contains(e.target as Node)) onClose();
+		};
+		if (isOpen) document.addEventListener('mousedown', handleOutside);
+		return () => document.removeEventListener('mousedown', handleOutside);
+	}, [isOpen, onClose]);
+
+	// Early return AFTER all hooks
 	if (!isOpen || !skyObject) return null;
 
 	// Strip a leading "NAME " if present
@@ -142,16 +153,6 @@ const SkyObjectInfoPopup: React.FC<SkyObjectInfoPopupProps> = ({ isOpen, onClose
 			: skyObject.model === 'star'
 				? starSVG
 				: planetSVG;
-
-	// Close-on-outside-click
-	useEffect(() => {
-		const handleOutside = (e: MouseEvent) => {
-			const el = document.getElementById('popup-content');
-			if (el && !el.contains(e.target as Node)) onClose();
-		};
-		if (isOpen) document.addEventListener('mousedown', handleOutside);
-		return () => document.removeEventListener('mousedown', handleOutside);
-	}, [isOpen, onClose]);
 
 	const altNames = getAlternativeNames();
 	const typeLabel = getObjectType();
