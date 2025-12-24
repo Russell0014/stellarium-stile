@@ -24,12 +24,13 @@ const getSkyObjects = (): Record<string, SearchResult[]> => {
 		}
 
 		// Create a search result for the planet
+		const planetInfo = data as { interest?: number; model_data?: Record<string, unknown> };
 		const planetResult: SearchResult = {
-			interest: data.interest || 5.0, // High interest for planets
+			interest: planetInfo.interest || 5.0, // High interest for planets
 			match: `NAME ${name}`,
 			model: 'planet',
 			model_data: {
-				...data.model_data,
+				...(planetInfo.model_data || {}),
 			},
 			names: [name],
 			short_name: name,
@@ -86,8 +87,13 @@ const getSkyObjects = (): Record<string, SearchResult[]> => {
 				match: `NAME ${constellationName}`,
 				model: 'constellation',
 				model_data: {},
-				names: [constellationName, constellationNativeName, `${constellationIAU}`, constellationId],
-				short_name: constellationNativeName,
+				names: [
+					constellationName,
+					constellationNativeName || constellationName,
+					`${constellationIAU}`,
+					constellationId,
+				].filter(Boolean) as string[],
+				short_name: constellationNativeName || constellationName,
 				types: ['Con', 'Western'],
 			};
 
@@ -190,7 +196,7 @@ export const searchSkyObjects = async (
 	}
 
 	// Then search through all objects
-	for (const [name, objectList] of Object.entries(skyObjects)) {
+	for (const [, objectList] of Object.entries(skyObjects)) {
 		for (const obj of objectList) {
 			// Skip if we've already added this object
 			if (results.some((r) => r.match === obj.match)) {

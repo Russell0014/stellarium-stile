@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import DateTime, { Slidr } from '../dateTime';
 import SelectionButton from '../TimeUpdateComponent';
 import { render } from '../../tests/init/index';
@@ -9,7 +9,7 @@ const slider: Slidr = {
 	min: 1,
 	max: 100,
 	step: 1,
-	onValueChange: (n: number) => {},
+	onValueChange: (_n: number) => {},
 };
 const moment_ = moment(new Date());
 
@@ -20,7 +20,7 @@ describe('DateTime', () => {
 				DateSlider={slider}
 				resetTime={() => {}}
 				moment={moment_}
-				changeDateTime={(s: string, n: number) => {}}
+				changeDateTime={(_s: string, _n: number) => {}}
 			/>,
 		);
 		const fragment = asFragment();
@@ -90,7 +90,7 @@ describe('DateTime', () => {
 				DateSlider={slider}
 				resetTime={resetTime}
 				moment={mnt}
-				changeDateTime={(s: string, n: number) => {}}
+				changeDateTime={(_s: string, _n: number) => {}}
 			/>,
 		);
 

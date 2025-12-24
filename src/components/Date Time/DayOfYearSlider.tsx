@@ -367,10 +367,3 @@ const Timeline = styled.div`
 		cursor: grabbing;
 	}
 `;
-
-const MonthTickContainer = styled.div`
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-`;

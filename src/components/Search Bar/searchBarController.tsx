@@ -101,18 +101,6 @@ export default function SearchBarController() {
 	 */
 
 	const handleResultClick = (result: SearchResult): void => {
-		// Extract unique identifier from the result
-		const displayName = result.match;
-
-		// Prepare object information to log
-		const objectInfo = {
-			name: result.names?.[0] || displayName,
-			skyObjectType: result.types?.join(', ') || 'Unknown',
-			description: result.model_data?.ra
-				? `Position: RA ${result.model_data?.ra?.toFixed(2) || 'N/A'}, Dec ${result.model_data?.de?.toFixed(2) || 'N/A'}`
-				: 'No position data',
-		};
-
 		// Determine the appropriate object ID based on object type
 		let objectId = null;
 

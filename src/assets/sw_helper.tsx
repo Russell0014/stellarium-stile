@@ -1,6 +1,5 @@
-import { SEngineHelpers } from '@/types/stellarium';
+import { SEngineHelpers, SearchResult } from '@/types/stellarium';
 import { SearchResults } from '@/types/stellarium';
-import { SearchResult } from '@/types/stellarium';
 
 const DDDate = Date;
 
@@ -96,7 +95,11 @@ const swh: SEngineHelpers = {
 	},
 
 	// Search and object info helpers
-	searchObjects: async (result: string, limit: number, engine: StellariumEngine | null = null): Promise<SearchResults> => {
+	searchObjects: async (
+		result: string,
+		limit: number,
+		engine: StellariumEngine | null = null,
+	): Promise<SearchResults> => {
 		// Import dynamically to avoid circular dependencies
 		const { searchSkyObjects } = await import('../utils/skyDataSearch');
 
@@ -106,7 +109,7 @@ const swh: SEngineHelpers = {
 			if (engine) {
 				currentSkyculture = engine.core.skycultures.current_id;
 			}
-			
+
 			// Use the local sky data search implementation
 			return await searchSkyObjects(result, limit, currentSkyculture);
 		} catch (error) {
@@ -145,6 +148,17 @@ const swh: SEngineHelpers = {
 	getData: (engine: StellariumEngine | null, key: string): any => {
 		if (!engine) return null;
 		return engine.getData(key);
+	},
+
+	searchObject: async (query: string): Promise<SearchResult | null> => {
+		const { searchSkyObjects } = await import('../utils/skyDataSearch');
+		try {
+			const results = await searchSkyObjects(query, 1);
+			return results.length > 0 ? results[0] : null;
+		} catch (error) {
+			console.error('Error searching for object:', error);
+			return null;
+		}
 	},
 };
 

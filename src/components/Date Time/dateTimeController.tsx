@@ -9,7 +9,7 @@ export default function DateTimeController() {
 	let d = Moment().toDate();
 	const [dateTime, setDateTime] = useState<Date>(d);
 	const [dateSlider, setDateSlider] = useState<number>(1);
-	const [timeSlider, setTimeSlider] = useState<number>(0);
+	const [_timeSlider, setTimeSlider] = useState<number>(0);
 	const [isRunning, setIsRunning] = useState(true);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,17 +78,6 @@ export default function DateTimeController() {
 		onValueChange: (value: number) => handleDateSlider(value),
 	};
 
-	// Configuration for time slider (time of day)
-	const timeSliderConfig = {
-		defaultValue: [timeSlider],
-		min: 0,
-		max: 86399, // 23:59:59 in seconds (24*60*60 - 1)
-		step: 1,
-		onValueChange: (value: number) => handleTimeSlider(value),
-	};
-
-	function geoIP() {}
-
 	// Handler for the date slider
 	function handleDateSlider(n: number) {
 		if (!engine?.core) return;
@@ -125,35 +114,24 @@ export default function DateTimeController() {
 		engine.core.observer.utc = newDateTime.getMJD();
 	}
 
-	// Handler for the time slider
-	function handleTimeSlider(n: number) {
-		setIsRunning(false);
-
-		if (timeoutRef.current) clearTimeout(timeoutRef.current);
-		timeoutRef.current = setTimeout(() => {
-			setIsRunning(true);
-		}, 2000);
-
-		// Update time slider state
-		setTimeSlider(n);
-
-		// Keep the same date (year, month, day)
-		const year = dateTime.getFullYear();
-		const month = dateTime.getMonth();
-		const day = dateTime.getDate();
-
-		// Calculate hours, minutes, seconds from total seconds
-		const hours = Math.floor(n / 3600);
-		const minutes = Math.floor((n % 3600) / 60);
-		const seconds = n % 60;
-
-		// Create a new date with the selected time
-		const newDateTime = new Date(year, month, day, hours, minutes, seconds);
-
-		// Set the date and time
-		setDateTime(newDateTime);
-		engine.core.observer.utc = newDateTime.getMJD();
-	}
+	// TODO: Handler for the time slider - uncomment when time slider is added
+	// function handleTimeSlider(n: number) {
+	// 	setIsRunning(false);
+	// 	if (timeoutRef.current) clearTimeout(timeoutRef.current);
+	// 	timeoutRef.current = setTimeout(() => {
+	// 		setIsRunning(true);
+	// 	}, 2000);
+	// 	setTimeSlider(n);
+	// 	const year = dateTime.getFullYear();
+	// 	const month = dateTime.getMonth();
+	// 	const day = dateTime.getDate();
+	// 	const hours = Math.floor(n / 3600);
+	// 	const minutes = Math.floor((n % 3600) / 60);
+	// 	const seconds = n % 60;
+	// 	const newDateTime = new Date(year, month, day, hours, minutes, seconds);
+	// 	setDateTime(newDateTime);
+	// 	engine.core.observer.utc = newDateTime.getMJD();
+	// }
 
 	//Reset Time Button
 	function resetTime() {
